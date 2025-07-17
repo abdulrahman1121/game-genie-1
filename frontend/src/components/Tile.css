@@ -1,0 +1,49 @@
+.tile {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #66C5CA;
+  background-color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: transform 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+}
+
+.tile.filled {
+  border: 2px solid #ADD8E6;
+  border-color: #3a3a3c;
+}
+
+.tile.correct {
+  border: 2px solid #ADD8E6;
+  background-color: #01B4BC;
+  border-color: #01B4BC;
+  color: #fff;
+}
+
+.tile.present {
+  border: 2px solid #ADD8E6;
+  background-color: #FBB92A;
+  border-color:#FBB92A;
+  color: #fff;
+}
+
+.tile.incorrect {
+  border: 2px solid #ADD8E6;
+  background-color: #B0AEAE;
+  border-color: #B0AEAE;
+  color: #fff;
+}
+
+@keyframes flip {
+  0% { transform: perspective(400px) rotateX(0deg); }
+  50% { transform: perspective(400px) rotateX(90deg); }
+  100% { transform: perspective(400px) rotateX(0deg); }
+}
+
+.tile.animate-flip {
+  animation: flip 0.3s ease;
+}

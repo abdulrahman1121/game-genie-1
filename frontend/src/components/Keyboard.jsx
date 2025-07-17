@@ -1,3 +1,6 @@
+import './Keyboard.css';
+
+
 function Keyboard({ keyStatuses }) {
   const rows = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -10,6 +13,11 @@ function Keyboard({ keyStatuses }) {
     window.dispatchEvent(event);
   };
 
+  const getKeyStatus = (key) => {
+    const statuses = Object.entries(keyStatuses).filter(([k]) => k === key);
+    return statuses.length ? statuses[0][1] : 'unused';
+  };
+
   return (
     <div className="keyboard">
       {rows.map((row, rowIndex) => (
@@ -17,7 +25,7 @@ function Keyboard({ keyStatuses }) {
           {row.map((key) => (
             <button
               key={key}
-              className={`keyboard-key ${key.toLowerCase()} ${keyStatuses[key] || 'unused'}`}
+              className={`keyboard-key ${key.toLowerCase()} ${getKeyStatus(key)}`}
               onClick={() => handleClick(key)}
             >
               {key === 'Backspace' ? '⌫' : key}

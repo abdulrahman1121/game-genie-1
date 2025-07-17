@@ -1,0 +1,48 @@
+.keyboard {
+  margin-top: 32px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 8px;
+  padding: 20px;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.keyboard-key {
+  padding: 10px 10px;
+  height: 48px;
+  background-color: #fff;
+  color: #66C5CA;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.keyboard-key.enter,
+.keyboard-key.backspace {
+  padding: 0 16px;
+}
+
+.keyboard-key.correct {
+  background-color: #01B4BC;
+  color: #fff;
+}
+
+.keyboard-key.present {
+  background-color: #FBB92A;
+  color: #fff;
+}
+
+.keyboard-key.incorrect {
+  background-color: #B0AEAE;
+  color: #fff;
+}

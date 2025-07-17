@@ -1,0 +1,57 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols, 5), 56px);
+    gap: 6px;
+    max-width: calc((var(--grid-cols, 5) * 56px) + ((var(--grid-cols, 5) - 1) * 6px));
+    margin: 0 auto;
+    position: relative; /* For modal layering */
+  }
+
+.grid-cols-4 {
+    --grid-cols: 4;
+}
+
+.grid-cols-5 {
+    --grid-cols: 5;
+}
+  
+
+.modal-overlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background-color: rgba(0, 0, 0, 0.5);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   z-index: 1000;
+ }
+
+.modal-content {
+   background-color: #fff;
+   padding: 20px;
+   border-radius: 8px;
+   text-align: center;
+   max-width: 400px;
+   width: 90%;
+ }
+
+.modal-content h2 {
+   font-size: 24px;
+   margin-bottom: 20px;
+   color: #000;
+ }
+
+ .modal-buttons {
+   display: flex;
+   justify-content: center;
+   gap: 20px;
+ }
+
+.modal-buttons .play-button {
+   padding: 10px 20px;
+   font-size: 16px;
+}
+

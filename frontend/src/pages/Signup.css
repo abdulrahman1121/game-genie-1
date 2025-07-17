@@ -1,0 +1,19 @@
+.header-button2 {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  border-radius: 50%; /* Makes it a circle */
+  cursor: pointer;
+  background-color: #f28c38;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.header-button2:hover {
+  background-color: #d97706; /* Slightly darker on hover */
+}

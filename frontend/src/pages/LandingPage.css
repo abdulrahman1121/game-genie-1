@@ -1,0 +1,123 @@
+.app {
+  position: relative; /* Ensure this is the root positioning context */
+  min-height: 100vh; /* Ensure full viewport height if not set */
+}
+
+.landing-page {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+}
+
+
+.game-genie-text {
+  position: absolute;
+  top: 16px; /* Top of the page */
+  left: 16px; /* Left edge with padding */
+  font-size: 20px;
+  color: #fff;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  font-family: 'Press Start 2P', cursive;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+}
+
+.signup-button {
+  position: absolute;
+  top: 0%; /* Top of the page */
+  right: 0%;
+  padding-top: 10px; /* top, right, bottom, left */
+  /* left: 1110px; */
+  cursor: pointer;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  overflow: hidden;
+}
+
+.signup-button img {
+  width: 144px;
+  height: 31px;
+  padding: 2px;
+  transition: transform 0.3s ease;
+}
+
+.signup-button:hover img {
+  transform: scale(1.05); /* Slight scale-up on hover */
+}
+
+.boxes-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+
+
+.top-box {
+  width: 775px;
+  height: auto;
+  align-self: stretch;
+  color: #FFF;
+  text-align: center;
+  text-shadow: 0px 4px 0px #723400;
+  font-family: Monda;
+  font-size: 48px;
+  font-style: normal; 
+  font-weight: 600;
+  line-height: normal;
+  text-transform: uppercase;
+}
+
+.middle-box {
+  align-self: stretch;
+  width: 775px;
+  height: 128px;
+  color: #FFF;
+  text-align: center;
+  text-shadow: 0px 5px 0px #723400;
+  font-family: "Press Start 2P";
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.bottom-box {
+  width: 576px fixed;
+  height: 33px fixed;
+  color: #FFF;
+  text-align: center;
+  font-family: Monda;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+
+.play-button {
+  background-color: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+}
+
+.play-button img {
+  transition: transform 0.3s ease;
+}
+
+.play-button:hover img {
+  transform: scale(1.05); /* Slight scale-up on hover */
+} 
+
+
