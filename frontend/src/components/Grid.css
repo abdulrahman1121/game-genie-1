@@ -44,7 +44,7 @@
    color: #000;
  }
 
- .modal-buttons {
+.modal-buttons {
    display: flex;
    justify-content: center;
    gap: 20px;
@@ -53,5 +53,7 @@
 .modal-buttons .play-button {
    padding: 10px 20px;
    font-size: 16px;
+   background-color: #01B4BC;
+   cursor: pointer;
 }
 

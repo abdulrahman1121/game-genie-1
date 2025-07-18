@@ -1,52 +1,31 @@
-
-.header {
-  position: absolute;
-  display: flex;
-  justify-content: flex-end; /* Pushes content to right */
-  align-items: center;
-  width: 100%;
-  padding: 16px;
-  max-width: 1280px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-}
-
-.header-buttons {
-  display: flex;
-}
-
-
-
-.header-button {
-  width: 40px;
-  height: 40px;
-  font-size: 20px;
-  border-radius: 50%; /* Makes it a circle */
-  cursor: pointer;
-  background-color: #f28c38;
-  color: white;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  transition: background-color 0.2s ease;
-}
-
-.header-button:hover {
-  background-color: #d97706; /* Slightly darker on hover */
-}
-
-
 .game-page {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 100vh;  
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Align items to the top */
     color: #fff;
     text-align: center;
 }
+
+
+.game-page-header {
+  position: relative; /* Ensure children are positioned relative to this */
+  min-height: 60px; /* Ensure header has height */
+  margin-bottom: 400px; /* Space for the grid and keyboard */
+}
+
+
+.grid-and-keyboard {
+  margin-top: 400px;
+  display: inline-flex; /* Use inline-flex to allow the header to be centered */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: 400px;
+  padding: 10px;
+}
+

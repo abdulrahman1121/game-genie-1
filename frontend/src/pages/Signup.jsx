@@ -9,7 +9,7 @@ function Signup() {
         <div className="header-placeholder" />
         <h1 className="header-title">Signup</h1>
         <div className="header-buttons">
-          <button className="header-button2" title="Back" onClick={() => navigate('/')} >
+          <button className="header-button2" title="Back" onClick={() => navigate('/game')} >
             ⟵
           </button>
         </div>

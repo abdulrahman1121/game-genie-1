@@ -6,22 +6,22 @@ function LandingPage() {
 
   return (
     <div className="landing-page">
-      <div className="landing-header">
+      <header className="landing-header">
         <span className="game-genie-text">Game Genie</span>
         <button className='signup-button' onClick={() => navigate('/signup')}>
           <img src="/signup2.png" alt="singup" />
         </button>
-      </div>
+      </header>
       <div className="boxes-container">
         <div className="box top-box">start your</div>
         <div className="box middle-box">
           Learning<br />Adventure
         </div>
         <div className="box bottom-box">
-          Where learning math, reading, and coding is a fun game!
+          Where learning math, reading and coding feels like play.✧˖°.
         </div>
       </div>
-      <button className="play-button" onClick={() => navigate('/select-level')}>
+      <button className="quickplay-button" onClick={() => navigate('/select-level')}>
         <img src="/quickplay.png" alt="quickplay" />
       </button>
     </div>

@@ -1,16 +1,79 @@
 .select-level-page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
   color: #fff;
+}
+
+.select-level-header {
+  margin-bottom: 400px;
+}
+
+.go-back-button {
+  position: absolute;
+  top: 16px; /* Top of the page */
+  left: 16px; /* Left edge with padding */
+  background-color: transparent;
+  border: none;;
+  cursor: pointer;
+}
+
+.settings-button {
+  position: absolute;
+  top: 16px; /* Top of the page */
+  right: 25px; /* Right edge with padding */
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+ 
+
+.text-and-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.select-text {
+  align-self: stretch;
+  margin-bottom: 15px;
+  color: #FFF;
+  text-align: center;
+  text-shadow: 0px 4px 0px #723400;
+  font-family: "Monda";
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: uppercase;
+}
+
+.grade-text {
+  align-self: stretch;
+  color: #FFF;
+  text-align: center;
+  text-shadow: 0px 5px 0px #723400;
+  font-family: "Press Start 2P";
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-transform: uppercase;
+  margin-bottom: 40px;
 }
 
 .beginner, .intermediate, .advanced {
   width: 350px;
   height: 50px;
   margin: 10px;
+  margin-bottom: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,4 +83,9 @@
   border-radius: 8px;
   cursor: pointer;
   background-color: #f28c38;
+}
+
+.beginner:hover img, .intermediate:hover img, .advanced:hover img,
+.go-back-button:hover img, .settings-button:hover img {
+  transform: scale(1.05); /* Slight scale-up on hover */
 }
