@@ -77,7 +77,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
               <p className="genie-definition"><strong>Definition:</strong> {definition || 'Loading'}</p>
               <p className="genie-example"><strong>Example:</strong> {example || 'Loading'}</p>
               <button className='next-button' onClick={() => {navigate('/rewards'); resetKeyStatuses();}}>
-                <img src="/next-button.png" alt="next" />
+                <img src="/next-button.png" alt="next" className='next-image'/>
               </button>
             </div>
           ) : (

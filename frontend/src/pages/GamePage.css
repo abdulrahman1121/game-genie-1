@@ -82,7 +82,7 @@
   color: #01B4BC;
   text-align: center;
   font-family: "Lilita One";
-  font-size: 20px;
+  font-size: 18px;
   font-style: normal;
   font-weight: 300;
   line-height: 25px; /* 100% */
@@ -95,7 +95,7 @@
     font-size: 16px;
     font-style: normal;
     font-weight: 700;
-    line-height: 25px;
+    line-height: 20px;
     color: #FFA800; /* + Dark gray for contrast */
     margin: 5px 0; /* + Spacing between definition and example */
     text-align: left; /* + Left-align for readability */
@@ -106,19 +106,19 @@
   color: #01B4BC;
   text-align: center;
   font-family: "Lilita One";
-  font-size: 18px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 400;
-  line-height: 40px;
+  line-height: 35px;
 }
 
 /* + New styles for example */
 .genie-example {
   font-family: "Monda"; /* + Use a sans-serif font for clarity */
   font-size: 16px;
-  font-style: normal;
+  font-style: bold;
   font-weight: 700;
-  line-height: 25px;
+  line-height: 20px;
   color: #FFA800; /* + Dark gray for contrast */
   margin: 5px 0; /* + Spacing between definition and example */
   text-align: left; /* + Left-align for readability */
@@ -129,10 +129,10 @@
   color: #01B4BC;
   text-align: center;
   font-family: "Lilita One";
-  font-size: 18px;
+  font-size: 17px;
   font-style: normal;
   font-weight: 400;
-  line-height: 40px;
+  line-height: 35px;
 }
 
 /* + New styles for error message */
@@ -148,8 +148,18 @@
   left: 90px;
   border: none; /* + No border */
   cursor: pointer; /* + Pointer cursor on hover */
-  width: 143px;
+  width: 160px;
   height: 34px;
+}
 
+.next-button img {
+  width: 100%;
+  height: auto;
+  display: block; /* + Ensures the image is displayed as a block element */
+}
+
+.next-button:hover img {
+  transform: scale(1.05); /* + Slightly enlarge on hover */
+  transition: transform 0.2s ease-in-out; /* + Smooth transition */
 }
 
