@@ -2,147 +2,178 @@ import { useState, useEffect } from 'react';
 import Tile from './Tile.jsx';
 import './Grid.css';
 
-function Grid({ onKeyPress, onGoHome, resetKeyBoard }) {
-  const wordList = [
-    'CAKE', 'APPLE', 'CRANE', 'LARGE', 'MOIST', 'PINE', 'LAME', 'RANT', 'FROG', 'SHARK',
-    'RIVER', 'UNITY', 'TIGER', 'PLANT', 'BRAVE', 'SNAKE', 'CLOUD', 'FRESH', 'GRAPE', 'HAPPY',
-  ].filter(word => word.length >= 4 && word.length <= 5);
-
-  const getRandomWord = () => wordList[Math.floor(Math.random() * wordList.length)];
-  const [targetWord, setTargetWord] = useState(getRandomWord());
-  const wordLength = targetWord.length;
-  const initialGrid = Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' }));
-  const [grid, setGrid] = useState(initialGrid);
+function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage }) {
+  const [grid, setGrid] = useState(() => {
+    return wordLength ? Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' })) : [];
+  });
   const [currentRow, setCurrentRow] = useState(0);
   const [currentGuess, setCurrentGuess] = useState('');
-  const [gameStatus, setGameStatus] = useState('active');
-  const [showModal, setShowModal] = useState(false);
+  const [localGameStatus, setLocalGameStatus] = useState('active');
 
-  const handleGuess = () => {
-    const guess = currentGuess.toUpperCase();
-    if (
-      guess.length !== wordLength ||
-      currentRow >= 6 ||
-      gameStatus !== 'active'
-    ) return;
+  const encouragingPhrases = [
+    "You're doing great, keep it up!",
+    "Awesome effort, try again!",
+    "You're so close, give it another go!",
+    "Keep guessing, you're learning fast!",
+    "Super try, let's get that word!",
+    "You're rocking it, one more guess!",
+    "Great job, stay focused!",
+    "You're a word wizard, keep going!",
+    "Fantastic attempt, try another!",
+    "You're getting better with every guess!"
+  ];
 
-    const feedback = Array(wordLength).fill('incorrect');
-    const targetLetters = targetWord.split('');
-    const guessLetters = guess.split('');
+  useEffect(() => {
+    if (wordLength) {
+      setGrid(Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' })));
+    }
+  }, [wordLength]);
 
-    // First pass: correct positions
-    guessLetters.forEach((letter, index) => {
-      if (letter === targetLetters[index]) {
-        feedback[index] = 'correct';
-        targetLetters[index] = null;
-      }
-    });
-
-    // Second pass: present letters
-    guessLetters.forEach((letter, index) => {
-      if (feedback[index] === 'incorrect') {
-        const targetIndex = targetLetters.indexOf(letter);
-        if (targetIndex !== -1) {
-          feedback[index] = 'present';
-          targetLetters[targetIndex] = null;
-        }
-      }
-    });
-
-    const newGrid = [...grid];
-    newGrid[currentRow] = guessLetters.map((letter, i) => ({
-      letter,
-      status: feedback[i]
-    }));
-    setGrid(newGrid);
-
-    const nextStatus =
-      guess === targetWord
-        ? 'won'
-        : currentRow + 1 === 6
-        ? 'lost'
-        : 'active';
-
-    setGameStatus(nextStatus);
-    setCurrentRow(currentRow + 1);
-    setCurrentGuess('');
-
-    feedback.forEach((status, i) => {
-      onKeyPress(guessLetters[i], status);
-    });
-
-    if (nextStatus !== 'active') {
-      setTimeout(() => {
-        setShowModal(true);
-      }, 200); // Delay to allow grid update
+  const handleKeyPress = (key, status) => {
+    if (localGameStatus !== 'active') return;
+    if (key === 'BACKSPACE') {
+      setCurrentGuess(prev => prev.slice(0, -1));
+      setGrid(prev => {
+        const newGrid = [...prev];
+        newGrid[currentRow] = [...newGrid[currentRow]];
+        const lastFilledIndex = prev[currentRow].findLastIndex(t => t.letter !== '');
+        newGrid[currentRow][lastFilledIndex >= 0 ? lastFilledIndex : 0] = { letter: '', status: 'empty' };
+        return newGrid;
+      });
+      onKeyPress(key, 'empty');
+      return;
+    }
+    if (key === 'ENTER') {
+      handleGuess();
+      return;
+    }
+    if (currentGuess.length < wordLength && /^[A-Za-z]$/.test(key)) {
+      setCurrentGuess(prev => prev + key.toUpperCase());
+      setGrid(prev => {
+        const newGrid = [...prev];
+        newGrid[currentRow] = [...newGrid[currentRow]];
+        newGrid[currentRow][currentGuess.length] = { letter: key.toUpperCase(), status: 'empty' };
+        return newGrid;
+      });
+      onKeyPress(key.toUpperCase(), 'empty');
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (gameStatus !== 'active') return;
-    const key = e.key.toUpperCase();
-    if ((key === 'ENTER' || key === 'RETURN') && currentGuess.length === wordLength) {
-      handleGuess();
-    } else if (
-      key.match(/^[A-Z]$/) &&
-      currentGuess.length < wordLength &&
-      currentRow < 6
-    ) {
-      setCurrentGuess((prev) => prev + key);
+  useEffect(() => {
+    gridKeyPressRef.current = handleKeyPress;
+    return () => { gridKeyPressRef.current = null; };
+  }, [gridKeyPressRef, handleKeyPress]);
+
+  const handleGuess = async () => {
+    if (currentGuess.length !== wordLength || localGameStatus !== 'active') return;
+
+    try {
+      const res = await fetch('http://localhost:3000/api/openai/guess', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gameId, guess: currentGuess })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+
       const newGrid = [...grid];
-      newGrid[currentRow][currentGuess.length] = { letter: key, status: 'filled' };
+      newGrid[currentRow] = currentGuess.split('').map((letter, i) => ({
+        letter,
+        status: data.feedback[i]
+      }));
       setGrid(newGrid);
-    } else if (key === 'BACKSPACE' && currentGuess.length > 0) {
-      const newGrid = [...grid];
-      newGrid[currentRow][currentGuess.length - 1] = { letter: '', status: 'empty' };
-      setGrid(newGrid);
-      setCurrentGuess(currentGuess.slice(0, -1));
+      setCurrentRow(currentRow + 1);
+      setCurrentGuess('');
+      setLocalGameStatus(data.status);
+      setGameStatus(data.status);
+
+      currentGuess.split('').forEach((letter, i) => {
+        onKeyPress(letter.toUpperCase(), data.feedback[i]);
+      });
+
+      if (data.status !== 'active') {
+        const explainRes = await fetch('http://localhost:3000/api/openai/explain', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gameId, guessedCorrectly: data.status === 'won' })
+        });
+        const explainData = await explainRes.json();
+        setExplanation(explainData.explanation);
+        setGameMessage(
+          data.status === 'won'
+            ? `🎉 Congratulations! You guessed "${explainData.word}"!`
+            : `Nice try! The word was "${explainData.word}".`
+        );
+      } else {
+        if (currentRow === 0 || currentRow === 1 || currentRow === 3 || currentRow === 5) {
+          const randomPhrase = encouragingPhrases[Math.floor(Math.random() * encouragingPhrases.length)];
+          setHint(randomPhrase);
+        } else if (currentRow === 2) {
+          const hintLevel = 1;
+          const hintRes = await fetch('http://localhost:3000/api/openai/hint', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ gameId, hintLevel })
+          });
+          const hintData = await hintRes.json();
+          setHint(hintData.hint);
+        } else if (currentRow === 4) {
+          const hintLevel = 2;
+          const hintRes = await fetch('http://localhost:3000/api/openai/hint', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ gameId, hintLevel })
+          });
+          const hintData = await hintRes.json();
+          setHint(hintData.hint);
+        }
+      }
+    } catch (err) {
+      console.error('Error submitting guess:', err);
     }
-    onKeyPress(key);
   };
 
   const resetGame = () => {
-    const newTargetWord = getRandomWord();
-    setTargetWord(newTargetWord);
-    setGrid(Array(6).fill().map(() => Array(newTargetWord.length).fill({ letter: '', status: 'empty' })));
-    setCurrentRow(0);
-    setCurrentGuess('');
-    setGameStatus('active');
-    setShowModal(false);
-    resetKeyBoard();
+    fetch('http://localhost:3000/api/openai/start', { method: 'POST' })
+      .then(res => res.json())
+      .then(data => {
+        setGrid(Array(6).fill().map(() => Array(data.wordLength).fill({ letter: '', status: 'empty' })));
+        setCurrentRow(0);
+        setCurrentGuess('');
+        setLocalGameStatus('active');
+        setHint('');
+        setGameStatus('active');
+        setExplanation('');
+        setGameMessage('');
+        setGameId(data.gameId);
+        setKeyStatuses({});
+        resetKeyBoard();
+      })
+      .catch(err => console.error('Error starting new game:', err));
   };
 
-
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [currentGuess, currentRow, gameStatus, targetWord]);
+    const handleKeyDown = (e) => {
+      if (e.key === 'Backspace') {
+        handleKeyPress('BACKSPACE', 'empty');
+      } else if (e.key === 'Enter') {
+        handleKeyPress('ENTER', 'empty');
+      } else if (/^[A-Za-z]$/.test(e.key)) {
+        handleKeyPress(e.key.toUpperCase(), 'empty');
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyPress]);
 
   return (
-    <>
-      <div className={`grid grid-cols-${wordLength}`}>
-        {grid.map((row, rowIndex) =>
-          row.map((tile, colIndex) => (
-            <Tile key={`${rowIndex}-${colIndex}`} letter={tile.letter} status={tile.status} />
-          ))
-        )}
-      </div>
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h2>
-              {gameStatus === 'won'
-                ? '🎉 Congratulations! You got it'
-                : `Nice try! The word was ${targetWord}.`}
-            </h2>
-            <div className="modal-buttons">
-              <button className="play-button" onClick={resetGame}>Play Again</button>
-              <button className="play-button" onClick={onGoHome}>Home</button>
-            </div>
-          </div>
-        </div>
+    <div className={`grid grid-cols-${wordLength}`}>
+      {grid.map((row, rowIndex) =>
+        row.map((tile, colIndex) => (
+          <Tile key={`${rowIndex}-${colIndex}`} letter={tile.letter} status={tile.status} />
+        ))
       )}
-    </>
+    </div>
   );
 }
 

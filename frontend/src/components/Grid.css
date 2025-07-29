@@ -7,14 +7,17 @@
     position: relative; /* For modal layering */
   }
 
+
 .grid-cols-4 {
     --grid-cols: 4;
 }
 
+
 .grid-cols-5 {
     --grid-cols: 5;
 }
-  
+ 
+
 
 .modal-overlay {
    position: fixed;
@@ -29,6 +32,7 @@
    z-index: 1000;
  }
 
+
 .modal-content {
    background-color: #fff;
    padding: 20px;
@@ -36,13 +40,45 @@
    text-align: center;
    max-width: 400px;
    width: 90%;
+   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* + Added for subtle 3D effect */
+   font-family: 'Comic Sans MS', 'Arial', sans-serif;
  }
 
-.modal-content h2 {
-   font-size: 24px;
-   margin-bottom: 20px;
-   color: #000;
- }
+
+.modal-title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: black;
+  line-height: 1.3;
+}
+
+
+
+.modal-explanation p {
+    margin: 10px 0; /* + Spacing between definition and example */
+}
+
+.modal-explanation strong {
+    color: #007bff; /* + Bright blue for emphasis */
+}
+
+/* + New style for error message when explanation fails */
+.modal-error {
+    color: #ff4444; /* + Red for error visibility */
+    font-size: 16px; /* + Slightly smaller but readable */
+    margin: 15px 0; /* + Spacing for error message */
+}
+
+.modal-explanation {
+  font-size: 18px;
+  margin-top: 16px;
+  line-height: 1.5;
+  text-align: left; /* + Changed to left-align for readability */
+  color: #444; /* + Changed to darker color for contrast on white background */
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
 
 .modal-buttons {
    display: flex;
@@ -50,10 +86,29 @@
    gap: 20px;
  }
 
+
 .modal-buttons .play-button {
    padding: 10px 20px;
    font-size: 16px;
-   background-color: #01B4BC;
+   background-color: orange;
    cursor: pointer;
+   color: white; /* + Ensure text is white for contrast */
+   border: none; /* + Remove default border for cleaner look */
+   border-radius: 8px; /* + Rounded corners for friendliness */
+   transition: background-color 0.3s; /* + Smooth hover effect */
 }
 
+/* + New hover effect for play button */
+.modal-buttons .play-button:hover {
+    background-color: orangered; /* + Darker shade of #01B4BC for hover */
+}
+
+/* + New style for Home button to differentiate it */
+.modal-buttons .play-button:nth-child(2) {
+    background-color: #007bff; /* + Blue for Home button */
+}
+
+/* + New hover effect for Home button */
+.modal-buttons .play-button:nth-child(2):hover {
+    background-color: #0056b3; /* + Darker blue for Home button hover */
+}

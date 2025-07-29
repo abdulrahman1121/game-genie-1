@@ -1,22 +1,15 @@
 import './Keyboard.css';
 
-
-function Keyboard({ keyStatuses }) {
+function Keyboard({ keyStatuses, onKeyPress }) {
   const rows = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
     ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace']
   ];
 
-  const handleClick = (key) => {
-    const event = new KeyboardEvent('keydown', { key });
-    window.dispatchEvent(event);
-  };
-
   const getKeyStatus = (key) => {
-    const statuses = Object.entries(keyStatuses).filter(([k]) => k === key);
-    return statuses.length ? statuses[0][1] : 'unused';
-  };
+  return keyStatuses[key.toUpperCase()] || 'unused';
+};
 
   return (
     <div className="keyboard">
@@ -26,7 +19,7 @@ function Keyboard({ keyStatuses }) {
             <button
               key={key}
               className={`keyboard-key ${key.toLowerCase()} ${getKeyStatus(key)}`}
-              onClick={() => handleClick(key)}
+              onClick={() => onKeyPress(key === 'Enter' || key === 'Backspace' ? key : key.toUpperCase(), 'empty')}
             >
               {key === 'Backspace' ? '⌫' : key}
             </button>

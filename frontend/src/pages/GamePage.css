@@ -5,27 +5,151 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Align items to the top */
-    color: #fff;
+    justify-content: center; /* Align items to the top */
     text-align: center;
 }
 
 
+
+
 .game-page-header {
-  position: relative; /* Ensure children are positioned relative to this */
-  min-height: 60px; /* Ensure header has height */
   margin-bottom: 400px; /* Space for the grid and keyboard */
 }
 
 
-.grid-and-keyboard {
-  margin-top: 400px;
-  display: inline-flex; /* Use inline-flex to allow the header to be centered */
-  flex-direction: column;
-  align-items: center;
+.game-container {
+   display: flex;
+   align-items: flex-start;
+   gap: 20px;
+}
+
+
+.genie-container {
+  position: absolute;
+  bottom: -180px; /* Distance from bottom */
+  right: 20px; /* Distance from right */
+  width: 400px; /* Maintain larger size */
+  max-width: 100%;
+}
+
+
+.genie-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+
+
+.genie-text2 {
+  position: absolute;
+  top: 5px; /* Adjust for speech bubble */
+  left: 35px; /* Adjust for larger speech bubble */
+  width: 330px;
+  height: 290px;
+  font-size: 19px;
+  font-weight: bold;
+  color: orange;
+  text-align: center;
+  line-height: 1.4;
+  white-space: normal;
+}
+
+.genie-text {
+  position: absolute;
+  top: 17px; /* Adjust for speech bubble */
+  left: 35px; /* Adjust for larger speech bubble */
+  width: 250px;
+  height: 250px;
+  font-size: 25px;
+  font-weight: bold;
+  color: orange;
+  text-align: center;
+  line-height: 1.4;
+  white-space: normal;
+}
+
+.keyboard-container {
+  display: flex;
   justify-content: center;
-  width: auto;
-  max-width: 400px;
-  padding: 10px;
+}
+
+
+
+/* + New styles for game message */
+.game-message {
+  color: #01B4BC;
+  text-align: center;
+  font-family: "Lilita One";
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 25px; /* 100% */
+  text-transform: uppercase;
+}
+
+/* + New styles for definition */
+.genie-definition {
+    font-family: "Monda"; /* + Use a sans-serif font for clarity */
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 25px;
+    color: #FFA800; /* + Dark gray for contrast */
+    margin: 5px 0; /* + Spacing between definition and example */
+    text-align: left; /* + Left-align for readability */
+}
+
+/* + New styles for definition bold label */
+.genie-definition strong {
+  color: #01B4BC;
+  text-align: center;
+  font-family: "Lilita One";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 40px;
+}
+
+/* + New styles for example */
+.genie-example {
+  font-family: "Monda"; /* + Use a sans-serif font for clarity */
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 25px;
+  color: #FFA800; /* + Dark gray for contrast */
+  margin: 5px 0; /* + Spacing between definition and example */
+  text-align: left; /* + Left-align for readability */
+}
+
+/* + New styles for example bold label */
+.genie-example strong {
+  color: #01B4BC;
+  text-align: center;
+  font-family: "Lilita One";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 40px;
+}
+
+/* + New styles for error message */
+.genie-error {
+     font-size: 16px; /* + Readable size */
+     color: #ff4444; /* + Red for error visibility */
+     margin: 10px 0; /* + Spacing */
+}
+
+.next-button {
+  position: absolute;
+  background-color: transparent;
+  left: 90px;
+  border: none; /* + No border */
+  cursor: pointer; /* + Pointer cursor on hover */
+  width: 143px;
+  height: 34px;
+
 }
 

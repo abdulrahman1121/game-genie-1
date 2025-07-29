@@ -1,11 +1,12 @@
 .keyboard {
   margin-top: 32px;
-  max-width: 600px;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
   gap: 8px;
   padding: 20px;
 }
+
 
 .keyboard-row {
   display: flex;
@@ -14,35 +15,41 @@
   margin-bottom: 4px;
 }
 
+
 .keyboard-key {
   padding: 10px 10px;
   height: 48px;
   background-color: #fff;
-  color: #66C5CA;
+  color: #01B4BC;
   font-size: 18px;
   font-weight: bold;
   text-transform: uppercase;
-  border: none;
-  border-radius: 4px;
+  border: 2px solid #66C5CA;
   cursor: pointer;
 }
+
 
 .keyboard-key.enter,
 .keyboard-key.backspace {
   padding: 0 16px;
 }
 
+
 .keyboard-key.correct {
   background-color: #01B4BC;
+  border: 2px solid #01B4BC;
   color: #fff;
 }
 
+
 .keyboard-key.present {
   background-color: #FBB92A;
+  border: 2px solid #FBB92A;
   color: #fff;
 }
 
 .keyboard-key.incorrect {
   background-color: #B0AEAE;
+  border: 2px solid #B0AEAE;
   color: #fff;
 }
