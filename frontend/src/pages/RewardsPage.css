@@ -37,47 +37,43 @@
   height: auto;
 }
 
-.all-buttons {
-  display: flex;
-  flex-direction: row;
-  align-items: space-between;
-  justify-content: center;
-  width: 100%;
-}
 
 .home-button {
   position: absolute;
-  width: 55px;
-  height: 57px;
+  width: 62px;
+  height: 60px;
   cursor: pointer;
-  right: 524px;
-  top: 570px;
-  border: none;
+  right: 525px;
+  top: 555px;
   background-color: transparent;
+}
+
+.home-button, .flip-button, .star-button {
+  position: absolute;
+  width: 62px;
+  height: 60px;
+  cursor: pointer;
+  border: none;
+  top: 555px;
+  background-color: transparent;
+}
+
+.home-button img, .flip-button img, .star-button img {
+  width: 100%;
+  height: auto;
 }
 
 .flip-button {
-  position: absolute;
-  width: 55px;
-  height: 58px;
-  cursor: pointer;
   right: 608px;
-  top: 570px;
-  border: none;
-  background-color: transparent;
 }
-
 
 
 .star-button {
-  position: absolute;
-  width: 55px;
-  height: 57px;
-  cursor: pointer;
   right: 692px;
-  top: 569px;
-  border: none;
-  background-color: transparent;
 }
 
 
+.star-button:hover img, .home-button:hover img, .flip-button:hover img {
+    transform: scale(1.05); /* + Slightly enlarge on hover */
+    transition: transform 0.2s ease-in-out;
+}

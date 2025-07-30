@@ -8,12 +8,18 @@ require('dotenv').config();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const SYSTEM_PROMPT = `You are an educational assistant for a Wordle game designed for kids. Your answers should be kid-friendly, engaging, and educational. Always provide clear, concise responses.`;
 
+const RECENT_WORDS_LIMIT = 50; // + Limit for recent words
+
 router.post('/start', async (req, res) => {
   try {
     const blocklist = ['death', 'crime', 'blood', 'ghost', 'scary'];
     const wordLength = Math.random() < 0.5 ? 4 : 5;
 
-    const prompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
+    // + Fetch recent words from Firestore
+    const recentWordsSnapshot = await db.collection('recentWords').orderBy('createdAt', 'desc').limit(RECENT_WORDS_LIMIT).get();
+    const recentWords = recentWordsSnapshot.docs.map(doc => doc.data().word.toUpperCase());
+
+    const prompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Ensure the word is different from these recently used words: ${recentWords.join(', ') || 'none'}. Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
     const response = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
@@ -40,6 +46,18 @@ router.post('/start', async (req, res) => {
       status: 'active',
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
+
+    // + Store word in recentWords collection
+    await db.collection('recentWords').add({
+      word,
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    // + Maintain recentWords limit
+    if (recentWordsSnapshot.size >= RECENT_WORDS_LIMIT) {
+      const oldestWord = recentWordsSnapshot.docs[recentWordsSnapshot.size - 1];
+      await db.collection('recentWords').doc(oldestWord.id).delete();
+    }
 
     res.json({ gameId, wordLength });
   } catch (err) {

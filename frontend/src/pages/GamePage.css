@@ -10,7 +10,22 @@
 }
 
 
+/* + New styles for loading container */
+.loading-container {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: 100vh;
+     width: 100%;
+}
 
+/* + New styles for loading text */
+.loading-text {
+     font-size: 36px;
+     font-weight: bold;
+     color: white;
+     font-family: "Press Start 2P";
+}
 
 .game-page-header {
   margin-bottom: 400px; /* Space for the grid and keyboard */

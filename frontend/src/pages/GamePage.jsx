@@ -42,7 +42,13 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
     navigate('/');
   };
 
-  if (!isGameReady) return null;
+  if (!isGameReady) {
+    return (
+      <div className="loading-container">
+        <h1 className="loading-text">Game Loading...</h1>
+      </div>
+      );
+  };
 
   // Parse explanation into definition and example
   const [definition, example] = explanation ? explanation.split('\n') : ['', ''];

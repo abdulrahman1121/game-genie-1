@@ -19,9 +19,15 @@ function RewardsPage() {
         <div className="rewards-component">
           <img src="/rewards.png" alt="rewards" className="rewards-image" />
         </div>
-        <button className="home-button"></button>
-        <button className="star-button"></button>
-        <button className="flip-button"></button>
+        <button className="home-button">
+          <img src="/home-image.png" alt="home" className="home-image"/>
+        </button>
+        <button className="star-button">
+          <img src="/star-image.png" alt="star" className="start-image"/>
+        </button>
+        <button className="flip-button">
+          <img src="flip-image.png" alt="flip" className="flip-image"/>
+        </button>
       </div>
     </div>
   );
