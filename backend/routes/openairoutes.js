@@ -84,6 +84,7 @@ router.post('/reset', async (req, res) => {
   }
 });
 
+// In /guess endpoint, update game document with guessCount
 router.post('/guess', async (req, res) => {
   const { gameId, guess } = req.body;
   try {
@@ -96,13 +97,17 @@ router.post('/guess', async (req, res) => {
     const feedback = evaluateGuess(guess, word);
     guesses.push({ guess, feedback });
 
+    const status = guess === word ? 'won' : guesses.length >= 6 ? 'lost' : 'active';
+    const guessCount = guesses.length; // + Track guess count
+
     await db.collection('games').doc(gameId).update({
       guesses,
-      status: guess === word ? 'won' : guesses.length >= 6 ? 'lost' : 'active',
+      status,
+      guessCount, // + Store guess count
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    res.json({ feedback, status: guess === word ? 'won' : guesses.length >= 6 ? 'lost' : 'active' });
+    res.json({ feedback, status, guessCount }); // + Return guessCount
   } catch (err) {
     console.error('❌ /guess error:', err.message);
     res.status(500).json({ error: 'Failed to process guess' });

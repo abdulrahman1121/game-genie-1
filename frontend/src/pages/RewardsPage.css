@@ -37,28 +37,41 @@
   height: auto;
 }
 
-
-.home-button {
-  position: absolute;
-  width: 62px;
-  height: 60px;
-  cursor: pointer;
-  right: 525px;
-  top: 555px;
-  background-color: transparent;
+/* + New styles for rewards text */
+.rewards-tries {
+     font-size: 20px;
+     font-weight: bold;
+     color: red;
+     font-family: 'Comic Sans MS', 'Arial', sans-serif;
+     margin: 10px 0;
+     text-align: center;
 }
 
-.home-button, .flip-button, .star-button {
+.rewards-points {
+     font-size: 20px;
+     font-weight: bold;
+     color: red;
+     font-family: 'Comic Sans MS', 'Arial', sans-serif;
+     margin: 10px 0;
+     text-align: center;
+}
+
+.home-button {
+  right: 525px;
+  
+}
+
+.home-button, .flip-button, .reset-button {
   position: absolute;
   width: 62px;
   height: 60px;
   cursor: pointer;
   border: none;
-  top: 555px;
+  top: 505px;
   background-color: transparent;
 }
 
-.home-button img, .flip-button img, .star-button img {
+.home-button img, .flip-button img, .reset-button img {
   width: 100%;
   height: auto;
 }
@@ -68,12 +81,12 @@
 }
 
 
-.star-button {
+.reset-button {
   right: 692px;
 }
 
 
-.star-button:hover img, .home-button:hover img, .flip-button:hover img {
+.reset-button:hover img, .home-button:hover img, .flip-button:hover img {
     transform: scale(1.05); /* + Slightly enlarge on hover */
     transition: transform 0.2s ease-in-out;
 }

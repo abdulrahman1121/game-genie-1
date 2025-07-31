@@ -1,10 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
 import './RewardsPage.css';
 
 function RewardsPage() {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const { guessCount = 0, points = 0 } = state || {};
 
   return (
     <div className="rewards-page">
@@ -18,12 +20,14 @@ function RewardsPage() {
         </div>
         <div className="rewards-component">
           <img src="/rewards.png" alt="rewards" className="rewards-image" />
+          <p className="rewards-tries">You used {guessCount} {guessCount === 1 ? 'guess' : 'guesses'}!</p>
+          <p className="rewards-points">You earned {points} points!</p>
         </div>
-        <button className="home-button">
+        <button className="home-button" onClick={() => navigate('/')}>
           <img src="/home-image.png" alt="home" className="home-image"/>
         </button>
-        <button className="star-button">
-          <img src="/star-image.png" alt="star" className="start-image"/>
+        <button className="reset-button" onClick={() => navigate('/game')}>
+          <img src="/reset.png" alt="reset" className="reset-image"/>
         </button>
         <button className="flip-button">
           <img src="flip-image.png" alt="flip" className="flip-image"/>

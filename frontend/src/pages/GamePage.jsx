@@ -13,6 +13,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [gameMessage, setGameMessage] = useState('');
   const [welcomeMessage, setWelcomeMessage] = useState('Welcome to Game Genie, guess a word and I will help u get it right. U got this!');
   const [isGameReady, setIsGameReady] = useState(false);
+  const [guessCount, setGuessCount] = useState(0);
 
   useEffect(() => {
     fetch('http://localhost:3000/api/openai/start', { method: 'POST' })
@@ -28,6 +29,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         setLocalHint('');
         setWelcomeMessage('Welcome to Game Genie, guess a word and I will help u get it right. U got this!');
         setIsGameReady(true);
+        setGuessCount(0);
       })
       .catch(err => console.error('Error starting game:', err));
   }, []);
@@ -74,6 +76,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           explanation={explanation}
           gridKeyPressRef={gridKeyPressRef}
           setGameMessage={setGameMessage}
+          setGuessCount={setGuessCount}
         />
         <div className="genie-container">
           <img src="/genie3.png" alt="genie" className="genie-image" />
@@ -82,7 +85,9 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
               <p className="game-message">{gameMessage || 'Loading'}</p>
               <p className="genie-definition"><strong>Definition:</strong> {definition || 'Loading'}</p>
               <p className="genie-example"><strong>Example:</strong> {example || 'Loading'}</p>
-              <button className='next-button' onClick={() => {navigate('/rewards'); resetKeyStatuses();}}>
+              <button className='next-button' onClick={() => {
+  navigate('/rewards', { state: { guessCount, points: guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10 } });
+}} >
                 <img src="/next-button.png" alt="next" className='next-image'/>
               </button>
             </div>

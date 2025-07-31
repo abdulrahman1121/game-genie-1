@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Tile from './Tile.jsx';
 import './Grid.css';
 
-function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage }) {
+function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage, setGuessCount }) {
   const [grid, setGrid] = useState(() => {
     return wordLength ? Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' })) : [];
   });
@@ -65,6 +65,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   }, [gridKeyPressRef, handleKeyPress]);
 
   const handleGuess = async () => {
+    setGuessCount(currentRow + 1);
     if (currentGuess.length !== wordLength || localGameStatus !== 'active') return;
 
     try {
@@ -148,6 +149,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
         setGameId(data.gameId);
         setKeyStatuses({});
         resetKeyBoard();
+        setGuessCount(0);
       })
       .catch(err => console.error('Error starting new game:', err));
   };
