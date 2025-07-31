@@ -38,22 +38,26 @@
 }
 
 /* + New styles for rewards text */
+.rewards-tries, .rewards-points {
+  position: absolute;
+  color: #A35B38;
+  text-align: center;
+  font-family: "Lilita One";
+  font-size: 64px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 40px; /* 62.5% */
+  text-transform: uppercase;
+}
+
 .rewards-tries {
-     font-size: 20px;
-     font-weight: bold;
-     color: red;
-     font-family: 'Comic Sans MS', 'Arial', sans-serif;
-     margin: 10px 0;
-     text-align: center;
+  top: 260px;
+  left: 620px;
 }
 
 .rewards-points {
-     font-size: 20px;
-     font-weight: bold;
-     color: red;
-     font-family: 'Comic Sans MS', 'Arial', sans-serif;
-     margin: 10px 0;
-     text-align: center;
+  top: 400px;
+  left: 520px;
 }
 
 .home-button {
@@ -67,7 +71,7 @@
   height: 60px;
   cursor: pointer;
   border: none;
-  top: 505px;
+  top: 545px;
   background-color: transparent;
 }
 

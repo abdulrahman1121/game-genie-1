@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Tile from './Tile.jsx';
 import './Grid.css';
 
-function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage, setGuessCount }) {
+function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage, setGuessCount, targetWord }) {
   const [grid, setGrid] = useState(() => {
     return wordLength ? Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' })) : [];
   });
@@ -93,17 +93,10 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
       });
 
       if (data.status !== 'active') {
-        const explainRes = await fetch('http://localhost:3000/api/openai/explain', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ gameId, guessedCorrectly: data.status === 'won' })
-        });
-        const explainData = await explainRes.json();
-        setExplanation(explainData.explanation);
         setGameMessage(
           data.status === 'won'
-            ? `🎉 Congratulations! You guessed "${explainData.word}"!`
-            : `Nice try! The word was "${explainData.word}".`
+            ? `🎉 Congratulations! You guessed "${targetWord}"!`
+            : `Nice try! The word was "${targetWord}".`
         );
       } else {
         if (currentRow === 0 || currentRow === 1 || currentRow === 3 || currentRow === 5) {

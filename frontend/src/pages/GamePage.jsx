@@ -14,6 +14,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [welcomeMessage, setWelcomeMessage] = useState('Welcome to Game Genie, guess a word and I will help u get it right. U got this!');
   const [isGameReady, setIsGameReady] = useState(false);
   const [guessCount, setGuessCount] = useState(0);
+  const [targetWord, setTargetWord] = useState('')
 
   useEffect(() => {
     fetch('http://localhost:3000/api/openai/start', { method: 'POST' })
@@ -23,13 +24,14 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         setWordLength(data.wordLength);
         setGameStatus('active');
         resetKeyStatuses();
-        setLocalExplanation('');
-        setExplanation('');
+        setLocalExplanation(data.explanation);
+        setExplanation(data.explanation);
         setGameMessage('');
         setLocalHint('');
         setWelcomeMessage('Welcome to Game Genie, guess a word and I will help u get it right. U got this!');
         setIsGameReady(true);
         setGuessCount(0);
+        setTargetWord(data.word)
       })
       .catch(err => console.error('Error starting game:', err));
   }, []);
@@ -77,11 +79,12 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           gridKeyPressRef={gridKeyPressRef}
           setGameMessage={setGameMessage}
           setGuessCount={setGuessCount}
+          targetWord={targetWord}
         />
         <div className="genie-container">
           <img src="/genie3.png" alt="genie" className="genie-image" />
           {gameStatus !== 'active' ? (
-            <div className="genie-text2">
+            <div className="genie-text2 explanation-visible">
               <p className="game-message">{gameMessage || 'Loading'}</p>
               <p className="genie-definition"><strong>Definition:</strong> {definition || 'Loading'}</p>
               <p className="genie-example"><strong>Example:</strong> {example || 'Loading'}</p>
@@ -92,7 +95,14 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
               </button>
             </div>
           ) : (
+            <>
             <span className="genie-text">{hint || welcomeMessage}</span>
+            <div className="explanation-hidden">
+              <p className="game-message">{gameMessage || 'Game over!'}</p>
+              <p className="genie-definition"><strong>Definition:</strong> {definition || 'No definition available'}</p>
+              <p className="genie-example"><strong>Example:</strong> {example || 'No example available'}</p>
+            </div>
+            </>
           )}
         </div>
       </div>

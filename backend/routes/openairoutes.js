@@ -15,27 +15,39 @@ router.post('/start', async (req, res) => {
     const blocklist = ['death', 'crime', 'blood', 'ghost', 'scary'];
     const wordLength = Math.random() < 0.5 ? 4 : 5;
 
-    // + Fetch recent words from Firestore
     const recentWordsSnapshot = await db.collection('recentWords').orderBy('createdAt', 'desc').limit(RECENT_WORDS_LIMIT).get();
     const recentWords = recentWordsSnapshot.docs.map(doc => doc.data().word.toUpperCase());
 
-    const prompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Ensure the word is different from these recently used words: ${recentWords.join(', ') || 'none'}. Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
-    const response = await openai.chat.completions.create({
+    const wordPrompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Ensure the word is different from these recently used words: ${recentWords.join(', ') || 'none'}. Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
+    const wordResponse = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: prompt }
+        { role: 'user', content: wordPrompt }
       ],
       max_tokens: 100
     });
 
-    const responseText = response.choices[0].message.content;
-    const wordMatch = responseText.match(/Word: ["']?([A-Za-z]{4,5})["']?/i);
-    if (!wordMatch) {
-      console.error('Invalid OpenAI response:', responseText);
-      throw new Error('Failed to parse word from OpenAI');
-    }
+    const wordText = wordResponse.choices[0].message.content;
+    const wordMatch = wordText.match(/Word: ["']?([A-Za-z]{4,5})["']?/i);
+    if (!wordMatch) throw new Error('Failed to parse word from OpenAI');
     const word = wordMatch[1].toUpperCase();
+
+    const explainPrompt = `Provide a kid-friendly definition and example sentence for the word "${word}". Return exactly in this format:\nDefinition: [DEFINITION]\nExample: [SENTENCE]\nDo not include extra text.`;
+    const explainResponse = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: explainPrompt }
+      ],
+      max_tokens: 100
+    });
+
+    const explanationText = explainResponse.choices[0].message.content;
+    const definitionMatch = explanationText.match(/Definition: (.+)/);
+    const exampleMatch = explanationText.match(/Example: (.+)/);
+    if (!definitionMatch || !exampleMatch) throw new Error('Failed to parse explanation from OpenAI');
+    const explanation = `${definitionMatch[1].trim()}\n${exampleMatch[1].trim()}`;
 
     const gameId = db.collection('games').doc().id;
     await db.collection('games').doc(gameId).set({
@@ -44,22 +56,21 @@ router.post('/start', async (req, res) => {
       guesses: [],
       hints: [],
       status: 'active',
+      explanation, // + Store explanation
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    // + Store word in recentWords collection
     await db.collection('recentWords').add({
       word,
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    // + Maintain recentWords limit
     if (recentWordsSnapshot.size >= RECENT_WORDS_LIMIT) {
       const oldestWord = recentWordsSnapshot.docs[recentWordsSnapshot.size - 1];
       await db.collection('recentWords').doc(oldestWord.id).delete();
     }
 
-    res.json({ gameId, wordLength });
+    res.json({ gameId, wordLength, explanation, word }); // + Return explanation
   } catch (err) {
     console.error('❌ /start error:', err.code, err.message);
     res.status(500).json({ error: 'Failed to start game' });
@@ -152,41 +163,6 @@ router.post('/hint', async (req, res) => {
   }
 });
 
-router.post('/explain', async (req, res) => {
-  const { gameId, guessedCorrectly } = req.body;
-  try {
-    const gameDoc = await db.collection('games').doc(gameId).get();
-    if (!gameDoc.exists) return res.status(404).json({ error: 'Game not found' });
-
-    const { word } = gameDoc.data();
-    const prompt = `The word was "${word}". ${
-      guessedCorrectly ? 'Congratulate the student!' : 'Encourage the student to try again.'
-    } Provide a kid-friendly definition and an example sentence using the word. Return exactly in this format:\nDefinition: [DEFINITION]\nExample: [SENTENCE]\nDo not include extra text.`;
-
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: prompt }
-      ],
-      max_tokens: 100
-    });
-
-    const responseText = response.choices[0].message.content;
-    const definitionMatch = responseText.match(/Definition: (.+)/);
-    const exampleMatch = responseText.match(/Example: (.+)/);
-    if (!definitionMatch || !exampleMatch) {
-      console.error('Invalid OpenAI explain response:', responseText);
-      throw new Error('Failed to parse explanation from OpenAI');
-    }
-    const explanation = `${definitionMatch[1].trim()}\n${exampleMatch[1].trim()}`;
-
-    res.json({ explanation, word });
-  } catch (err) {
-    console.error('❌ /explain error:', err.message);
-    res.status(500).json({ error: 'Failed to explain word' });
-  }
-});
 
 const evaluateGuess = (guess, target) => {
   const feedback = Array(target.length).fill('incorrect');

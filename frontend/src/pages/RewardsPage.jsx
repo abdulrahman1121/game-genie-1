@@ -20,8 +20,8 @@ function RewardsPage() {
         </div>
         <div className="rewards-component">
           <img src="/rewards.png" alt="rewards" className="rewards-image" />
-          <p className="rewards-tries">You used {guessCount} {guessCount === 1 ? 'guess' : 'guesses'}!</p>
-          <p className="rewards-points">You earned {points} points!</p>
+          <p className="rewards-tries"> {guessCount} </p>
+          <p className="rewards-points">+ {points}</p>
         </div>
         <button className="home-button" onClick={() => navigate('/')}>
           <img src="/home-image.png" alt="home" className="home-image"/>

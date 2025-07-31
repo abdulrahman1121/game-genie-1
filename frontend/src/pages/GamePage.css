@@ -157,6 +157,16 @@
      margin: 10px 0; /* + Spacing */
 }
 
+/* + New styles for hidden explanation */
+.explanation-hidden {
+     position: absolute;
+     bottom: 10px; /* Lower-left corner */
+     right: 850px;
+     opacity: 0;/* Hidden */
+     pointer-events: none; /* Prevent interaction */
+     width: 330px; /* Match genie-text2 width */
+}
+
 .next-button {
   position: absolute;
   background-color: transparent;
