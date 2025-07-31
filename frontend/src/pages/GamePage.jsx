@@ -89,8 +89,10 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
               <p className="genie-definition"><strong>Definition:</strong> {definition || 'Loading'}</p>
               <p className="genie-example"><strong>Example:</strong> {example || 'Loading'}</p>
               <button className='next-button' onClick={() => {
-  navigate('/rewards', { state: { guessCount, points: guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10 } });
-}} >
+                  navigate('/rewards', { 
+                    state: { guessCount, 
+                      points: gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10 } });
+              }} >
                 <img src="/next-button.png" alt="next" className='next-image'/>
               </button>
             </div>
