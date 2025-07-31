@@ -60,6 +60,25 @@
   left: 520px;
 }
 
+/* + Updated styles for flip animation */
+.rewards-image.flip, .rewards-tries.flip, .rewards-points.flip, 
+.home-button.flip, .reset-button.flip, .flip-button.flip  {
+    animation: flip 0.6s ease-in-out;
+}
+
+/* + Flip animation keyframes */
+@keyframes flip {
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(90deg); }
+    100% { transform: rotateY(0deg); }
+}
+
+/* + Ensure unscramble-img matches rewards-component size */
+.unscramble-img {
+    width: 100%; /* Match rewards-component */
+    height: auto;
+}
+
 .home-button {
   right: 525px;
   
