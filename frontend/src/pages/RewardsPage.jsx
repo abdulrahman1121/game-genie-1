@@ -21,6 +21,7 @@ function RewardsPage() {
       <div className="rewards-container">
         <div className="genie-container2">
           <img src="/genie.png" alt="genie-image" className='genie-image2'/>
+          <p className="genie-text3">Great Work! If you want to double your rewrad points, click the middle button and try unscrambling the sentence.</p>
         </div>
         <div className='rewards-component'>
           {showUnscramble ? (
@@ -33,17 +34,16 @@ function RewardsPage() {
               <button className={`home-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/')}>
                 <img src="/home-image.png" alt="home" className="home-image"/>
               </button>
-              <button className={`reset-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/game')}>
-                <img src="/reset.png" alt="reset" className="reset-image"/>
-              </button>
-              <button className={`flip-button ${isFlipped ? 'flip' : ''}`} 
-                onClick={() => {
+              <button className={`sparkle-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
                   setIsFlipped(true);
                   setTimeout(() => {
                     setShowUnscramble(true);
                     setIsFlipped(false);
                   }, 600) // match animation duration
                 }}>
+                <img src="/sparkle.png" alt="sparkle" className="sparkle-image"/>
+              </button>
+              <button className={`flip-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/game')}>
                 <img src="flip-image.png" alt="flip" className="flip-image"/>
               </button>
             </>
