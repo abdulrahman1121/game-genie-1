@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Tile from './Tile.jsx';
 import './Grid.css';
 
-function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage, setGuessCount, targetWord }) {
+function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage, setGuessCount, targetWord, setIsActualHint }) {
   const [grid, setGrid] = useState(() => {
     return wordLength ? Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' })) : [];
   });
@@ -98,10 +98,12 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
             ? `🎉 Congratulations! You guessed "${targetWord}"!`
             : `Nice try! The word was "${targetWord}".`
         );
+        setIsActualHint(false)
       } else {
         if (currentRow === 0 || currentRow === 1 || currentRow === 3 || currentRow === 5) {
           const randomPhrase = encouragingPhrases[Math.floor(Math.random() * encouragingPhrases.length)];
           setHint(randomPhrase);
+          setIsActualHint(false)
         } else if (currentRow === 2) {
           const hintLevel = 1;
           const hintRes = await fetch('http://localhost:3000/api/openai/hint', {
@@ -111,6 +113,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
           });
           const hintData = await hintRes.json();
           setHint(hintData.hint);
+          setIsActualHint(true)
         } else if (currentRow === 4) {
           const hintLevel = 2;
           const hintRes = await fetch('http://localhost:3000/api/openai/hint', {
@@ -120,6 +123,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
           });
           const hintData = await hintRes.json();
           setHint(hintData.hint);
+          setIsActualHint(true)
         }
       }
     } catch (err) {
@@ -143,6 +147,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
         setKeyStatuses({});
         resetKeyBoard();
         setGuessCount(0);
+        setIsActualHint(false)
       })
       .catch(err => console.error('Error starting new game:', err));
   };

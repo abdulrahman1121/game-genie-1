@@ -74,16 +74,37 @@
 .genie-text {
   position: absolute;
   top: 17px; /* Adjust for speech bubble */
-  left: 35px; /* Adjust for larger speech bubble */
-  width: 250px;
+  left: 65px; /* Adjust for larger speech bubble */
+  width: 280px;
   height: 250px;
-  font-size: 25px;
-  font-weight: bold;
-  color: orange;
   text-align: center;
-  line-height: 1.4;
   white-space: normal;
+  color: #FFA800;
+  font-family: 'Monda';
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 25px;
 }
+
+.welcome-container, .hint-container {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.hint-prefix, .welcome-prefix, .encourage-prefix {
+  color: #01B4BC;
+  text-align: center;
+  font-family: "Lilita One";
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 40px; /* 100% */
+  text-transform: uppercase;
+  
+}
+
 
 .keyboard-container {
   display: flex;

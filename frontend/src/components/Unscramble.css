@@ -1,3 +1,51 @@
+.unscramble-comp {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .unscramble-img {
-    
+  width: 100%;
+  height: auto;
+}
+
+.words-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.word {
+  background-color: #fff;
+  border: 2px solid #01B4BC;
+  border-radius: 5px;
+  padding: 5px 10px;
+  font-family: 'Lilita One', sans-serif;
+  font-size: 18px;
+  color: #A35B38;
+  cursor: move;
+  user-select: none;
+}
+
+.check-button {
+  position: absolute;
+  bottom: 20px;
+  background-color: #01B4BC;
+  color: white;
+  font-family: 'Lilita One', sans-serif;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.check-button:hover {
+  background-color: #019BA1;
 }

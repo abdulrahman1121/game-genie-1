@@ -163,6 +163,40 @@ router.post('/hint', async (req, res) => {
   }
 });
 
+// Add /unscramble endpoint
+router.post('/unscramble', async (req, res) => {
+  const { gameId } = req.body;
+  try {
+    const gameDoc = await db.collection('games').doc(gameId).get();
+    if (!gameDoc.exists) return res.status(404).json({ error: 'Game not found' });
+
+    const { word, explanation } = gameDoc.data();
+    const [, example] = explanation.split('\n');
+    const sentencePrompt = `Generate a kid-friendly sentence (different from "${example}") using the word "${word}" for kids aged 8-13. Return exactly in this format:\nSentence: [SENTENCE]\nDo not include extra text.`;
+    const sentenceResponse = await openai.chat.completions.create({
+      model: 'gpt-4o',
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: sentencePrompt }
+      ],
+      max_tokens: 100
+    });
+
+    const sentenceText = sentenceResponse.choices[0].message.content;
+    const sentenceMatch = sentenceText.match(/Sentence: (.+)/);
+    if (!sentenceMatch) throw new Error('Failed to parse sentence from OpenAI');
+    const sentence = sentenceMatch[1].trim();
+    const scrambled = sentence
+      .split(' ')
+      .sort(() => Math.random() - 0.5)
+      .join(' ');
+
+    res.json({ sentence, scrambled });
+  } catch (err) {
+    console.error('❌ /unscramble error:', err.message);
+    res.status(500).json({ error: 'Failed to generate sentence' });
+  }
+});
 
 const evaluateGuess = (guess, target) => {
   const feedback = Array(target.length).fill('incorrect');

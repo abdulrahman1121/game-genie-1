@@ -14,7 +14,8 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [welcomeMessage, setWelcomeMessage] = useState('Welcome to Game Genie, guess a word and I will help u get it right. U got this!');
   const [isGameReady, setIsGameReady] = useState(false);
   const [guessCount, setGuessCount] = useState(0);
-  const [targetWord, setTargetWord] = useState('')
+  const [targetWord, setTargetWord] = useState('');
+  const [isActualHint, setIsActualHint] = useState(false);
 
   useEffect(() => {
     fetch('http://localhost:3000/api/openai/start', { method: 'POST' })
@@ -28,10 +29,11 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         setExplanation(data.explanation);
         setGameMessage('');
         setLocalHint('');
-        setWelcomeMessage('Welcome to Game Genie, guess a word and I will help u get it right. U got this!');
+        setWelcomeMessage('Welcome to Game Genie, give us your best guess! I will be here to help you along the way!!');
         setIsGameReady(true);
         setGuessCount(0);
         setTargetWord(data.word)
+        setIsActualHint(false)
       })
       .catch(err => console.error('Error starting game:', err));
   }, []);
@@ -80,6 +82,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           setGameMessage={setGameMessage}
           setGuessCount={setGuessCount}
           targetWord={targetWord}
+          setIsActualHint={setIsActualHint}
         />
         <div className="genie-container">
           <img src="/genie3.png" alt="genie" className="genie-image" />
@@ -91,14 +94,37 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
               <button className='next-button' onClick={() => {
                   navigate('/rewards', { 
                     state: { guessCount, 
-                      points: gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10 } });
+                      points: gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10,
+                      gameId,
+                      targetWord
+                     } 
+                  });
               }} >
                 <img src="/next-button.png" alt="next" className='next-image'/>
               </button>
             </div>
           ) : (
             <>
-            <span className="genie-text">{hint || welcomeMessage}</span>
+            <span className="genie-text">
+              
+              {hint ? (
+                <div className='hint-container'>
+                  <>
+                  {isActualHint ? (
+                    <span className='hint-prefix'>Here's a Hint...</span>
+                  ) : (
+                    <span className='encourage-prefix'>Keep Going!</span>
+                  )}
+                  <span>{hint}</span>
+                  </>
+                </div>
+              ) : (
+                <div className='welcome-container'>
+                  <span className='welcome-prefix'>Welcome</span>
+                  <span>{welcomeMessage}</span>
+                </div>
+              )}
+            </span>
             <div className="explanation-hidden">
               <p className="game-message">{gameMessage || 'Game over!'}</p>
               <p className="genie-definition"><strong>Definition:</strong> {definition || 'No definition available'}</p>
