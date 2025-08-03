@@ -19,7 +19,7 @@ function RewardsPage() {
   const handleUnscrambleResult = (isCorrect, tries) => {
     if (isCorrect) {
       setUpdatedPoints(points * 2);
-      setGenieMessage('Awesome! You unscrambled it correctly and doubled your points! Choose what you want to do next!');
+      setGenieMessage('Awesome! You unscrambled it correctly and doubled your points! Choose what you would like to do next!');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
@@ -28,7 +28,7 @@ function RewardsPage() {
         }, 800);
       }, 50);
     } else if (tries >= 3) {
-      setGenieMessage('You used all 3 attempts. Returning to rewards. Choose what you want to do next!');
+      setGenieMessage('You used all 3 attempts. Returning to rewards. Choose what you would like to do next!');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
