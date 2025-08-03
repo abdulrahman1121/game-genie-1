@@ -131,7 +131,7 @@
     font-size: 16px;
     font-style: normal;
     font-weight: 700;
-    line-height: 20px;
+    line-height: 27px;
     color: #FFA800; /* + Dark gray for contrast */
     margin: 5px 0; /* + Spacing between definition and example */
     text-align: left; /* + Left-align for readability */
@@ -145,7 +145,6 @@
   font-size: 17px;
   font-style: normal;
   font-weight: 400;
-  line-height: 35px;
 }
 
 /* + New styles for example */
@@ -154,7 +153,7 @@
   font-size: 16px;
   font-style: bold;
   font-weight: 700;
-  line-height: 20px;
+  line-height: 27px;
   color: #FFA800; /* + Dark gray for contrast */
   margin: 5px 0; /* + Spacing between definition and example */
   text-align: left; /* + Left-align for readability */
@@ -168,7 +167,6 @@
   font-size: 17px;
   font-style: normal;
   font-weight: 400;
-  line-height: 35px;
 }
 
 /* + New styles for error message */
@@ -189,7 +187,7 @@
 }
 
 .next-button {
-  margin-top: 10px;
+  margin-top: 7px;
   position: absolute;
   background-color: transparent;
   left: 90px;

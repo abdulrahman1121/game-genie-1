@@ -27,7 +27,7 @@
 
 .word-bank-words {
   position: absolute;
-  top: 75px;
+  top: 70px;
   left: 25px;
   width: 310px;
   display: flex;
@@ -36,47 +36,41 @@
   z-index: 2;
 }
 
-.word {
-  background-color: #fff;
-  border: 2px solid #01B4BC;
-  border-radius: 5px;
-  padding: 5px 10px;
-  font-family: 'Lilita One', sans-serif;
-  font-size: 18px;
-  color: #A35B38;
+.word, .placed {
+  color: #FF7201;
+  text-align: center;
+  font-family: 'Monda';
+  font-size: 16px;
+  font-style: normal;
+  line-height: 40px;
+  padding: 0px 15px;
+  font-weight: 600;
   cursor: pointer;
-  margin: 5px;
   display: inline-block;
+  border-radius: 7px;
+  border: 1.5px solid #FFA800;
+  background: #FFF;
+  box-shadow: 0 2px 2px 0 #FFB672;
 }
 
 .placed {
   position: absolute;
-  font-size: 18px;
-  color: #A35B38;
-  padding: 5px 10px;
-  border: 2px solid #01B4BC;
-  border-radius: 5px;
-  box-sizing: border-box;
-  /* Adjust these based on unscramble-image.png line positions */
-   /* top line: bottom: 35px left: 70px. */
-   /* middle line: top: 0px. Bottom line: Top: 40px./
-  /* end of line: left 280 */
 }
 
 /* Line-specific placements with dynamic spacing */
 .line-1 .placed {
-  top: 16px;
-  left: calc(30px + var(--cumulative-width, 0px));
+  top: 35px;
+  left: calc(15px + var(--cumulative-width, 0px));
 }
 
 .line-2 .placed {
-  top: 55px;
-  left: calc(30px + var(--cumulative-width, 0px));
+  top: 87px;
+  left: calc(15px + var(--cumulative-width, 0px));
 }
 
 .line-3 .placed {
-  top: 95px;
-  left: calc(30px + var(--cumulative-width, 0px));
+  top: 140px;
+  left: calc(15px + var(--cumulative-width, 0px));
 }
 /* Limit to 3 words per line, adjust left to end at 280px */
 .lines-container {
