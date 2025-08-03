@@ -13,7 +13,7 @@ function RewardsPage() {
   const [showUnscramble, setShowUnscramble] = useState(false);
   const [updatedPoints, setUpdatedPoints] = useState(points);
   const [genieMessage, setGenieMessage] = useState(
-    'Great Work! If you want to double your reward points, click the middle button and try unscrambling the sentence.'
+    'Welcome to the Bonus Challenge, test your luck and practice your vocabulary!'
   );
 
   const handleUnscrambleResult = (isCorrect, tries) => {
@@ -28,7 +28,7 @@ function RewardsPage() {
         }, 600);
       }, 1000);
     } else if (tries >= 3) {
-      setGenieMessage('Nice try! You used all 3 attempts. Returning to rewards.');
+      setGenieMessage('You used all 3 attempts. Returning to rewards.');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
@@ -41,6 +41,18 @@ function RewardsPage() {
     }
   };
 
+  const getGeniePrefix = () => {
+  if (genieMessage.startsWith('Welcome')) {
+    return <span className="bonus">Bonus Challenge!</span>;
+  } else if (genieMessage.startsWith('Awesome')) {
+    return <span className="good-job">Good Job!</span>;
+  } else if (genieMessage.startsWith('Incorrect')) {
+    return <span className="try-again">Try Again!</span>;
+  } else {
+    return <span className="maybe-next-time">Maybe Next Time!</span>; // No prefix for other cases (e.g., "Nice try!")
+  }
+};
+
   return (
     <div className="rewards-page">
       <header classname='rewards-page-header'>
@@ -49,8 +61,11 @@ function RewardsPage() {
       </header>
       <div className="rewards-container">
         <div className="genie-container2">
-          <img src="/genie.png" alt="genie-image" className='genie-image2'/>
-          <p className="genie-text3">{genieMessage}</p>
+          <img src="/genie3.png" alt="genie-image" className='genie-image2'/>
+          <div className="genie-text3">
+            {getGeniePrefix()}
+            <span>{genieMessage}</span>
+          </div>
         </div>
         <div className='rewards-component'>
           {showUnscramble ? (
