@@ -74,17 +74,17 @@
 .genie-text {
   position: absolute;
   top: 17px; /* Adjust for speech bubble */
-  left: 60px; /* Adjust for larger speech bubble */
+  left: 57px; /* Adjust for larger speech bubble */
   width: 280px;
   height: 250px;
   text-align: center;
   white-space: normal;
   color: #FFA800;
   font-family: 'Monda';
-  font-size: 25px;
+  font-size: 23px;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
+  line-height: 27px;
 }
 
 .welcome-container, .hint-container {

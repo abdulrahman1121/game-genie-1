@@ -26,15 +26,18 @@
   gap: 40px;
   position: absolute;
   top: 28px; 
-  left: 50px; 
-  width: 280px;
+  left: 65px; 
+  width: 260px;
   height: 250px;
-  font-size: 18px;
-  font-weight: bold;
-  color: orange;
+  font-size: 23px;
+  font-weight: 700;
+  color: #FFA800;
   text-align: center;
-  line-height: 1.5;
+  line-height: 27px;
   white-space: normal;
+  text-align: center;
+  font-style: normal;
+  font-family: 'Monda';
 } 
 
 /* + Styles for prefixes */
