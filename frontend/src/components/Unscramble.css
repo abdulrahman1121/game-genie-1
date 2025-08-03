@@ -10,15 +10,29 @@
   height: auto;
 }
 
-.words-container {
+.word-bank {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  top: 150px;
+  right: 360px;
+  width: 428px;
+  height: 279px;
+  z-index: 1;
+}
+
+.word-bank-img {
+  width: 100%; /* Adjust based on your PNG size */
+  height: auto;
+}
+
+.word-bank-words {
+  position: absolute;
+  top: 70px;
+  left: 10px;
+  width: 330px;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
+  gap: 5px;
+  z-index: 2;
 }
 
 .word {
@@ -29,8 +43,77 @@
   font-family: 'Lilita One', sans-serif;
   font-size: 18px;
   color: #A35B38;
-  cursor: move;
-  user-select: none;
+  cursor: pointer;
+  margin: 5px;
+  display: inline-block;
+}
+
+.placed {
+  position: absolute;
+  font-size: 18px;
+  color: #A35B38;
+  padding: 5px 10px;
+  border: 2px solid #01B4BC;
+  border-radius: 5px;
+  box-sizing: border-box;
+  /* Adjust these based on unscramble-image.png line positions */
+   /* top line: bottom: 35px left: 70px. */
+   /* middle line: top: 0px. Bottom line: Top: 40px./
+  /* end of line: left 280 */
+}
+
+/* Line-specific placements with dynamic spacing */
+.line-1 .placed {
+  bottom: 85px;
+  left: calc(10px + var(--cumulative-width, 0px));
+}
+
+.line-2 .placed {
+  top: 50px;
+  left: calc(10px + var(--cumulative-width, 0px));
+}
+
+.line-3 .placed {
+  top: 90px;
+  left: calc(10px + var(--cumulative-width, 0px));
+}
+/* Limit to 3 words per line, adjust left to end at 280px */
+.lines-container {
+  position: absolute;
+  top: 100px;
+  height: 140px;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px; /* Space between lines */
+}
+
+.line {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.line .placed {
+  --cumulative-width: 0px; /* Reset for each line */
+}
+
+/* Calculate cumulative width for each position */
+.line-1 .placed:nth-child(1),
+.line-2 .placed:nth-child(1),
+.line-3 .placed:nth-child(1) {
+  --cumulative-width: 40px; /* Starting left */
+}
+
+.line-1 .placed:nth-child(2),
+.line-2 .placed:nth-child(2),
+.line-3 .placed:nth-child(2) {
+  --cumulative-width: calc(40px + var(--prev-width-1, 0px));
+}
+
+.line-1 .placed:nth-child(3),
+.line-2 .placed:nth-child(3),
+.line-3 .placed:nth-child(3) {
+  --cumulative-width: calc(40px + var(--prev-width-1, 0px) + var(--prev-width-2, 0px));
 }
 
 .check-button {

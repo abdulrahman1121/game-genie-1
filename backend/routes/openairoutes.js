@@ -163,7 +163,8 @@ router.post('/hint', async (req, res) => {
   }
 });
 
-// Add /unscramble endpoint
+
+// Update /unscramble endpoint
 router.post('/unscramble', async (req, res) => {
   const { gameId } = req.body;
   try {
@@ -172,7 +173,7 @@ router.post('/unscramble', async (req, res) => {
 
     const { word, explanation } = gameDoc.data();
     const [, example] = explanation.split('\n');
-    const sentencePrompt = `Generate a kid-friendly sentence (different from "${example}") using the word "${word}" for kids aged 8-13. Return exactly in this format:\nSentence: [SENTENCE]\nDo not include extra text.`;
+    const sentencePrompt = `Generate a kid-friendly sentence (different from "${example}") using the word "${word}" for kids aged 8-13, with exactly 5 to 7 words. Return exactly in this format:\nSentence: [SENTENCE]\nDo not include extra text.`;
     const sentenceResponse = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [
@@ -186,10 +187,9 @@ router.post('/unscramble', async (req, res) => {
     const sentenceMatch = sentenceText.match(/Sentence: (.+)/);
     if (!sentenceMatch) throw new Error('Failed to parse sentence from OpenAI');
     const sentence = sentenceMatch[1].trim();
-    const scrambled = sentence
-      .split(' ')
-      .sort(() => Math.random() - 0.5)
-      .join(' ');
+    const words = sentence.split(' ');
+    if (words.length < 5 || words.length > 7) throw new Error('Sentence must be 5-7 words');
+    const scrambled = words.sort(() => Math.random() - 0.5).join(' ');
 
     res.json({ sentence, scrambled });
   } catch (err) {
