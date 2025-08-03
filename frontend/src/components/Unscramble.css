@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 440px;
 }
 
 .unscramble-img {
@@ -26,9 +27,9 @@
 
 .word-bank-words {
   position: absolute;
-  top: 70px;
-  left: 10px;
-  width: 330px;
+  top: 75px;
+  left: 25px;
+  width: 310px;
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
@@ -64,25 +65,26 @@
 
 /* Line-specific placements with dynamic spacing */
 .line-1 .placed {
-  bottom: 85px;
-  left: calc(10px + var(--cumulative-width, 0px));
+  top: 16px;
+  left: calc(30px + var(--cumulative-width, 0px));
 }
 
 .line-2 .placed {
-  top: 50px;
-  left: calc(10px + var(--cumulative-width, 0px));
+  top: 55px;
+  left: calc(30px + var(--cumulative-width, 0px));
 }
 
 .line-3 .placed {
-  top: 90px;
-  left: calc(10px + var(--cumulative-width, 0px));
+  top: 95px;
+  left: calc(30px + var(--cumulative-width, 0px));
 }
 /* Limit to 3 words per line, adjust left to end at 280px */
 .lines-container {
   position: absolute;
+  left: 30px;
   top: 100px;
   height: 140px;
-  width: 350px;
+  width: 330px;
   display: flex;
   flex-direction: column;
   gap: 40px; /* Space between lines */
@@ -118,17 +120,27 @@
 
 .check-button {
   position: absolute;
-  bottom: 20px;
-  background-color: #01B4BC;
+  bottom: 53px;
+  background-color: transparent;
   color: white;
-  font-family: 'Lilita One', sans-serif;
-  font-size: 18px;
-  padding: 10px 20px;
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 195px;
+  height: 35px;
+  cursor: default;
+  left: 150px;
+  
 }
 
-.check-button:hover {
-  background-color: #019BA1;
+.check-button img {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.2s ease-in-out;
+}
+
+.check-button img:hover {
+  transform: scale(1.05);
+  cursor: pointer;
 }

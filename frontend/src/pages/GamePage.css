@@ -194,7 +194,7 @@
   background-color: transparent;
   left: 90px;
   border: none; /* + No border */
-  cursor: pointer; /* + Pointer cursor on hover */
+  cursor: default; /* + Pointer cursor on hover */
   width: 160px;
   height: 34px;
 }
@@ -203,10 +203,11 @@
   width: 100%;
   height: auto;
   display: block; /* + Ensures the image is displayed as a block element */
+  transition: transform 0.2s ease-in-out; /* + Smooth transition */
 }
 
 .next-button:hover img {
   transform: scale(1.05); /* + Slightly enlarge on hover */
-  transition: transform 0.2s ease-in-out; /* + Smooth transition */
+  cursor: pointer;
 }
 

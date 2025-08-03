@@ -13,29 +13,29 @@ function RewardsPage() {
   const [showUnscramble, setShowUnscramble] = useState(false);
   const [updatedPoints, setUpdatedPoints] = useState(points);
   const [genieMessage, setGenieMessage] = useState(
-    'Welcome to the Bonus Challenge, test your luck and practice your vocabulary!'
+    'Well done! You have a chance to double your reward points, if you are interested, click on the sparkle button.'
   );
 
   const handleUnscrambleResult = (isCorrect, tries) => {
     if (isCorrect) {
       setUpdatedPoints(points * 2);
-      setGenieMessage('Awesome! You unscrambled it correctly and doubled your points!');
+      setGenieMessage('Awesome! You unscrambled it correctly and doubled your points! Choose what you want to do next!');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
           setShowUnscramble(false);
           setIsFlipped(false);
-        }, 600);
-      }, 1000);
+        }, 800);
+      }, 50);
     } else if (tries >= 3) {
-      setGenieMessage('You used all 3 attempts. Returning to rewards.');
+      setGenieMessage('You used all 3 attempts. Returning to rewards. Choose what you want to do next!');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
           setShowUnscramble(false);
           setIsFlipped(false);
-        }, 600);
-      }, 1000);
+        }, 500);
+      }, 50);
     } else {
       setGenieMessage(`Incorrect! You have ${3 - tries} tries left.`);
     }
@@ -48,6 +48,8 @@ function RewardsPage() {
     return <span className="good-job">Good Job!</span>;
   } else if (genieMessage.startsWith('Incorrect')) {
     return <span className="try-again">Try Again!</span>;
+  } else if (genieMessage.startsWith('Well')) {
+    return <span className="well">Good Game!</span>
   } else {
     return <span className="maybe-next-time">Maybe Next Time!</span>; // No prefix for other cases (e.g., "Nice try!")
   }
@@ -82,16 +84,17 @@ function RewardsPage() {
                 <img src="/home-image.png" alt="home" className="home-image"/>
               </button>
               <button className={`sparkle-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
+                  setGenieMessage('Welcome to the Bonus Challenge, test your luck and practice your vocabulary!')
                   setIsFlipped(true);
                   setTimeout(() => {
                     setShowUnscramble(true);
                     setIsFlipped(false);
-                  }, 600) // match animation duration
+                  }, 500) // match animation duration
                 }}>
                 <img src="/sparkle.png" alt="sparkle" className="sparkle-image"/>
               </button>
-              <button className={`flip-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/game')}>
-                <img src="flip-image.png" alt="flip" className="flip-image"/>
+              <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/game')}>
+                <img src="skip-image.png" alt="flip" className="skip-image"/>
               </button>
             </>
           )}

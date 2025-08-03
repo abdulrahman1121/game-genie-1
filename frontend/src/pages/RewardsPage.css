@@ -38,7 +38,7 @@
 } 
 
 /* + Styles for prefixes */
-.bonus, .good-job, .try-again, .maybe-next-time {
+.bonus, .good-job, .try-again, .maybe-next-time, .well {
     color: #01B4BC;
     text-align: center;
     font-family: "Lilita One";
@@ -94,20 +94,25 @@
 
 /* + Updated styles for flip animation */
 .rewards-image.flip, .rewards-tries.flip, .rewards-points.flip, 
-.home-button.flip, .reset-button.flip, .flip-button.flip  {
-    animation: rewards-flip 0.6s ease-in-out;
+.home-button.flip, .new-game-button.flip, .sparkle-button.flip  {
+    animation: rewards-flip 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother easing */
+    backface-visibility: hidden; /* Prevent flickering */
+    
 }
 
 /* + Flip animation keyframes */
 @keyframes rewards-flip {
-    0% { transform: rotateY(0deg); }
-    100% { transform: rotateY(360deg); }
+    0% { transform: perspective(1000px) rotateY(0deg); }
+    50% { transform: perspective(1000px) rotateY(180deg); }
+    100% { transform: perspective(1000px) rotateY(360deg); }
 }
 
 /* + Ensure unscramble-img matches rewards-component size */
 .unscramble-img {
     width: 100%; /* Match rewards-component */
     height: auto;
+    opacity: 1; /* Ensure immediate visibility */
+    transition: opacity 0.1s ease-in; /* Smooth fade-in */
 }
 
 .home-button {
@@ -115,7 +120,7 @@
   
 }
 
-.home-button, .flip-button, .sparkle-button {
+.home-button, .new-game-button, .sparkle-button {
   position: absolute;
   width: 62px;
   height: 60px;
@@ -125,12 +130,12 @@
   background-color: transparent;
 }
 
-.home-button img, .flip-button img, .sparkle-button img {
+.home-button img, .new-game-button img, .sparkle-button img {
   width: 100%;
   height: auto;
 }
 
-.flip-button {
+.new-game-button {
   right: 608px;
 }
 
@@ -140,7 +145,7 @@
 }
 
 
-.sparkle-button:hover img, .home-button:hover img, .flip-button:hover img {
+.sparkle-button:hover img, .home-button:hover img, .new-game-button:hover img {
     transform: scale(1.05); /* + Slightly enlarge on hover */
     transition: transform 0.2s ease-in-out;
 }
