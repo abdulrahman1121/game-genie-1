@@ -7,6 +7,7 @@ function Unscramble({ gameId, targetWord, onResult }) {
   const [correctSentence, setCorrectSentence] = useState('');
   const [tries, setTries] = useState(0);
   const [selectedWordIndex, setSelectedWordIndex] = useState(null);
+  const [originalIndices, setOriginalIndices] = useState([]); // Track original positions
 
   useEffect(() => {
     fetch('http://localhost:3000/api/openai/unscramble', {
@@ -17,8 +18,10 @@ function Unscramble({ gameId, targetWord, onResult }) {
       .then(res => res.json())
       .then(data => {
         if (data.error) throw new Error(data.error);
-        setScrambledWords(data.scrambled.split(' '));
+        const words = data.scrambled.split(' ');
+        setScrambledWords(words);
         setCorrectSentence(data.sentence);
+        setOriginalIndices(words.map((_, i) => i)); // Store original indices
       })
       .catch(err => console.error('Error fetching sentence:', err));
   }, [gameId]);
@@ -52,6 +55,21 @@ function Unscramble({ gameId, targetWord, onResult }) {
     }
   };
 
+  const handlePlacedWordClick = (lineIndex, posIndex) => {
+    const word = userWords[lineIndex][posIndex];
+    const originalIndex = originalIndices.findIndex((_, i) => scrambledWords[i] === word);
+    setScrambledWords(prev => {
+      const newWords = [...prev];
+      newWords.splice(originalIndex, 0, word);
+      return newWords;
+    });
+    setUserWords(prev => {
+      const newWords = [...prev];
+      newWords[lineIndex] = newWords[lineIndex].filter((_, i) => i !== posIndex);
+      return newWords;
+    });
+  };
+
   const handleCheck = () => {
     const userSentence = userWords.flat().join(' ');
     const isCorrect = userSentence === correctSentence;
@@ -63,12 +81,11 @@ function Unscramble({ gameId, targetWord, onResult }) {
     }
   };
 
-  // Calculate cumulative widths
   const getCumulativeWidth = (lineIndex, posIndex, words) => {
-    let width = 40; // Starting left
+    let width = 40;
     for (let i = 0; i < posIndex; i++) {
       const word = words[lineIndex][i];
-      width += word.length * 10 + 20 + 20; // Approx width (char * 10px + padding/border 20px)
+      width += word.length * 10 + 20 + 20; // Word width + padding/border + 10px booster
     }
     return width;
   };
@@ -104,6 +121,7 @@ function Unscramble({ gameId, targetWord, onResult }) {
                   '--prev-width-1': index > 0 ? `${userWords[lineIndex][index - 1].length * 10 + 20}px` : '0px',
                   '--prev-width-2': index > 1 ? `${userWords[lineIndex][index - 2].length * 10 + 20}px` : '0px',
                 }}
+                onClick={() => handlePlacedWordClick(lineIndex, index)}
               >
                 {word}
               </span>
