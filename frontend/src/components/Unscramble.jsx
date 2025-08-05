@@ -74,7 +74,7 @@ function Unscramble({ gameId, targetWord, onResult }) {
     const userSentence = userWords.flat().join(' ');
     const isCorrect = userSentence === correctSentence;
     setTries(tries + 1);
-    onResult(isCorrect, tries + 1);
+    onResult(isCorrect, tries + 1, correctSentence);
     if (!isCorrect && tries < 2) {
       setUserWords([[], [], []]);
       setScrambledWords(correctSentence.split(' ').sort(() => Math.random() - 0.5));

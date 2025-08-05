@@ -32,8 +32,8 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         setWelcomeMessage('Welcome to Game Genie, give us your best guess! I will be here to help you along the way!!');
         setIsGameReady(true);
         setGuessCount(0);
-        setTargetWord(data.word)
-        setIsActualHint(false)
+        setTargetWord(data.word);
+        setIsActualHint(false);
       })
       .catch(err => console.error('Error starting game:', err));
   }, []);
@@ -53,10 +53,9 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
       <div className="loading-container">
         <h1 className="loading-text">Game Loading...</h1>
       </div>
-      );
-  };
+    );
+  }
 
-  // Parse explanation into definition and example
   const [definition, example] = explanation ? explanation.split('\n') : ['', ''];
 
   return (
@@ -85,54 +84,58 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           setIsActualHint={setIsActualHint}
         />
         <div className="genie-container">
-          <div className='text-box'></div>
           <img src="/genie3.png" alt="genie" className="genie-image" />
-          {gameStatus !== 'active' ? (
-            <div className="genie-text2 explanation-visible">
-              <p className="game-message">{gameMessage || 'Loading'}</p>
-              <p className="genie-definition"><strong>Definition:</strong> {definition || 'Loading'}</p>
-              <p className="genie-example"><strong>Example:</strong> {example || 'Loading'}</p>
-              <button className='next-button' onClick={() => {
-                  navigate('/rewards', { 
-                    state: { guessCount, 
-                      points: gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10,
-                      gameId,
-                      targetWord
-                     } 
-                  });
-              }} >
-                <img src="/next-button.png" alt="next" className='next-image'/>
-              </button>
-            </div>
-          ) : (
-            <>
-            <span className="genie-text">
-              
-              {hint ? (
-                <div className='hint-container'>
-                  <>
-                  {isActualHint ? (
-                    <span className='hint-prefix'>Here's a Hint...</span>
+          <div className="text-box">
+            {gameStatus !== 'active' ? (
+              <div className="genie-text2 explanation-visible">
+                <p className="game-message">{gameMessage || 'Loading'}</p>
+                <p className="genie-definition"><strong>Definition:</strong> {definition || 'Loading'}</p>
+                <p className="genie-example"><strong>Example:</strong> {example || 'Loading'}</p>
+                <button
+                  className="next-button"
+                  onClick={() => {
+                    navigate('/rewards', {
+                      state: {
+                        guessCount,
+                        points: gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10,
+                        gameId,
+                        targetWord,
+                      },
+                    });
+                  }}
+                >
+                  <img src="/next-button.png" alt="next" className="next-image" />
+                </button>
+              </div>
+            ) : (
+              <>
+                <span className="genie-text">
+                  {hint ? (
+                    <div className="hint-container">
+                      <>
+                        {isActualHint ? (
+                          <span className="hint-prefix">Here's a Hint...</span>
+                        ) : (
+                          <span className="encourage-prefix">Keep Going!</span>
+                        )}
+                        <span>{hint}</span>
+                      </>
+                    </div>
                   ) : (
-                    <span className='encourage-prefix'>Keep Going!</span>
+                    <div className="welcome-container">
+                      <span className="welcome-prefix">Welcome</span>
+                      <span>{welcomeMessage}</span>
+                    </div>
                   )}
-                  <span>{hint}</span>
-                  </>
+                </span>
+                <div className="explanation-hidden">
+                  <p className="game-message">{gameMessage || 'Game over!'}</p>
+                  <p className="genie-definition"><strong>Definition:</strong> {definition || 'No definition available'}</p>
+                  <p className="genie-example"><strong>Example:</strong> {example || 'No example available'}</p>
                 </div>
-              ) : (
-                <div className='welcome-container'>
-                  <span className='welcome-prefix'>Welcome</span>
-                  <span>{welcomeMessage}</span>
-                </div>
-              )}
-            </span>
-            <div className="explanation-hidden">
-              <p className="game-message">{gameMessage || 'Game over!'}</p>
-              <p className="genie-definition"><strong>Definition:</strong> {definition || 'No definition available'}</p>
-              <p className="genie-example"><strong>Example:</strong> {example || 'No example available'}</p>
-            </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
       </div>
       <div className="keyboard-container">

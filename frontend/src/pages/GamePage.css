@@ -29,7 +29,7 @@
 }
 
 .game-page-header {
-  margin-bottom: 150px; /* Space for the grid and keyboard */
+  margin-bottom: 50px; /* Space for the grid and keyboard */
 }
 
 
@@ -39,12 +39,14 @@
    justify-content: center;
    gap: 20px;
    margin-left: 380px;
+   flex: 1;
+   margin-top: -50px;
 }
 
 
 .genie-container {
   position: relative;
-  top: 100px; /* Distance from bottom */
+  top: 250px; /* Distance from bottom */
   left: 50px; /* Distance from right */
   width: 400px; /* Maintain larger size */
   max-width: 100%;
@@ -52,7 +54,7 @@
 }
 
 .text-box {
-  position: absolute;
+  position: relative;
   background-color: white;
   width: 350px;
   height: 275px;
@@ -60,9 +62,11 @@
   border: 2px solid #01B4BC;
   border-radius: 25px;
   z-index: 10;
-  top: 3px;
-  left: 20px;
+  left: 25px;
+  bottom: 540px;
   overflow-y: auto;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .genie-image {
@@ -72,14 +76,14 @@
 }
 
 .genie-text2 {
-  position: absolute;
+  position: static;
   top: 5px; /* Adjust for speech bubble */
   left: 35px; /* Adjust for larger speech bubble */
   width: 330px;
   height: 290px;
   font-size: 19px;
   font-weight: bold;
-  color: orange;
+  color: #FFA800;
   text-align: center;
   line-height: 1.4;
   white-space: normal;
@@ -87,10 +91,10 @@
 }
 
 .genie-text {
-  position: absolute;
+  position: static;
   top: 17px; /* Adjust for speech bubble */
   left: 57px; /* Adjust for larger speech bubble */
-  width: 280px;
+  width: 260px;
   height: 250px;
   text-align: center;
   white-space: normal;
@@ -126,8 +130,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  bottom: 250px;
   margin-right: 35px;
-  margin-top: -100px;
+  flex: 0 0 auto;
 }
 
 
@@ -149,9 +155,9 @@
     font-size: 16px;
     font-style: normal;
     font-weight: 700;
-    line-height: 27px;
+    line-height: 32px;
     color: #FFA800; /* + Dark gray for contrast */
-    margin: 5px 0; /* + Spacing between definition and example */
+    margin: 15px 0; /* + Spacing between definition and example */
     text-align: left; /* + Left-align for readability */
 }
 
@@ -171,7 +177,7 @@
   font-size: 16px;
   font-style: bold;
   font-weight: 700;
-  line-height: 27px;
+  line-height: 32px;
   color: #FFA800; /* + Dark gray for contrast */
   margin: 5px 0; /* + Spacing between definition and example */
   text-align: left; /* + Left-align for readability */
@@ -205,14 +211,14 @@
 }
 
 .next-button {
-  margin-top: 12px;
-  position: absolute;
+  margin-top: 15px;
+  position: relative; /* Changed from absolute to flow inside text-box */
   background-color: transparent;
-  left: 90px;
-  border: none; /* + No border */
-  cursor: default; /* + Pointer cursor on hover */
+  left: 10px; /* Reset left */
+  border: none;
+  cursor: default;
   width: 160px;
-  height: 34px;
+  height: 34px; 
 }
 
 .next-button img {

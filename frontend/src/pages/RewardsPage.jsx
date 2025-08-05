@@ -12,11 +12,12 @@ function RewardsPage() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showUnscramble, setShowUnscramble] = useState(false);
   const [updatedPoints, setUpdatedPoints] = useState(points);
+  const [correctSentence, setCorrectSentence] = useState('')
   const [genieMessage, setGenieMessage] = useState(
     'Well done! You have a chance to double your reward points, if you are interested, click on the sparkle button.'
   );
 
-  const handleUnscrambleResult = (isCorrect, tries) => {
+  const handleUnscrambleResult = (isCorrect, tries, sentence)=> {
     if (isCorrect) {
       setUpdatedPoints(points * 2);
       setGenieMessage('Awesome! You unscrambled it correctly and doubled your points! Choose what you would like to do next!');
@@ -28,7 +29,8 @@ function RewardsPage() {
         }, 800);
       }, 50);
     } else if (tries >= 3) {
-      setGenieMessage('You used all 3 attempts. Returning to rewards. Choose what you would like to do next!');
+      setCorrectSentence(sentence)
+      setGenieMessage('Unfortunately you used all 3 attempts. Returning to rewards.');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
@@ -36,6 +38,8 @@ function RewardsPage() {
           setIsFlipped(false);
         }, 500);
       }, 50);
+    } else if ((3 - tries) == 1){
+      setGenieMessage('Incorrect! You have 1 try left.');
     } else {
       setGenieMessage(`Incorrect! You have ${3 - tries} tries left.`);
     }
@@ -68,12 +72,18 @@ function RewardsPage() {
         </div>
         <div className="genie-container2">
           <img src="/genie3.png" alt="genie-image" className='genie-image2'/>
-          <div className="genie-text3">
-            {getGeniePrefix()}
-            <span>{genieMessage}</span>
+          <div className="text-box2">
+            <div className="genie-text3">
+              {getGeniePrefix()}
+              <span>{genieMessage}</span>
+              { genieMessage.startsWith('Unfortunately') && (
+                <p className=""><strong>Correct:</strong>{correctSentence}</p>
+              )}
+          </div>
           </div>
         </div>
         <div className='rewards-component'>
+          
           {showUnscramble ? (
             <Unscramble
               gameId={gameId}

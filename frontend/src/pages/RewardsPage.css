@@ -47,7 +47,23 @@
     top: 250px;
     width: 400px;
     max-width: 100%;
+    z-index: 1;
 }
+
+.text-box2 {
+  position: relative;
+  background-color: white;
+  width: 350px;
+  height: 275px;
+  flex-shrink: 0;
+  border: 2px solid #01B4BC;
+  border-radius: 25px;
+  z-index: 10;
+  bottom: 540px;
+  left: 25px;
+  overflow-y: auto;
+}
+
 
 .genie-text3 {
   display: flex;
@@ -55,7 +71,7 @@
   gap: 40px;
   position: absolute;
   top: 28px; 
-  left: 65px; 
+  left: 40px; 
   width: 260px;
   height: 250px;
   font-size: 23px;
@@ -67,6 +83,7 @@
   text-align: center;
   font-style: normal;
   font-family: 'Monda';
+  z-index: 11;
 } 
 
 /* + Styles for prefixes */

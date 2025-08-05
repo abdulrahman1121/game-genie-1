@@ -32,5 +32,6 @@ body {
   align-items: center;
   justify-content: flex-start; /* Align from top */
   box-sizing: border-box;
+  overflow: hidden;
 }
 
