@@ -57,11 +57,15 @@ function RewardsPage() {
 
   return (
     <div className="rewards-page">
-      <header classname='rewards-page-header'>
+      <header className='rewards-page-header'>
         <GoBackImage onClick={() => navigate('/game')} />
         <SettingsImage />
       </header>
       <div className="rewards-container">
+        <div className="show-points">
+          <span className="points">{updatedPoints}</span>
+          <img src="/coin.png" alt="coin" className="coin-image"/>
+        </div>
         <div className="genie-container2">
           <img src="/genie3.png" alt="genie-image" className='genie-image2'/>
           <div className="genie-text3">
@@ -75,30 +79,31 @@ function RewardsPage() {
               gameId={gameId}
               targetWord={targetWord}
               onResult={handleUnscrambleResult} />
-          ): (
+          ) : (
             <>
               <img src="/rewards.png" alt="rewards" className={`rewards-image ${isFlipped ? 'flip' : ''}`}/>
               <p className={`rewards-tries ${isFlipped ? 'flip' : ''}`}> {guessCount} </p>
               <p className={`rewards-points ${isFlipped ? 'flip' : ''}`}>+ {updatedPoints}</p>
-              <button className={`home-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/')}>
-                <img src="/home-image.png" alt="home" className="home-image"/>
-              </button>
-              <button className={`sparkle-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
-                  setGenieMessage('Welcome to the Bonus Challenge, test your luck and practice your vocabulary!')
+              <div className="reward-buttons">
+                <button className={`sparkle-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
+                  setGenieMessage('Welcome to the Bonus Challenge, click on the word tiles to place it and click again to remove it!')
                   setIsFlipped(true);
                   setTimeout(() => {
                     setShowUnscramble(true);
                     setIsFlipped(false);
                   }, 500) // match animation duration
                 }}>
-                <img src="/sparkle.png" alt="sparkle" className="sparkle-image"/>
-              </button>
-              <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/game')}>
-                <img src="skip-image.png" alt="flip" className="skip-image"/>
-              </button>
+                  <img src="/sparkle.png" alt="sparkle" className="sparkle-image"/>
+                </button>
+                <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/game')}>
+                  <img src="skip-image.png" alt="flip" className="skip-image"/>
+                </button>
+                <button className={`home-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/')}>
+                  <img src="/home-image.png" alt="home" className="home-image"/>
+                </button>
+              </div>
             </>
           )}
-          
         </div>
       </div>
     </div>

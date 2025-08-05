@@ -1,12 +1,13 @@
 .game-page {
     position: relative;
-    width: 100%;
-    height: 100vh;  
+    width: 100vw;
+    min-height: 100vh; 
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Align items to the top */
+    justify-content: flex-start; /* Align items to the top */
     text-align: center;
+    box-sizing: border-box;
 }
 
 
@@ -28,34 +29,47 @@
 }
 
 .game-page-header {
-  margin-bottom: 400px; /* Space for the grid and keyboard */
+  margin-bottom: 150px; /* Space for the grid and keyboard */
 }
 
 
 .game-container {
    display: flex;
-   align-items: flex-start;
+   align-items: center;
+   justify-content: center;
    gap: 20px;
+   margin-left: 380px;
 }
 
 
 .genie-container {
-  position: absolute;
-  bottom: -180px; /* Distance from bottom */
-  right: 20px; /* Distance from right */
+  position: relative;
+  top: 100px; /* Distance from bottom */
+  left: 50px; /* Distance from right */
   width: 400px; /* Maintain larger size */
   max-width: 100%;
+  z-index: 1;
 }
 
+.text-box {
+  position: absolute;
+  background-color: white;
+  width: 350px;
+  height: 275px;
+  flex-shrink: 0;
+  border: 2px solid #01B4BC;
+  border-radius: 25px;
+  z-index: 10;
+  top: 3px;
+  left: 20px;
+  overflow-y: auto;
+}
 
 .genie-image {
   width: 100%;
   height: auto;
   display: block;
 }
-
-
-
 
 .genie-text2 {
   position: absolute;
@@ -69,6 +83,7 @@
   text-align: center;
   line-height: 1.4;
   white-space: normal;
+  z-index: 11;
 }
 
 .genie-text {
@@ -85,6 +100,7 @@
   font-style: normal;
   font-weight: 700;
   line-height: 27px;
+  z-index: 11;
 }
 
 .welcome-container, .hint-container {
@@ -109,8 +125,10 @@
 .keyboard-container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  margin-right: 35px;
+  margin-top: -100px;
 }
-
 
 
 /* + New styles for game message */
@@ -187,7 +205,7 @@
 }
 
 .next-button {
-  margin-top: 7px;
+  margin-top: 12px;
   position: absolute;
   background-color: transparent;
   left: 90px;

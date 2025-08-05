@@ -85,6 +85,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           setIsActualHint={setIsActualHint}
         />
         <div className="genie-container">
+          <div className='text-box'></div>
           <img src="/genie3.png" alt="genie" className="genie-image" />
           {gameStatus !== 'active' ? (
             <div className="genie-text2 explanation-visible">

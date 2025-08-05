@@ -1,12 +1,11 @@
-
 .landing-page {
   position: relative;
-  width: 100%;
-  height: 100vh;
+  width: 100vw;
+  min-height: 100vh; 
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   color: #fff;
   text-align: center;
 }
@@ -58,47 +57,42 @@
   margin-bottom: 32px;
 }
 
-
+.top-box, .middle-box, .bottom-box {
+  width: 100%;
+  max-width: 775px;
+  height: auto;
+  text-align: center;
+  font-size: normal;
+  align-self: stretch;
+  color: white;
+  line-height: normal;
+}
 
 .top-box {
   width: 775px;
   height: auto;
   align-self: stretch;
-  color: #FFF;
-  text-align: center;
   text-shadow: 0px 4px 0px #723400;
-  font-family: Monda;
+  font-family: 'Monda';
   font-size: 48px;
-  font-style: normal; 
   font-weight: 600;
-  line-height: normal;
   text-transform: uppercase;
 }
 
 .middle-box {
   align-self: stretch;
-  width: 775px;
-  height: 128px;
-  color: #FFF;
-  text-align: center;
   text-shadow: 0px 5px 0px #723400;
   font-family: "Press Start 2P";
   font-size: 64px;
-  font-style: normal;
   font-weight: 400;
-  line-height: normal;
+  min-height: 128px;
 }
 
 .bottom-box {
-  width: 576px fixed;
-  height: 33px fixed;
-  color: #FFF;
-  text-align: center;
-  font-family: Monda;
+  min-height: 33px;
+  font-family: 'Monda';
   font-size: 20px;
-  font-style: normal;
   font-weight: 600;
-  line-height: normal;
 }
 
 

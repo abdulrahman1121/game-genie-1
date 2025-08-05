@@ -4,6 +4,8 @@
   flex-direction: column;
   align-items: center;
   width: 440px;
+  min-height: 100vh;
+  margin-bottom: 200px;
 }
 
 .unscramble-img {
@@ -13,11 +15,10 @@
 
 .word-bank {
   position: absolute;
-  top: 150px;
+  top: 100px;
   right: 360px;
   width: 428px;
   height: 279px;
-  z-index: 1;
 }
 
 .word-bank-img {
@@ -124,7 +125,7 @@
   height: 35px;
   cursor: default;
   left: 150px;
-  
+  bottom: 140px;
 }
 
 .check-button img {
