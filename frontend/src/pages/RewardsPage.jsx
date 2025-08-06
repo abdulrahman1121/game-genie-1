@@ -77,7 +77,10 @@ function RewardsPage() {
               {getGeniePrefix()}
               <span>{genieMessage}</span>
               { genieMessage.startsWith('Unfortunately') && (
-                <p className=""><strong>Correct:</strong>{correctSentence}</p>
+                <div className="correct">
+                  <strong>Correct: </strong>
+                  <p className="correct-sentence">{correctSentence}</p>
+                </div>
               )}
           </div>
           </div>
