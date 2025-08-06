@@ -7,6 +7,8 @@ import RewardsPage from './pages/RewardsPage.jsx';
 import { useState, useEffect, useRef } from 'react';
 import { db } from './firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 import './index.css';
 
 function App() {
