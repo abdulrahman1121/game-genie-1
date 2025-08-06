@@ -7,11 +7,13 @@
   align-items: center;
   justify-content: flex-start;
   color: #fff;
+  overflow: hidden;
+  padding-bottom: 200px;
 }
 
 
 .select-level-header {
-  margin-bottom: 400px;
+  margin-bottom: 250px;
 }
 
 
@@ -53,6 +55,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  flex: 1;
 }
 
 

@@ -8,10 +8,12 @@
   justify-content: flex-start;
   color: #fff;
   text-align: center;
+  overflow: hidden;
+  padding-bottom: 200px;
 }
 
 .landing-header {
-  margin-bottom: 400px;
+  margin-bottom: 250px;
 }
 
 .game-genie-text {
@@ -55,6 +57,7 @@
   align-items: center;
   gap: 16px;
   margin-bottom: 32px;
+  flex: 1;
 }
 
 .top-box, .middle-box, .bottom-box {
