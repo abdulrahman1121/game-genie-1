@@ -7,7 +7,7 @@ function SettingsImage() {
 
     return (
     <button className="settings-button" onClick={() => navigate('/signup')}>
-        <img src="/settings.png" alt="Settings" className="settings-image" />
+        <img src="/game-genie-1/settings.png" alt="Settings" className="settings-image" />
     </button>
 );
 }

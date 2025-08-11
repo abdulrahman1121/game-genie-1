@@ -9,7 +9,7 @@ function LandingPage() {
       <header className="landing-header">
         <span className="game-genie-text">Game Genie</span>
         <button className='signup-button' onClick={() => navigate('/signup')}>
-          <img src="/signup2.png" alt="singup" />
+          <img src="/game-genie-1/signup2.png" alt="singup" />
         </button>
       </header>
       <div className="boxes-container">
@@ -22,7 +22,7 @@ function LandingPage() {
         </div>
       </div>
       <button className="quickplay-button" onClick={() => navigate('/select-level')}>
-        <img src="/quickplay.png" alt="quickplay" />
+        <img src="/game-genie-1/quickplay.png" alt="quickplay" />
       </button>
     </div>
   );
