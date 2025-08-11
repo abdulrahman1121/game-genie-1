@@ -17,6 +17,8 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [targetWord, setTargetWord] = useState('');
   const [isActualHint, setIsActualHint] = useState(false);
 
+  
+
   useEffect(() => {
     fetch('http://localhost:3000/api/openai/start', { method: 'POST' })
       .then(res => res.json())
@@ -84,7 +86,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           setIsActualHint={setIsActualHint}
         />
         <div className="genie-container">
-          <img src="/genie3.png" alt="genie" className="genie-image" />
+          <img src="/game-genie-1/genie3.png" alt="genie" className="genie-image" />
           <div className="text-box">
             {gameStatus !== 'active' ? (
               <div className="genie-text2 explanation-visible">
@@ -104,7 +106,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
                     });
                   }}
                 >
-                  <img src="/next-button.png" alt="next" className="next-image" />
+                  <img src="/game-genie-1/next-button.png" alt="next" className="next-image" />
                 </button>
               </div>
             ) : (

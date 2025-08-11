@@ -5,8 +5,11 @@ const openaiRoutes = require('./routes/openaiRoutes');
 const { db } = require('./firebase');
 
 const app = express();
-app.use(cors());
 app.use(express.json());
+
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://abdulrahman1121.github.io'],
+}));
 
 // Health check
 app.get('/api/health', (req, res) => {

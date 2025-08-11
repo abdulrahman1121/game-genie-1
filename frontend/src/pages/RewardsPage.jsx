@@ -68,10 +68,10 @@ function RewardsPage() {
       <div className="rewards-container">
         <div className="show-points">
           <span className="points">{updatedPoints}</span>
-          <img src="/coin.png" alt="coin" className="coin-image"/>
+          <img src="/game-genie-1/coin.png" alt="coin" className="coin-image"/>
         </div>
         <div className="genie-container2">
-          <img src="/genie3.png" alt="genie-image" className='genie-image2'/>
+          <img src="/game-genie-1/genie3.png" alt="genie-image" className='genie-image2'/>
           <div className="text-box2">
             <div className="genie-text3">
               {getGeniePrefix()}
@@ -94,7 +94,7 @@ function RewardsPage() {
               onResult={handleUnscrambleResult} />
           ) : (
             <>
-              <img src="/rewards.png" alt="rewards" className={`rewards-image ${isFlipped ? 'flip' : ''}`}/>
+              <img src="/game-genie-1/rewards.png" alt="rewards" className={`rewards-image ${isFlipped ? 'flip' : ''}`}/>
               <p className={`rewards-tries ${isFlipped ? 'flip' : ''}`}> {guessCount} </p>
               <p className={`rewards-points ${isFlipped ? 'flip' : ''}`}>+ {updatedPoints}</p>
               <div className="reward-buttons">
@@ -106,13 +106,13 @@ function RewardsPage() {
                     setIsFlipped(false);
                   }, 500) // match animation duration
                 }}>
-                  <img src="/sparkle.png" alt="sparkle" className="sparkle-image"/>
+                  <img src="/game-genie-1/sparkle.png" alt="sparkle" className="sparkle-image"/>
                 </button>
                 <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/game')}>
-                  <img src="skip-image.png" alt="flip" className="skip-image"/>
+                  <img src="/game-genie-1/skip-image.png" alt="flip" className="skip-image"/>
                 </button>
                 <button className={`home-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/')}>
-                  <img src="/home-image.png" alt="home" className="home-image"/>
+                  <img src="/game-genie-1/home-image.png" alt="home" className="home-image"/>
                 </button>
               </div>
             </>
