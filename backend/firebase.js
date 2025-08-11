@@ -1,6 +1,7 @@
 // In backend/firebase.js
 const admin = require('firebase-admin');
 const serviceAccount = require('./firebase-service-account.json');
+require('dotenv').config();
 
 admin.initializeApp({
   credential: admin.credential.cert({
