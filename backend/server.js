@@ -1,6 +1,7 @@
 // In backend/server.js
 const express = require('express');
 const cors = require('cors');
+console.log(__dirname);
 const openaiRoutes = require('./routes/openaiRoutes');
 const { db } = require('./firebase');
 
