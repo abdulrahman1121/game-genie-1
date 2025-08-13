@@ -1,4 +1,3 @@
-require('dotenv').config;
 const express = require('express');
 const cors = require('cors');
 const serverless = require('serverless-http');
@@ -18,7 +17,7 @@ app.use(cors({
 
 app.use(express.json());
 app.get('/health', (_req, res) => res.json({ ok: true }));
-app.use('/openai', openaiRoutes);
+// app.use('/openai', openaiRoutes);
 
 // ✅ export a handler instead of listening on a port
 module.exports = serverless(app);
