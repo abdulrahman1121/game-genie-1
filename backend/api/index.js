@@ -1,23 +1,16 @@
+console.log('index.js: loading start');
 const express = require('express');
-// const cors = require('cors');
+console.log('index.js: express required');
 const serverless = require('serverless-http');
-// const openaiRoutes = require('../routes/openaiRoutes');  //same routes as before
+console.log('index.js: serverless-http required');
 
 const app = express();
+console.log('index.js: app created');
 
-// const allowed = [
-//   'https://abdulrahman1121.github.io', // or your GH Pages custom domain
-//   'https://www.yourdomain.com',           // keep for future Webflow prod
-//   'https://<your-webflow-site>.webflow.io'// Webflow staging
-// ];
-// app.use(cors({
-//   origin: (origin, cb) => cb(null, !origin || allowed.includes(origin)),
-//   credentials: true
-// }));
+app.get('/health', (_req, res) => {
+  console.log('index.js: /health hit');
+  res.json({ ok: true });
+});
 
-// app.use(express.json());
-app.get('/health', (_req, res) => res.json({ ok: true }));
-// app.use('/openai', openaiRoutes);
-
-// ✅ export a handler instead of listening on a port
 module.exports = serverless(app);
+console.log('index.js: export done');
