@@ -1,16 +1,11 @@
-// backend/api/index.js  (CommonJS)
+// No serverless-http, no listeners, no timers
 const express = require('express');
-const serverless = require('serverless-http');
 
-module.exports = (req, res) => {
-  const app = express();
+const app = express();
+// keep it minimal first
+app.get('/health', (_req, res) => {
+  res.status(200).json({ ok: true });
+});
 
-  // Minimal route first
-  app.get('/health', (_req, _res) => {
-    _res.status(200).json({ ok: true });
-  });
-
-  // IMPORTANT: avoid waiting for empty event loop (prevents 504 hang)
-  const handler = serverless(app, { callbackWaitsForEmptyEventLoop: false });
-  return handler(req, res);
-};
+// Export the Express app as a plain handler
+module.exports = (req, res) => app(req, res);
