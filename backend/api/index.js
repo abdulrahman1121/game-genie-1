@@ -1,16 +1,16 @@
-console.log('index.js: loading start');
+// backend/api/index.js  (CommonJS)
 const express = require('express');
-console.log('index.js: express required');
 const serverless = require('serverless-http');
-console.log('index.js: serverless-http required');
 
-const app = express();
-console.log('index.js: app created');
+module.exports = (req, res) => {
+  const app = express();
 
-app.get('/health', (_req, res) => {
-  console.log('index.js: /health hit');
-  res.json({ ok: true });
-});
+  // Minimal route first
+  app.get('/health', (_req, _res) => {
+    _res.status(200).json({ ok: true });
+  });
 
-module.exports = serverless(app);
-console.log('index.js: export done');
+  // IMPORTANT: avoid waiting for empty event loop (prevents 504 hang)
+  const handler = serverless(app, { callbackWaitsForEmptyEventLoop: false });
+  return handler(req, res);
+};
