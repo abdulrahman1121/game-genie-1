@@ -5,7 +5,7 @@ import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
 import { useNavigate } from 'react-router-dom';
 // wherever you call the API
-import { API_BASE } from './config.js';
+// import { API_BASE } from './config.js';
 
 import './GamePage.css';
 
@@ -22,7 +22,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
 
 
   useEffect(() => {
-    fetch(`${API_BASE}/openai/start`, { method: 'POST' })
+    fetch(`http://localhost:3000/api/openai/start`, { method: 'POST' })
       .then(res => res.json())
       .then(data => {
         setGameId(data.gameId);
