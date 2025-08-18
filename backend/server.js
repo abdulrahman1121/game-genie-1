@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const openaiRoutes = require('./routes/openaiRoutes');
+const RENDER_URL = process.env.RENDER_URL;
 const { db } = require('./firebase');
 
 const app = express();
@@ -13,6 +14,11 @@ app.use(cors({
 // Health check
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK' });
+});
+
+// Expose URL for frontend
+app.get('/api/config', (req, res) => {
+  res.json({ renderUrl: process.env.RENDER_URL });
 });
 
 // Use OpenAI routes for game logic

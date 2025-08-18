@@ -8,9 +8,16 @@ function Unscramble({ gameId, targetWord, onResult }) {
   const [tries, setTries] = useState(0);
   const [selectedWordIndex, setSelectedWordIndex] = useState(null);
   const [originalIndices, setOriginalIndices] = useState([]); // Track original positions
+  const [renderUrl, setRenderUrl] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/openai/unscramble', {
+    fetch('/api/config')
+      .then(res => res.json())
+      .then(data => setRenderUrl(data.renderUrl))
+  }, []);
+
+  useEffect(() => {
+    fetch(`${renderUrl}/api/openai/unscramble`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ gameId })

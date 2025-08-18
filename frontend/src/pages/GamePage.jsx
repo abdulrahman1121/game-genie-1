@@ -19,10 +19,16 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [guessCount, setGuessCount] = useState(0);
   const [targetWord, setTargetWord] = useState('');
   const [isActualHint, setIsActualHint] = useState(false);
-
+  const [renderUrl, setRenderUrl] = useState('');
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/openai/start`, { method: 'POST' })
+    fetch('/api/config')
+      .then(res => res.json())
+      .then(data => setRenderUrl(data.renderUrl))
+  }, []);
+
+  useEffect(() => {
+    fetch(`${renderUrl}/api/openai/start`, { method: 'POST' })
       .then(res => res.json())
       .then(data => {
         setGameId(data.gameId);
