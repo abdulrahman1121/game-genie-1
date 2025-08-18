@@ -1,7 +1,11 @@
 backend/.env
 backend/firebase-service-account.json
-backend/node_modules/ 
-backend/node_modules
+backend/node_modules/
+
+node_modules
+dist
+dist-ssr
+*.local
 
 # Environment variable backups or copies
 backend/.env.local
