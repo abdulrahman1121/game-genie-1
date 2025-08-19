@@ -17,9 +17,26 @@ function Keyboard({ keyStatuses, onKeyPress }) {
         <div key={rowIndex} className="keyboard-row">
           {row.map((key) => (
             <button
+              type='button'
               key={key}
               className={`keyboard-key ${key.toLowerCase()} ${getKeyStatus(key)}`}
-              onClick={() => onKeyPress(key === 'Enter' || key === 'Backspace' ? key : key.toUpperCase(), 'empty')}
+              onClick={() => {
+                const keyForEvent =
+                key === 'Enter' ? 'Enter' :
+                key === 'Backspace' ? 'Backspace' :
+                key.toUpperCase();
+
+                const evt = new KeyboardEvent('keydown', { key: keyForEvent });
+                window.dispatchEvent(evt);
+
+                // still let the status updater run so keys color immediately
+                onKeyPress(
+                  keyForEvent === 'Enter' ? 'ENTER' :
+                  keyForEvent === 'Backspace' ? 'BACKSPACE' :
+                  keyForEvent,
+                    'empty'
+                );
+              }}
             >
               {key === 'Backspace' ? '⌫' : key}
             </button>
