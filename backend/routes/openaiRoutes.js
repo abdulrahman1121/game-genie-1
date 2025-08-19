@@ -11,22 +11,22 @@ const SYSTEM_PROMPT = `You are an educational assistant for a Wordle game design
 const RECENT_WORDS_LIMIT = 50; // + Limit for recent words
 
 router.post('/start', async (req, res) => {
+  console.log('Received /start request');
   try {
     const blocklist = ['death', 'crime', 'blood', 'ghost', 'scary'];
     const wordLength = Math.random() < 0.5 ? 4 : 5;
 
     const recentWordsSnapshot = await db.collection('recentWords').orderBy('createdAt', 'desc').limit(RECENT_WORDS_LIMIT).get();
+    console.log('Fetched recent words snapshot');
     const recentWords = recentWordsSnapshot.docs.map(doc => doc.data().word.toUpperCase());
 
     const wordPrompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Ensure the word is different from these recently used words: ${recentWords.join(', ') || 'none'}. Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
     const wordResponse = await openai.chat.completions.create({
       model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: wordPrompt }
-      ],
+      messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: wordPrompt }],
       max_tokens: 100
     });
+    console.log('OpenAI word response:', wordResponse.choices[0].message.content);
 
     const wordText = wordResponse.choices[0].message.content;
     const wordMatch = wordText.match(/Word: ["']?([A-Za-z]{4,5})["']?/i);
@@ -36,12 +36,10 @@ router.post('/start', async (req, res) => {
     const explainPrompt = `Provide a kid-friendly definition and example sentence for the word "${word}". Return exactly in this format:\nDefinition: [DEFINITION]\nExample: [SENTENCE]\nDo not include extra text.`;
     const explainResponse = await openai.chat.completions.create({
       model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: explainPrompt }
-      ],
+      messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: explainPrompt }],
       max_tokens: 100
     });
+    console.log('OpenAI explain response:', explainResponse.choices[0].message.content);
 
     const explanationText = explainResponse.choices[0].message.content;
     const definitionMatch = explanationText.match(/Definition: (.+)/);
@@ -56,9 +54,10 @@ router.post('/start', async (req, res) => {
       guesses: [],
       hints: [],
       status: 'active',
-      explanation, // + Store explanation
+      explanation,
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     });
+    console.log('Game document created:', gameId);
 
     await db.collection('recentWords').add({
       word,
@@ -70,7 +69,7 @@ router.post('/start', async (req, res) => {
       await db.collection('recentWords').doc(oldestWord.id).delete();
     }
 
-    res.json({ gameId, wordLength, explanation, word }); // + Return explanation
+    res.json({ gameId, wordLength, explanation, word });
   } catch (err) {
     console.error('❌ /start error:', err.code, err.message);
     res.status(500).json({ error: 'Failed to start game' });
