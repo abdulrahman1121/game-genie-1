@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Tile from './Tile.jsx';
+import { API_BASE } from '../lib/apiBase.js';
 import './Grid.css';
 
 function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage, setGuessCount, targetWord, setIsActualHint }) {
@@ -69,7 +70,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
     if (currentGuess.length !== wordLength || localGameStatus !== 'active') return;
 
     try {
-      const res = await fetch('http://localhost:3000/api/openai/guess', {
+      const res = await fetch(`${API_BASE}/openai/guess`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gameId, guess: currentGuess })
@@ -106,7 +107,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
           setIsActualHint(false)
         } else if (currentRow === 2) {
           const hintLevel = 1;
-          const hintRes = await fetch('http://localhost:3000/api/openai/hint', {
+          const hintRes = await fetch(`${API_BASE}/openai/hint`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ gameId, hintLevel })
@@ -116,7 +117,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
           setIsActualHint(true)
         } else if (currentRow === 4) {
           const hintLevel = 2;
-          const hintRes = await fetch('http://localhost:3000/api/openai/hint', {
+          const hintRes = await fetch(`${API_BASE}/openai/hint`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ gameId, hintLevel })
@@ -132,7 +133,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   };
 
   const resetGame = () => {
-    fetch('http://localhost:3000/api/openai/start', { method: 'POST' })
+    fetch(`${API_BASE}/openai/start`, { method: 'POST' })
       .then(res => res.json())
       .then(data => {
         setGrid(Array(6).fill().map(() => Array(data.wordLength).fill({ letter: '', status: 'empty' })));

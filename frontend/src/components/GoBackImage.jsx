@@ -6,7 +6,7 @@ function GoBackImage({ onClick }) {
 
     return (
     <button className="go-back-button" onClick={onClick}>
-        <img src="/game-genie-1/goback.png" alt="go-back-img" />
+        <img src={`${import.meta.env.BASE_URL}goback.png`} alt="go-back-img" />
     </button>
     );
 }

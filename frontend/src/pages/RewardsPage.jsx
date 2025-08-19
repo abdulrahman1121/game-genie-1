@@ -68,10 +68,10 @@ function RewardsPage() {
       <div className="rewards-container">
         <div className="show-points">
           <span className="points">{updatedPoints}</span>
-          <img src="/game-genie-1/coin.png" alt="coin" className="coin-image"/>
+          <img src={`${import.meta.env.BASE_URL}coin.png`} alt="coin" className="coin-image"/>
         </div>
         <div className="genie-container2">
-          <img src="/game-genie-1/genie3.png" alt="genie-image" className='genie-image2'/>
+          <img src={`${import.meta.env.BASE_URL}genie3.png`} alt="genie-image" className='genie-image2'/>
           <div className="text-box2">
             <div className="genie-text3">
               {getGeniePrefix()}
@@ -94,7 +94,7 @@ function RewardsPage() {
               onResult={handleUnscrambleResult} />
           ) : (
             <>
-              <img src="/game-genie-1/rewards.png" alt="rewards" className={`rewards-image ${isFlipped ? 'flip' : ''}`}/>
+              <img src={`${import.meta.env.BASE_URL}rewards.png`} alt="rewards" className={`rewards-image ${isFlipped ? 'flip' : ''}`}/>
               <p className={`rewards-tries ${isFlipped ? 'flip' : ''}`}> {guessCount} </p>
               <p className={`rewards-points ${isFlipped ? 'flip' : ''}`}>+ {updatedPoints}</p>
               <div className="reward-buttons">
@@ -106,13 +106,13 @@ function RewardsPage() {
                     setIsFlipped(false);
                   }, 500) // match animation duration
                 }}>
-                  <img src="/game-genie-1/sparkle.png" alt="sparkle" className="sparkle-image"/>
+                  <img src={`${import.meta.env.BASE_URL}sparkle.png`} alt="sparkle" className="sparkle-image"/>
                 </button>
                 <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/game')}>
-                  <img src="/game-genie-1/skip-image.png" alt="flip" className="skip-image"/>
+                  <img src={`${import.meta.env.BASE_URL}skip-image.png`} alt="flip" className="skip-image"/>
                 </button>
                 <button className={`home-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/')}>
-                  <img src="/game-genie-1/home-image.png" alt="home" className="home-image"/>
+                  <img src={`${import.meta.env.BASE_URL}home-image.png`} alt="home" className="home-image"/>
                 </button>
               </div>
             </>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import useApiBase from '../hooks/useApiBase';
+import { API_BASE } from '../lib/apiBase.js';
 import './Unscramble.css';
 
 function Unscramble({ gameId, targetWord, onResult }) {
@@ -10,11 +10,11 @@ function Unscramble({ gameId, targetWord, onResult }) {
   const [selectedWordIndex, setSelectedWordIndex] = useState(null);
   const [originalIndices, setOriginalIndices] = useState([]); // Track original positions
 
-  const apiBase = useApiBase();
+  
 
   useEffect(() => {
-    if (!apiBase || !gameId) return; // need both
-    fetch(`${apiBase}/openai/unscramble`, {
+    if (!API_BASE || !gameId) return; // need both
+    fetch(`${API_BASE}/openai/unscramble`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ gameId })
@@ -99,9 +99,9 @@ function Unscramble({ gameId, targetWord, onResult }) {
 
   return (
     <div className="unscramble-comp">
-      <img src="/game-genie-1/unscramble-image.png" alt="unscramble" className="unscramble-img" />
+      <img src={`${import.meta.env.BASE_URL}unscramble-image.png`} alt="unscramble" className="unscramble-img" />
       <div className="word-bank">
-        <img src="/game-genie-1/word-bank.png" alt="word-bank" className="word-bank-img" />
+        <img src={`${import.meta.env.BASE_URL}word-bank.png`} alt="word-bank" className="word-bank-img" />
         <div className="word-bank-words">
           {scrambledWords.map((word, index) => (
             <span
@@ -137,7 +137,7 @@ function Unscramble({ gameId, targetWord, onResult }) {
         ))}
       </div>
       <button className="check-button" onClick={handleCheck}>
-        <img src="/game-genie-1/check.png" alt="" />
+        <img src={`${import.meta.env.BASE_URL}check.png`} alt="" />
       </button>
     </div>
   );

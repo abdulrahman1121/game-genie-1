@@ -6,7 +6,7 @@ import SettingsImage from '../components/SettingsImage.jsx';
 import { useNavigate } from 'react-router-dom';
 // wherever you call the API
 // import { API_BASE } from './config.js';
-import useApiBase from '../hooks/useApiBase.js';
+import { API_BASE } from '../lib/apiBase.js';
 import './GamePage.css';
 
 function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, setWordLength, gameStatus, setKeyStatuses, gridKeyPressRef }) {
@@ -19,11 +19,11 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [guessCount, setGuessCount] = useState(0);
   const [targetWord, setTargetWord] = useState('');
   const [isActualHint, setIsActualHint] = useState(false);
-  const apiBase = useApiBase();
+
 
   useEffect(() => {
-    if (!apiBase) return; // wait for config
-    fetch(`${apiBase}/openai/start`, { method: "POST" })
+    if (!API_BASE) return; // wait for config
+    fetch(`${API_BASE}/openai/start`, { method: "POST" })
       .then(async res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
         return res.json();
@@ -44,7 +44,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         setIsActualHint(false);
       })
       .catch(err => console.error("Error starting game:", err));
-    }, [renderUrl]);
+    }, []);
 
   const handleGoSelectLevel = () => {
     resetKeyStatuses();
@@ -92,7 +92,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           setIsActualHint={setIsActualHint}
         />
         <div className="genie-container">
-          <img src="/game-genie-1/genie3.png" alt="genie" className="genie-image" />
+          <img src={`${import.meta.env.BASE_URL}genie3.png`} alt="genie" className="genie-image" />
           <div className="text-box">
             {gameStatus !== 'active' ? (
               <div className="genie-text2 explanation-visible">
@@ -112,7 +112,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
                     });
                   }}
                 >
-                  <img src="/game-genie-1/next-button.png" alt="next" className="next-image" />
+                  <img src={`${import.meta.env.BASE_URL}next-button.png`} alt="next" className="next-image" />
                 </button>
               </div>
             ) : (

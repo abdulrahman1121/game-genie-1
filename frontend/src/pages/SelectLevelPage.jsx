@@ -19,13 +19,13 @@ function SelectLevelPage() {
         <div className="select-text">Select</div>
         <div className="grade-text">Grade</div>
         <button className='beginner' onClick={() => navigate('/game')}>
-          <img src="/game-genie-1/beginner.png" alt="beginner-image" />
+          <img src={`${import.meta.env.BASE_URL}beginner.png`} alt="beginner-image" />
         </button>
         <button className='intermediate' onClick={() => navigate('/game')}>
-          <img src="/game-genie-1/intermediate.png" alt="intermediate-image" />
+          <img src={`${import.meta.env.BASE_URL}intermediate.png`} alt="intermediate-image" />
         </button>
         <button className='advanced' onClick={() => navigate('/game')}>
-          <img src="/game-genie-1/advanced.png" alt="advanced-image" />
+          <img src={`${import.meta.env.BASE_URL}advanced.png`} alt="advanced-image" />
         </button>
       </div>
     </div>
