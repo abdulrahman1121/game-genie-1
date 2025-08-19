@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import useApiBase from '../hooks/useApiBase';
 import './Unscramble.css';
 
 function Unscramble({ gameId, targetWord, onResult }) {
@@ -8,21 +9,20 @@ function Unscramble({ gameId, targetWord, onResult }) {
   const [tries, setTries] = useState(0);
   const [selectedWordIndex, setSelectedWordIndex] = useState(null);
   const [originalIndices, setOriginalIndices] = useState([]); // Track original positions
-  const [renderUrl, setRenderUrl] = useState('');
+
+  const apiBase = useApiBase();
 
   useEffect(() => {
-    fetch('/api/config')
-      .then(res => res.json())
-      .then(data => setRenderUrl(data.renderUrl))
-  }, []);
-
-  useEffect(() => {
-    fetch(`${renderUrl}/api/openai/unscramble`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    if (!apiBase || !gameId) return; // need both
+    fetch(`${apiBase}/openai/unscramble`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ gameId })
     })
-      .then(res => res.json())
+      .then(async res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+        return res.json();
+      })
       .then(data => {
         if (data.error) throw new Error(data.error);
         const words = data.scrambled.split(' ');
