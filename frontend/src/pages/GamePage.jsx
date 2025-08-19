@@ -22,31 +22,40 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [renderUrl, setRenderUrl] = useState('');
 
   useEffect(() => {
-    fetch('/api/config')
+  // fetch config from your backend
+    fetch("https://game-genie-1.onrender.com/api/config") // use absolute URL in prod; relative only works locally
       .then(res => res.json())
-      .then(data => setRenderUrl(data.renderUrl))
-  }, []);
+      .then(data => setRenderUrl((data.renderUrl || "").replace(/\/+$/,""))); // strip trailing slash
+    }, []);
 
   useEffect(() => {
-    fetch(`${renderUrl}/api/openai/start`, { method: 'POST' })
-      .then(res => res.json())
+    if (!renderUrl) return; // wait until populated
+
+    fetch(`${renderUrl}/api/openai/start`, { method: "POST" })
+      .then(async res => {
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`HTTP ${res.status}: ${text.slice(0,200)}`);
+      }
+        return res.json();
+      })
       .then(data => {
         setGameId(data.gameId);
         setWordLength(data.wordLength);
-        setGameStatus('active');
+        setGameStatus("active");
         resetKeyStatuses();
         setLocalExplanation(data.explanation);
         setExplanation(data.explanation);
-        setGameMessage('');
-        setLocalHint('');
-        setWelcomeMessage('Welcome to Game Genie, give us your best guess! I will be here to help you along the way!!');
+        setGameMessage("");
+        setLocalHint("");
+        setWelcomeMessage("Welcome to Game Genie, give us your best guess! I will be here to help you along the way!!");
         setIsGameReady(true);
         setGuessCount(0);
         setTargetWord(data.word);
         setIsActualHint(false);
       })
-      .catch(err => console.error('Error starting game:', err));
-  }, []);
+      .catch(err => console.error("Error starting game:", err));
+    }, [renderUrl]);
 
   const handleGoSelectLevel = () => {
     resetKeyStatuses();

@@ -18,7 +18,7 @@ app.get('/api/health', (req, res) => {
 
 // Expose URL for frontend
 app.get('/api/config', (req, res) => {
-  res.json({ renderUrl: process.env.RENDER_URL });
+  res.json({ renderUrl: process.env.RENDER_URL});
 });
 
 // Use OpenAI routes for game logic
