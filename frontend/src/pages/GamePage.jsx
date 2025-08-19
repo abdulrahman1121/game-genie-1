@@ -6,7 +6,7 @@ import SettingsImage from '../components/SettingsImage.jsx';
 import { useNavigate } from 'react-router-dom';
 // wherever you call the API
 // import { API_BASE } from './config.js';
-
+import useApiBase from '../hooks/useApiBase.js';
 import './GamePage.css';
 
 function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, setWordLength, gameStatus, setKeyStatuses, gridKeyPressRef }) {
@@ -19,24 +19,13 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [guessCount, setGuessCount] = useState(0);
   const [targetWord, setTargetWord] = useState('');
   const [isActualHint, setIsActualHint] = useState(false);
-  const [renderUrl, setRenderUrl] = useState('');
+  const apiBase = useApiBase();
 
   useEffect(() => {
-  // fetch config from your backend
-    fetch("https://game-genie-1.onrender.com/api/config") // use absolute URL in prod; relative only works locally
-      .then(res => res.json())
-      .then(data => setRenderUrl((data.renderUrl || "").replace(/\/+$/,""))); // strip trailing slash
-    }, []);
-
-  useEffect(() => {
-    if (!renderUrl) return; // wait until populated
-
-    fetch(`${renderUrl}/api/openai/start`, { method: "POST" })
+    if (!apiBase) return; // wait for config
+    fetch(`${apiBase}/openai/start`, { method: "POST" })
       .then(async res => {
-        if (!res.ok) {
-          const text = await res.text();
-          throw new Error(`HTTP ${res.status}: ${text.slice(0,200)}`);
-      }
+        if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
         return res.json();
       })
       .then(data => {
