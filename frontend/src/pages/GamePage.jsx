@@ -111,7 +111,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
             <span className="genie-text">
               {isActualHint && hint && (
                 <div className="hint-container">
-                  <span className="hint-prefix">Hint...</span>
+                  <span className="hint-prefix">Hint</span>
                   <span>{hint}</span>
                 </div>
               )}
