@@ -3,26 +3,13 @@ import Tile from './Tile.jsx';
 import { API_BASE } from '../lib/apiBase.js';
 import './Grid.css';
 
-function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage, setGuessCount, targetWord, setIsActualHint }) {
+function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage, setGuessCount, targetWord, setIsActualHint, hints }) {
   const [grid, setGrid] = useState(() => {
     return wordLength ? Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' })) : [];
   });
   const [currentRow, setCurrentRow] = useState(0);
   const [currentGuess, setCurrentGuess] = useState('');
   const [localGameStatus, setLocalGameStatus] = useState('active');
-
-  const encouragingPhrases = [
-    "You're doing great, keep it up!",
-    "Awesome effort, try again!",
-    "You're so close, give it another go!",
-    "Keep guessing, you're learning fast!",
-    "Super try, let's get that word!",
-    "You're rocking it, one more guess!",
-    "Great job, stay focused!",
-    "You're a word wizard, keep going!",
-    "Fantastic attempt, try another!",
-    "You're getting better with every guess!"
-  ];
 
   useEffect(() => {
     if (wordLength) {
@@ -99,33 +86,16 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
             ? `🎉 Congratulations! You guessed "${targetWord}"!`
             : `Nice try! The word was "${targetWord}".`
         );
-        setIsActualHint(false)
+        setIsActualHint(false);
+      } else if (currentRow === 2 && hints[1]) {
+        setHint(hints[1]);
+        setIsActualHint(true);
+      } else if (currentRow === 4 && hints[2]) {
+        setHint(hints[2]);
+        setIsActualHint(true);
       } else {
-        if (currentRow === 0 || currentRow === 1 || currentRow === 3 || currentRow === 5) {
-          const randomPhrase = encouragingPhrases[Math.floor(Math.random() * encouragingPhrases.length)];
-          setHint(randomPhrase);
-          setIsActualHint(false)
-        } else if (currentRow === 2) {
-          const hintLevel = 1;
-          const hintRes = await fetch(`${API_BASE}/openai/hint`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ gameId, hintLevel })
-          });
-          const hintData = await hintRes.json();
-          setHint(hintData.hint);
-          setIsActualHint(true)
-        } else if (currentRow === 4) {
-          const hintLevel = 2;
-          const hintRes = await fetch(`${API_BASE}/openai/hint`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ gameId, hintLevel })
-          });
-          const hintData = await hintRes.json();
-          setHint(hintData.hint);
-          setIsActualHint(true)
-        }
+        setHint('');
+        setIsActualHint(false);
       }
     } catch (err) {
       console.error('Error submitting guess:', err);
@@ -148,7 +118,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
         setKeyStatuses({});
         resetKeyBoard();
         setGuessCount(0);
-        setIsActualHint(false)
+        setIsActualHint(false);
       })
       .catch(err => console.error('Error starting new game:', err));
   };

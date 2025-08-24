@@ -4,31 +4,28 @@ import Keyboard from '../components/Keyboard.jsx';
 import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
 import { useNavigate } from 'react-router-dom';
-// wherever you call the API
-// import { API_BASE } from './config.js';
 import { API_BASE } from '../lib/apiBase.js';
 import './GamePage.css';
 
 function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, setWordLength, gameStatus, setKeyStatuses, gridKeyPressRef }) {
   const navigate = useNavigate();
   const [hint, setLocalHint] = useState('');
+  const [hints, setHints] = useState({ 1: '', 2: '' });
   const [explanation, setLocalExplanation] = useState('');
   const [gameMessage, setGameMessage] = useState('');
-  const [welcomeMessage, setWelcomeMessage] = useState('Welcome to Game Genie, guess a word and I will help u get it right. U got this!');
   const [isGameReady, setIsGameReady] = useState(false);
   const [guessCount, setGuessCount] = useState(0);
   const [targetWord, setTargetWord] = useState('');
   const [isActualHint, setIsActualHint] = useState(false);
 
-
   useEffect(() => {
-    if (!API_BASE) return; // wait for config
+    if (!API_BASE) return;
     fetch(`${API_BASE}/openai/start`, { method: "POST" })
       .then(async res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
         return res.json();
       })
-      .then(data => {
+      .then(async data => {
         setGameId(data.gameId);
         setWordLength(data.wordLength);
         setGameStatus("active");
@@ -37,14 +34,30 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         setExplanation(data.explanation);
         setGameMessage("");
         setLocalHint("");
-        setWelcomeMessage("Welcome to Game Genie, give us your best guess! I will be here to help you along the way!!");
-        setIsGameReady(true);
         setGuessCount(0);
         setTargetWord(data.word);
         setIsActualHint(false);
+
+        // Fetch hints for levels 1 and 2
+        const hint1Res = await fetch(`${API_BASE}/openai/hint`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gameId: data.gameId, hintLevel: 1 })
+        });
+        const hint1Data = await hint1Res.json();
+
+        const hint2Res = await fetch(`${API_BASE}/openai/hint`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ gameId: data.gameId, hintLevel: 2 })
+        });
+        const hint2Data = await hint2Res.json();
+
+        setHints({ 1: hint1Data.hint, 2: hint2Data.hint });
+        setIsGameReady(true);
       })
-      .catch(err => console.error("Error starting game:", err));
-    }, []);
+      .catch(err => console.error("Error starting game or fetching hints:", err));
+  }, []);
 
   const handleGoSelectLevel = () => {
     resetKeyStatuses();
@@ -90,62 +103,46 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           setGuessCount={setGuessCount}
           targetWord={targetWord}
           setIsActualHint={setIsActualHint}
+          hints={hints}
         />
-        <div className="genie-container">
+        <div className={`genie-container ${isActualHint ? '' : 'hidden'}`}>
           <img src={`${import.meta.env.BASE_URL}genie3.png`} alt="genie" className="genie-image" />
           <div className="text-box">
-            {gameStatus !== 'active' ? (
-              <div className="genie-text2 explanation-visible">
-                <p className="game-message">{gameMessage || 'Loading'}</p>
-                <p className="genie-definition"><strong>Definition:</strong> {definition || 'Loading'}</p>
-                <p className="genie-example"><strong>Example:</strong> {example || 'Loading'}</p>
-                <button
-                  className="next-button"
-                  onClick={() => {
-                    navigate('/rewards', {
-                      state: {
-                        guessCount,
-                        points: gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10,
-                        gameId,
-                        targetWord,
-                      },
-                    });
-                  }}
-                >
-                  <img src={`${import.meta.env.BASE_URL}next-button.png`} alt="next" className="next-image" />
-                </button>
-              </div>
-            ) : (
-              <>
-                <span className="genie-text">
-                  {hint ? (
-                    <div className="hint-container">
-                      <>
-                        {isActualHint ? (
-                          <span className="hint-prefix">Here's a Hint...</span>
-                        ) : (
-                          <span className="encourage-prefix">Keep Going!</span>
-                        )}
-                        <span>{hint}</span>
-                      </>
-                    </div>
-                  ) : (
-                    <div className="welcome-container">
-                      <span className="welcome-prefix">Welcome</span>
-                      <span>{welcomeMessage}</span>
-                    </div>
-                  )}
-                </span>
-                <div className="explanation-hidden">
-                  <p className="game-message">{gameMessage || 'Game over!'}</p>
-                  <p className="genie-definition"><strong>Definition:</strong> {definition || 'No definition available'}</p>
-                  <p className="genie-example"><strong>Example:</strong> {example || 'No example available'}</p>
+            <span className="genie-text">
+              {isActualHint && hint && (
+                <div className="hint-container">
+                  <span className="hint-prefix">Hint...</span>
+                  <span>{hint}</span>
                 </div>
-              </>
-            )}
+              )}
+            </span>
           </div>
         </div>
       </div>
+      {gameStatus !== 'active' && (
+        <div className="modal-overlay">
+          <div className="modal-text-box">
+            <p className="game-message">{gameMessage || 'Game over!'}</p>
+            <p className="genie-definition"><strong>Definition:</strong> {definition || 'No definition available'}</p>
+            <p className="genie-example"><strong>Example:</strong> {example || 'No example available'}</p>
+            <button
+              className="next-button"
+              onClick={() => {
+                navigate('/rewards', {
+                  state: {
+                    guessCount,
+                    points: gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10,
+                    gameId,
+                    targetWord,
+                  },
+                });
+              }}
+            >
+              <img src={`${import.meta.env.BASE_URL}next-button.png`} alt="next" className="next-image" />
+            </button>
+          </div>
+        </div>
+      )}
       <div className="keyboard-container">
         <Keyboard keyStatuses={keyStatuses} onKeyPress={onKeyPress} />
       </div>
