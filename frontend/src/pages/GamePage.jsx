@@ -3,6 +3,7 @@ import Grid from '../components/Grid.jsx';
 import Keyboard from '../components/Keyboard.jsx';
 import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
+import WelcomeModal from '../components/WelcomeModal.jsx';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../lib/apiBase.js';
 import { initSession, updateCoins, getCoins } from '../utils/sessionUtils.js';
@@ -19,9 +20,10 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [targetWord, setTargetWord] = useState('');
   const [isActualHint, setIsActualHint] = useState(false);
   const [coins, setCoins] = useState(getCoins());
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   useEffect(() => {
-    initSession(); // Initialize session token
+    initSession();
     setCoins(getCoins());
     if (!API_BASE) return;
     fetch(`${API_BASE}/openai/start`, { method: "POST" })
@@ -59,6 +61,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
 
         setHints({ 1: hint1Data.hint, 2: hint2Data.hint });
         setIsGameReady(true);
+        setShowWelcomeModal(true); // Show welcome modal after game is ready
       })
       .catch(err => console.error("Error starting game or fetching hints:", err));
   }, []);
@@ -76,7 +79,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   if (!isGameReady) {
     return (
       <div className="loading-container">
-        <h1 className="loading-text">Game Loading...</h1>
+        <h1 className="loading-text">Game loading...</h1>
       </div>
     );
   }
@@ -124,13 +127,15 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           </div>
         </div>
       </div>
-      {gameStatus !== 'active' && (
+      {showWelcomeModal && (
+        <WelcomeModal onClose={() => setShowWelcomeModal(false)} />
+      )}
+      {gameStatus !== 'active' && !showWelcomeModal && (
         <div className="modal-overlay">
           <div className="modal-text-box">
             <p className="game-message">{gameMessage || 'Game over!'}</p>
             <p className="genie-definition"><strong>Definition:</strong> {definition || 'No definition available'}</p>
             <p className="genie-example"><strong>Example:</strong> {example || 'No example available'}</p>
-            
             <button
               className="next-button"
               onClick={() => {

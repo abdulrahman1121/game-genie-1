@@ -15,7 +15,7 @@ function RewardsPage() {
   const [updatedPoints, setUpdatedPoints] = useState(points);
   const [totalCoinsState, setTotalCoinsState] = useState(totalCoins);
   const [genieMessage, setGenieMessage] = useState(
-    'Well done! You have a chance to double your reward points, if you are interested, click on the sparkle button.'
+    'Well done! to double your points, click on the sparkle button.'
   );
 
   useEffect(() => {
@@ -28,7 +28,7 @@ function RewardsPage() {
       const newTotalCoins = updateCoins(bonusPoints);
       setUpdatedPoints(bonusPoints * 2);
       setTotalCoinsState(newTotalCoins);
-      setGenieMessage('Awesome! You unscrambled it correctly and doubled your points! Choose what you would like to do next!');
+      setGenieMessage('Awesome! You got it right and doubled your points! what next!');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
