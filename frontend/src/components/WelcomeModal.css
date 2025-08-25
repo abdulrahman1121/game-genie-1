@@ -12,7 +12,7 @@
 }
 
 .modal-content {
-
+    background-color: transparent;
 }
 
 .guide-img {
@@ -25,4 +25,17 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
+}
+
+.start-button img {
+    position: relative;
+    bottom: 60px;
+    width: 150px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.start-button img:hover {
+    transform: scale(1.05);
+    
 }
