@@ -10,12 +10,11 @@ const SYSTEM_PROMPT = `You are an educational assistant for a Wordle game design
 const RECENT_WORDS_LIMIT = 50;
 
 router.post('/start', async (req, res) => {
-  console.log('Received /start request');
+  console.log('Received /start request:', req.body); // + Log request body
   try {
-    const { level } = req.body; // + Get level from request
+    const { level } = req.body;
     const blocklist = ['death', 'crime', 'blood', 'ghost', 'scary'];
     
-    // + Determine word length based on level
     let wordLength;
     if (level === 'beginner') {
       wordLength = 4;
@@ -24,14 +23,15 @@ router.post('/start', async (req, res) => {
     } else if (level === 'advanced') {
       wordLength = 5;
     } else {
+      console.warn('Invalid or missing level, defaulting to intermediate');
       wordLength = Math.random() < 0.5 ? 4 : 5; // Fallback
     }
+    console.log('Selected wordLength:', wordLength); // + Log wordLength
 
     const recentWordsSnapshot = await db.collection('recentWords').orderBy('createdAt', 'desc').limit(RECENT_WORDS_LIMIT).get();
     console.log('Fetched recent words snapshot');
     const recentWords = recentWordsSnapshot.docs.map(doc => doc.data().word.toUpperCase());
 
-    // + Updated prompt to ensure dictionary-valid words
     const wordPrompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Ensure the word is different from these recently used words: ${recentWords.join(', ') || 'none'}. The word must be a valid English word found in a standard dictionary (e.g., Merriam-Webster). Exclude non-words, proper nouns, or obscure terms like "Hopp". Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
     const wordResponse = await openai.chat.completions.create({
       model: 'gpt-4o',
@@ -44,6 +44,12 @@ router.post('/start', async (req, res) => {
     const wordMatch = wordText.match(/Word: ["']?([A-Za-z]{4,5})["']?/i);
     if (!wordMatch) throw new Error('Failed to parse word from OpenAI');
     const word = wordMatch[1].toUpperCase();
+
+    // + Validate word length matches level requirement
+    if ((level === 'beginner' && word.length !== 4) || (level === 'advanced' && word.length !== 5)) {
+      console.error(`Invalid word length for ${level}: ${word} (${word.length})`);
+      throw new Error(`Generated word "${word}" does not match required length for ${level}`);
+    }
 
     const explainPrompt = `Provide a kid-friendly definition and example sentence for the word "${word}". Return exactly in this format:\nDefinition: [DEFINITION]\nExample: [SENTENCE]\nDo not include extra text.`;
     const explainResponse = await openai.chat.completions.create({

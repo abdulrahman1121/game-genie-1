@@ -4,13 +4,15 @@ import Keyboard from '../components/Keyboard.jsx';
 import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
 import WelcomeModal from '../components/WelcomeModal.jsx';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { API_BASE } from '../lib/apiBase.js';
 import { initSession, updateCoins, getCoins } from '../utils/sessionUtils.js';
 import './GamePage.css';
 
 function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, setWordLength, gameStatus, setKeyStatuses, gridKeyPressRef }) {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const level = state?.level || 'intermediate'; // Fallback to intermediate
   const [hint, setLocalHint] = useState('');
   const [hints, setHints] = useState({ 1: '', 2: '' });
   const [explanation, setLocalExplanation] = useState('');
@@ -23,10 +25,15 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   useEffect(() => {
+    console.log('GamePage level:', level); // + Log level for debugging
     initSession();
     setCoins(getCoins());
     if (!API_BASE) return;
-    fetch(`${API_BASE}/openai/start`, { method: "POST" })
+    fetch(`${API_BASE}/openai/start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ level })
+    })
       .then(async res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
         return res.json();
@@ -34,17 +41,16 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
       .then(async data => {
         setGameId(data.gameId);
         setWordLength(data.wordLength);
-        setGameStatus("active");
+        setGameStatus('active');
         resetKeyStatuses();
         setLocalExplanation(data.explanation);
         setExplanation(data.explanation);
-        setGameMessage("");
-        setLocalHint("");
+        setGameMessage('');
+        setLocalHint('');
         setGuessCount(0);
         setTargetWord(data.word);
         setIsActualHint(false);
 
-        // Fetch hints for levels 1 and 2
         const hint1Res = await fetch(`${API_BASE}/openai/hint`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -61,10 +67,10 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
 
         setHints({ 1: hint1Data.hint, 2: hint2Data.hint });
         setIsGameReady(true);
-        setShowWelcomeModal(true); // Show welcome modal after game is ready
+        setShowWelcomeModal(true);
       })
-      .catch(err => console.error("Error starting game or fetching hints:", err));
-  }, []);
+      .catch(err => console.error('Error starting game or fetching hints:', err));
+  }, [level]); // + Add level as dependency to re-run if it changes
 
   const handleGoSelectLevel = () => {
     resetKeyStatuses();
