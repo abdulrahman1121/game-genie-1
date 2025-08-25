@@ -1,26 +1,38 @@
-
 const express = require('express');
 const router = express.Router();
 const { OpenAI } = require('openai');
-const { db, admin } = require('../firebase'); // Updated import
+const { db, admin } = require('../firebase');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const SYSTEM_PROMPT = `You are an educational assistant for a Wordle game designed for kids. Your answers should be kid-friendly, engaging, and educational. Always provide clear, concise responses.`;
 
-const RECENT_WORDS_LIMIT = 50; // + Limit for recent words
+const RECENT_WORDS_LIMIT = 50;
 
 router.post('/start', async (req, res) => {
   console.log('Received /start request');
   try {
+    const { level } = req.body; // + Get level from request
     const blocklist = ['death', 'crime', 'blood', 'ghost', 'scary'];
-    const wordLength = Math.random() < 0.5 ? 4 : 5;
+    
+    // + Determine word length based on level
+    let wordLength;
+    if (level === 'beginner') {
+      wordLength = 4;
+    } else if (level === 'intermediate') {
+      wordLength = Math.random() < 0.5 ? 4 : 5;
+    } else if (level === 'advanced') {
+      wordLength = 5;
+    } else {
+      wordLength = Math.random() < 0.5 ? 4 : 5; // Fallback
+    }
 
     const recentWordsSnapshot = await db.collection('recentWords').orderBy('createdAt', 'desc').limit(RECENT_WORDS_LIMIT).get();
     console.log('Fetched recent words snapshot');
     const recentWords = recentWordsSnapshot.docs.map(doc => doc.data().word.toUpperCase());
 
-    const wordPrompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Ensure the word is different from these recently used words: ${recentWords.join(', ') || 'none'}. Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
+    // + Updated prompt to ensure dictionary-valid words
+    const wordPrompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Ensure the word is different from these recently used words: ${recentWords.join(', ') || 'none'}. The word must be a valid English word found in a standard dictionary (e.g., Merriam-Webster). Exclude non-words, proper nouns, or obscure terms like "Hopp". Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
     const wordResponse = await openai.chat.completions.create({
       model: 'gpt-4o',
       messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: wordPrompt }],
@@ -94,7 +106,6 @@ router.post('/reset', async (req, res) => {
   }
 });
 
-// In /guess endpoint, update game document with guessCount
 router.post('/guess', async (req, res) => {
   const { gameId, guess } = req.body;
   try {
@@ -108,16 +119,16 @@ router.post('/guess', async (req, res) => {
     guesses.push({ guess, feedback });
 
     const status = guess === word ? 'won' : guesses.length >= 6 ? 'lost' : 'active';
-    const guessCount = guesses.length; // + Track guess count
+    const guessCount = guesses.length;
 
     await db.collection('games').doc(gameId).update({
       guesses,
       status,
-      guessCount, // + Store guess count
+      guessCount,
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
 
-    res.json({ feedback, status, guessCount }); // + Return guessCount
+    res.json({ feedback, status, guessCount });
   } catch (err) {
     console.error('❌ /guess error:', err.message);
     res.status(500).json({ error: 'Failed to process guess' });
@@ -162,8 +173,6 @@ router.post('/hint', async (req, res) => {
   }
 });
 
-
-// Update /unscramble endpoint
 router.post('/unscramble', async (req, res) => {
   const { gameId } = req.body;
   try {
