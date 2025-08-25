@@ -44,10 +44,28 @@
 .genie-container2 {
     position: absolute;
     right: 30px;
-    top: 250px;
+    top: 290px;
     width: 400px;
     max-width: 100%;
     z-index: 1;
+}
+
+.genie-image2 {
+  position: relative;
+  top: 115px;
+  right: 5px;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.point-image2 {
+    position: relative;
+    width: 60px;
+    height: 40px;
+    top: 170px;
+    left: 165px;
+    z-index: 2;
 }
 
 .text-box2 {
@@ -132,11 +150,7 @@
   right: 33px;
 }
 
-.genie-image2 {
-  width: 100%;
-  height: auto;
-  display: block;
-}
+
 
 .rewards-component {
   display: flex;

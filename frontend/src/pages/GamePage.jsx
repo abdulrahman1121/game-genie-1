@@ -5,6 +5,7 @@ import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE } from '../lib/apiBase.js';
+import { initSession, updateCoins, getCoins } from '../utils/sessionUtils.js';
 import './GamePage.css';
 
 function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, setWordLength, gameStatus, setKeyStatuses, gridKeyPressRef }) {
@@ -17,8 +18,11 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [guessCount, setGuessCount] = useState(0);
   const [targetWord, setTargetWord] = useState('');
   const [isActualHint, setIsActualHint] = useState(false);
+  const [coins, setCoins] = useState(getCoins());
 
   useEffect(() => {
+    initSession(); // Initialize session token
+    setCoins(getCoins());
     if (!API_BASE) return;
     fetch(`${API_BASE}/openai/start`, { method: "POST" })
       .then(async res => {
@@ -106,7 +110,8 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           hints={hints}
         />
         <div className={`genie-container ${isActualHint ? '' : 'hidden'}`}>
-          <img src={`${import.meta.env.BASE_URL}genie3.png`} alt="genie" className="genie-image" />
+          <img src={`${import.meta.env.BASE_URL}point.png`} alt="" className='point-image'/>
+          <img src={`${import.meta.env.BASE_URL}newgenie.png`} alt="genie" className="genie-image" />
           <div className="text-box">
             <span className="genie-text">
               {isActualHint && hint && (
@@ -125,13 +130,18 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
             <p className="game-message">{gameMessage || 'Game over!'}</p>
             <p className="genie-definition"><strong>Definition:</strong> {definition || 'No definition available'}</p>
             <p className="genie-example"><strong>Example:</strong> {example || 'No example available'}</p>
+            
             <button
               className="next-button"
               onClick={() => {
+                const points = gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10;
+                const newTotalCoins = updateCoins(points);
+                setCoins(newTotalCoins);
                 navigate('/rewards', {
                   state: {
                     guessCount,
-                    points: gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10,
+                    points,
+                    totalCoins: newTotalCoins,
                     gameId,
                     targetWord,
                   },
