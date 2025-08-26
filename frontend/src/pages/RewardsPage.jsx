@@ -97,6 +97,7 @@ function RewardsPage() {
           </div>
         </div>
         <div className='rewards-component'>
+          
           {showUnscramble ? (
             <Unscramble
               gameId={gameId}
@@ -117,15 +118,15 @@ function RewardsPage() {
                     setIsFlipped(false);
                   }, 500);
                 }}>
-                  <img src={`${import.meta.env.BASE_URL}sparkle.png`} alt="sparkle" className="sparkle-image"/>
+                  <img src={`${import.meta.env.BASE_URL}bonus.png`} alt="sparkle" className="sparkle-image"/>
                 </button>
                 <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/game')}>
-                  <img src={`${import.meta.env.BASE_URL}skip-image.png`} alt="skip" className="skip-image"/>
+                  <img src={`${import.meta.env.BASE_URL}new-next.png`} alt="skip" className="skip-image"/>
                 </button>
-                <button className={`home-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/')}>
-                  <img src={`${import.meta.env.BASE_URL}home-image.png`} alt="home" className="home-image"/>
-                </button>
+                
               </div>
+              <img src={`${import.meta.env.BASE_URL}bonus-bubble.png`} alt="bonus-text-bubble"  className="bonus-img"/>
+              <p className="bonus-text">bonus</p>
             </>
           )}
         </div>

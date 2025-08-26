@@ -225,19 +225,46 @@
 
 .home-button, .new-game-button, .sparkle-button {
   position: relative;
-  width: 62px;
-  height: 60px;
+  width: 160px;
+  height: 80px;
   cursor: pointer;
+  left: 23px;
   border: none;
   bottom: 430px;
   background-color: transparent;
 
 }
 
-.sparkle-button, .new-game-button {
-  margin-right: 25px;
+.new-game-button {
+  left: 5px;
 }
-.home-button img, .new-game-button img, .sparkle-button img {
+.bonus-img {
+  position: relative;
+  bottom: 730px;
+  right: 350px;
+  height: auto;
+  z-index: 1;
+}
+
+.bonus-text {
+  position: relative;
+  width: 189.119px;
+  height: 55.632px;
+  flex-shrink: 0;
+  bottom: 980px;
+  right: 360px;
+  color: #FF7201;
+  text-align: center;
+  font-family: "Lilita One";
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 40px; /* 100% */
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.new-game-button img, .sparkle-button img {
   width: 100%;
   height: auto;
 }
