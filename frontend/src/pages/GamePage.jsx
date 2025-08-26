@@ -12,7 +12,7 @@ import './GamePage.css';
 function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, setWordLength, gameStatus, setKeyStatuses, gridKeyPressRef }) {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const level = state?.level || 'intermediate'; // Fallback to intermediate
+  const level = state?.level || 'intermediate';
   const [hint, setLocalHint] = useState('');
   const [hints, setHints] = useState({ 1: '', 2: '' });
   const [explanation, setLocalExplanation] = useState('');
@@ -23,9 +23,11 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [isActualHint, setIsActualHint] = useState(false);
   const [coins, setCoins] = useState(getCoins());
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [showGenieOnly, setShowGenieOnly] = useState(false);
+  const [modalButtonType, setModalButtonType] = useState('start'); // + State for modal button type
 
   useEffect(() => {
-    console.log('GamePage level:', level); // + Log level for debugging
+    console.log('GamePage level:', level);
     initSession();
     setCoins(getCoins());
     if (!API_BASE) return;
@@ -68,9 +70,15 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         setHints({ 1: hint1Data.hint, 2: hint2Data.hint });
         setIsGameReady(true);
         setShowWelcomeModal(true);
+        setShowGenieOnly(true);
+        setModalButtonType('start'); // + Ensure start button on game start
       })
       .catch(err => console.error('Error starting game or fetching hints:', err));
-  }, [level]); // + Add level as dependency to re-run if it changes
+  }, [level]);
+
+  useEffect(() => {
+    setShowGenieOnly(showWelcomeModal || gameStatus !== 'active');
+  }, [showWelcomeModal, gameStatus]);
 
   const handleGoSelectLevel = () => {
     resetKeyStatuses();
@@ -80,6 +88,11 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const handleGoHome = () => {
     resetKeyStatuses();
     navigate('/');
+  };
+
+  const handleShowWelcomeModal = () => {
+    setShowWelcomeModal(true);
+    setModalButtonType('close'); // + Set to close button when triggered by question button
   };
 
   if (!isGameReady) {
@@ -97,6 +110,9 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
       <header className="game-page-header">
         <GoBackImage onClick={handleGoSelectLevel} />
         <SettingsImage />
+        <button className="question-button" onClick={handleShowWelcomeModal}> {/* + Fixed onClick */}
+          <img src={`${import.meta.env.BASE_URL}question.png`} alt="instructions" className="question-image" />
+        </button>
       </header>
       <div className="game-container">
         <Grid
@@ -118,23 +134,33 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
           setIsActualHint={setIsActualHint}
           hints={hints}
         />
-        <div className={`genie-container ${isActualHint ? '' : 'hidden'}`}>
-          <img src={`${import.meta.env.BASE_URL}point.png`} alt="" className='point-image'/>
+        <div className={`genie-container ${showGenieOnly || isActualHint ? '' : 'hidden'}`}>
+          {!showGenieOnly && (
+            <>
+              <img src={`${import.meta.env.BASE_URL}point.png`} alt="" className="point-image" />
+              <div className="text-box">
+                <span className="genie-text">
+                  {isActualHint && hint && (
+                    <div className="hint-container">
+                      <span className="hint-prefix">Hint</span>
+                      <span>{hint}</span>
+                    </div>
+                  )}
+                </span>
+              </div>
+            </>
+          )}
           <img src={`${import.meta.env.BASE_URL}newgenie.png`} alt="genie" className="genie-image" />
-          <div className="text-box">
-            <span className="genie-text">
-              {isActualHint && hint && (
-                <div className="hint-container">
-                  <span className="hint-prefix">Hint</span>
-                  <span>{hint}</span>
-                </div>
-              )}
-            </span>
-          </div>
         </div>
       </div>
       {showWelcomeModal && (
-        <WelcomeModal onClose={() => setShowWelcomeModal(false)} />
+        <WelcomeModal
+          onClose={() => {
+            setShowWelcomeModal(false);
+            setModalButtonType('start'); // + Reset to start for next game load
+          }}
+          buttonType={modalButtonType} // + Use dynamic buttonType
+        />
       )}
       {gameStatus !== 'active' && !showWelcomeModal && (
         <div className="modal-overlay">

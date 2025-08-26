@@ -52,7 +52,7 @@
 
 .genie-image2 {
   position: relative;
-  top: 115px;
+  top: 130px;
   right: 5px;
   width: 100%;
   height: auto;
@@ -63,7 +63,7 @@
     position: relative;
     width: 60px;
     height: 40px;
-    top: 170px;
+    bottom: 265px;
     left: 165px;
     z-index: 2;
 }
@@ -77,9 +77,8 @@
   border: 2px solid #01B4BC;
   border-radius: 25px;
   z-index: 10;
-  bottom: 540px;
+  bottom: 580px;
   left: 25px;
-  overflow-y: auto;
 }
 
 
@@ -238,6 +237,7 @@
 .new-game-button {
   left: 5px;
 }
+
 .bonus-img {
   position: relative;
   bottom: 730px;

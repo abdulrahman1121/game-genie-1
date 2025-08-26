@@ -15,6 +15,23 @@
     background-color: transparent;
 }
 
+.close-button {
+  position: relative;
+  bottom: 390px;
+  left: 160px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.close-btn {
+    width: 40px;
+    height: 40px;
+}
+
 .guide-img {
     width: 400px;
     height: 400px;

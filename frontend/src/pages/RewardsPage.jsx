@@ -38,7 +38,7 @@ function RewardsPage() {
       }, 50);
     } else if (tries >= 3) {
       setCorrectSentence(sentence);
-      setGenieMessage('Unfortunately you used all 3 attempts. Returning to rewards.');
+      setGenieMessage('You used all 3 attempts.');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
@@ -72,7 +72,7 @@ function RewardsPage() {
   return (
     <div className="rewards-page">
       <header className='rewards-page-header'>
-        <GoBackImage onClick={() => navigate('/game')} />
+        <GoBackImage onClick={() => navigate('/select-level')} />
         <SettingsImage />
       </header>
       <div className="rewards-container">
@@ -81,23 +81,26 @@ function RewardsPage() {
           <img src={`${import.meta.env.BASE_URL}coin.png`} alt="coin" className="coin-image"/>
         </div>
         <div className="genie-container2">
-          <img src={`${import.meta.env.BASE_URL}point.png`} alt="" className='point-image2'/>
           <img src={`${import.meta.env.BASE_URL}newgenie.png`} alt="genie-image" className='genie-image2'/>
-          <div className="text-box2">
-            <div className="genie-text3">
-              {getGeniePrefix()}
-              <span>{genieMessage}</span>
-              {genieMessage.startsWith('Unfortunately') && (
-                <div className="correct">
-                  <strong>Correct: </strong>
-                  <p className="correct-sentence">{correctSentence}</p>
+          {(genieMessage.startsWith('Awesome') || genieMessage.startsWith('You')) && ( // + Apply condition to point-image2
+            <>
+              <img src={`${import.meta.env.BASE_URL}point.png`} alt="" className='point-image2'/>
+              <div className="text-box2">
+                <div className="genie-text3">
+                  {getGeniePrefix()}
+                  <span>{genieMessage}</span>
+                  {genieMessage.startsWith('You') && (
+                    <div className="correct">
+                      <strong>Correct: </strong>
+                      <p className="correct-sentence">{correctSentence}</p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
+            </>
+          )}
         </div>
         <div className='rewards-component'>
-          
           {showUnscramble ? (
             <Unscramble
               gameId={gameId}
@@ -120,12 +123,11 @@ function RewardsPage() {
                 }}>
                   <img src={`${import.meta.env.BASE_URL}bonus.png`} alt="sparkle" className="sparkle-image"/>
                 </button>
-                <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/game')}>
+                <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/select-level')}>
                   <img src={`${import.meta.env.BASE_URL}new-next.png`} alt="skip" className="skip-image"/>
                 </button>
-                
               </div>
-              <img src={`${import.meta.env.BASE_URL}bonus-bubble.png`} alt="bonus-text-bubble"  className="bonus-img"/>
+              <img src={`${import.meta.env.BASE_URL}bonus-bubble.png`} alt="bonus-text-bubble" className="bonus-img"/>
               <p className="bonus-text">bonus</p>
             </>
           )}
