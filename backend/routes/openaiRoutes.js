@@ -34,7 +34,7 @@ router.post('/start', async (req, res) => {
 
     const wordPrompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Ensure the word is different from these recently used words: ${recentWords.join(', ') || 'none'}. The word must be a valid English word found in a standard dictionary (e.g., Merriam-Webster). Exclude non-words, proper nouns, or obscure terms like "Hopp". Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
     const wordResponse = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-5',
       messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: wordPrompt }],
       max_tokens: 100
     });
@@ -150,7 +150,7 @@ router.post('/hint', async (req, res) => {
     const { word, hints } = gameDoc.data();
     const prompt = `Provide a level-${hintLevel} hint for the ${word.length}-letter word "${word}" without revealing it. Level 1: broad context (e.g., "This word is a type of animal"). Level 2: more specific (e.g., "This word is an animal that lives in water"). Ensure hints are kid-friendly, random, and avoid repeating previous hints: ${hints.map(h => h.hint).join(', ')}. Return exactly in this format:\nHint: [HINT]`;
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-5',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: prompt }
@@ -189,7 +189,7 @@ router.post('/unscramble', async (req, res) => {
     const [, example] = explanation.split('\n');
     const sentencePrompt = `Generate a kid-friendly sentence (different from "${example}") using the word "${word}" for kids aged 8-13, with exactly 5 to 7 words. Return exactly in this format:\nSentence: [SENTENCE]\nDo not include extra text.`;
     const sentenceResponse = await openai.chat.completions.create({
-      model: 'gpt-4o',
+      model: 'gpt-5',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         { role: 'user', content: sentencePrompt }
