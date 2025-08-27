@@ -8,8 +8,9 @@ export const SESSION_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
 export function initSession() {
   let session = JSON.parse(sessionStorage.getItem(SESSION_KEY));
   const now = Date.now();
+  const isNewSession = !session || !session.token || !session.timestamp || now - session.timestamp > SESSION_DURATION; // + Track new session
 
-  if (!session || !session.token || !session.timestamp || now - session.timestamp > SESSION_DURATION) {
+  if (isNewSession) {
     session = {
       token: uuidv4(),
       timestamp: now,
@@ -18,7 +19,7 @@ export function initSession() {
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
   }
 
-  return session;
+  return { ...session, isNewSession }; // + Return isNewSession flag
 }
 
 // Update coin count in session

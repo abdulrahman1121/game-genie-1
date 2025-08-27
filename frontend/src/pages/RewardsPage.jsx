@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
 import Unscramble from "../components/Unscramble.jsx";
-import { updateCoins, getCoins } from '../utils/sessionUtils.js';
+import { updateCoins, getCoins, initSession } from '../utils/sessionUtils.js'; // + Import initSession
 import './RewardsPage.css';
 import { useState, useEffect } from "react";
 
@@ -17,8 +17,11 @@ function RewardsPage() {
   const [genieMessage, setGenieMessage] = useState(
     'Well done! to double your points, click on the sparkle button.'
   );
+  const [isNewSession, setIsNewSession] = useState(false); // + Track new session
 
   useEffect(() => {
+    const session = initSession(); // + Check session
+    setIsNewSession(session.isNewSession); // + Set new session flag
     setTotalCoinsState(getCoins());
   }, []);
 
@@ -82,7 +85,7 @@ function RewardsPage() {
         </div>
         <div className="genie-container2">
           <img src={`${import.meta.env.BASE_URL}newgenie.png`} alt="genie-image" className='genie-image2'/>
-          {(genieMessage.startsWith('Awesome') || genieMessage.startsWith('You')) && ( // + Apply condition to point-image2
+          {(genieMessage.startsWith('Awesome') || genieMessage.startsWith('You')) && (
             <>
               <img src={`${import.meta.env.BASE_URL}point.png`} alt="" className='point-image2'/>
               <div className="text-box2">
@@ -127,8 +130,12 @@ function RewardsPage() {
                   <img src={`${import.meta.env.BASE_URL}new-next.png`} alt="skip" className="skip-image"/>
                 </button>
               </div>
-              <img src={`${import.meta.env.BASE_URL}bonus-bubble.png`} alt="bonus-text-bubble" className="bonus-img"/>
-              <p className="bonus-text">bonus</p>
+              {isNewSession && ( // + Show bonus-img and bonus-text only for new session
+                <>
+                  <img src={`${import.meta.env.BASE_URL}bonus-bubble.png`} alt="bonus-text-bubble" className="bonus-img"/>
+                  <p className="bonus-text">bonus</p>
+                </>
+              )}
             </>
           )}
         </div>

@@ -24,11 +24,11 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [coins, setCoins] = useState(getCoins());
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [showGenieOnly, setShowGenieOnly] = useState(false);
-  const [modalButtonType, setModalButtonType] = useState('start'); // + State for modal button type
+  const [modalButtonType, setModalButtonType] = useState('start');
 
   useEffect(() => {
     console.log('GamePage level:', level);
-    initSession();
+    const session = initSession(); // + Get session with isNewSession
     setCoins(getCoins());
     if (!API_BASE) return;
     fetch(`${API_BASE}/openai/start`, {
@@ -69,9 +69,9 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
 
         setHints({ 1: hint1Data.hint, 2: hint2Data.hint });
         setIsGameReady(true);
-        setShowWelcomeModal(true);
+        setShowWelcomeModal(session.isNewSession); // + Show modal only for new session
         setShowGenieOnly(true);
-        setModalButtonType('start'); // + Ensure start button on game start
+        setModalButtonType('start');
       })
       .catch(err => console.error('Error starting game or fetching hints:', err));
   }, [level]);
@@ -79,6 +79,8 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   useEffect(() => {
     setShowGenieOnly(showWelcomeModal || gameStatus !== 'active');
   }, [showWelcomeModal, gameStatus]);
+
+  
 
   const handleGoSelectLevel = () => {
     resetKeyStatuses();
@@ -92,7 +94,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
 
   const handleShowWelcomeModal = () => {
     setShowWelcomeModal(true);
-    setModalButtonType('close'); // + Set to close button when triggered by question button
+    setModalButtonType('close');
   };
 
   if (!isGameReady) {
@@ -110,7 +112,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
       <header className="game-page-header">
         <GoBackImage onClick={handleGoSelectLevel} />
         <SettingsImage />
-        <button className="question-button" onClick={handleShowWelcomeModal}> {/* + Fixed onClick */}
+        <button className="question-button" onClick={handleShowWelcomeModal}>
           <img src={`${import.meta.env.BASE_URL}question.png`} alt="instructions" className="question-image" />
         </button>
       </header>
@@ -157,9 +159,9 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         <WelcomeModal
           onClose={() => {
             setShowWelcomeModal(false);
-            setModalButtonType('start'); // + Reset to start for next game load
+            setModalButtonType('start');
           }}
-          buttonType={modalButtonType} // + Use dynamic buttonType
+          buttonType={modalButtonType}
         />
       )}
       {gameStatus !== 'active' && !showWelcomeModal && (

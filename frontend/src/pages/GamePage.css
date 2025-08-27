@@ -8,7 +8,6 @@
   justify-content: flex-start;
   text-align: center;
   box-sizing: border-box;
-  overflow: hidden;
 }
 
 .loading-container {
@@ -28,8 +27,6 @@
 
 .game-page-header {
   margin-bottom: 50px;
-  position: relative;
-  z-index: 700;
 }
 
 .question-button {
@@ -62,7 +59,6 @@
   margin-left: 380px;
   flex: 1;
   margin-top: -50px;
-  min-height: 500px;
 }
 
 .genie-container {
@@ -157,7 +153,6 @@
   margin-right: 35px;
   flex: 0 0 auto;
   margin-top: 35px;
-  width: 100%;
 }
 
 .modal-overlay {
