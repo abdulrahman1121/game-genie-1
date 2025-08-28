@@ -146,13 +146,13 @@ function RewardsPage() {
                     setIsFlipped(false);
                   }, 400);
                 }}>
-                  <img src={`${import.meta.env.BASE_URL}bonus.png`} alt="sparkle" className="sparkle-image"/>
+                  <img src={`${import.meta.env.BASE_URL}new-bonus.png`} alt="sparkle" className="sparkle-image"/>
                 </button>
                 <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
                   setShowBonus(false);
                   navigate('/game', { state: { level } });
                 }}>
-                  <img src={`${import.meta.env.BASE_URL}new-next.png`} alt="skip" className="skip-image"/>
+                  <img src={`${import.meta.env.BASE_URL}next2.png`} alt="skip" className="skip-image"/>
                 </button>
               </div>
               {showBonus && (

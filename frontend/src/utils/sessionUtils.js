@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const SESSION_KEY = 'game_session';
 export const BONUS_SESSION_KEY = 'bonus_session';
-export const SESSION_DURATION = 1 * 60 * 1000; // 2 minutes in milliseconds
+export const SESSION_DURATION = 10 * 60 * 1000; // 2 minutes in milliseconds
 
 export function initSession(sessionKey = SESSION_KEY) {
   let session = JSON.parse(sessionStorage.getItem(sessionKey));

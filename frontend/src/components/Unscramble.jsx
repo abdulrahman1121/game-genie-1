@@ -99,7 +99,7 @@ function Unscramble({ gameId, targetWord, onResult }) {
 
   return (
     <div className="unscramble-comp">
-      <img src={`${import.meta.env.BASE_URL}unscramble-image.png`} alt="unscramble" className="unscramble-img" />
+      <img src={`${import.meta.env.BASE_URL}unscramble2.png`} alt="unscramble" className="unscramble-img" />
       <div className="word-bank">
         <img src={`${import.meta.env.BASE_URL}word-bank.png`} alt="word-bank" className="word-bank-img" />
         <div className="word-bank-words">

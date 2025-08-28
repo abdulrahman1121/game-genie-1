@@ -224,9 +224,9 @@
   align-items: center;
 }
 
-.home-button, .new-game-button, .sparkle-button {
+.new-game-button, .sparkle-button {
   position: relative;
-  width: 160px;
+  width: 140px;
   height: 80px;
   cursor: pointer;
   left: 23px;
@@ -236,7 +236,12 @@
 }
 
 .new-game-button {
-  left: 5px;
+  left: -20px;
+  margin-left: 50px;
+}
+
+.sparkle-button {
+  right: 90px;
 }
 
 .bonus-img {
