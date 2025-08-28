@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
 import Unscramble from "../components/Unscramble.jsx";
-import { updateCoins, getCoins, initSession } from '../utils/sessionUtils.js'; // + Import initSession
+import { updateCoins, getCoins, initSession } from '../utils/sessionUtils.js';
 import './RewardsPage.css';
 import { useState, useEffect } from "react";
 
@@ -17,12 +17,19 @@ function RewardsPage() {
   const [genieMessage, setGenieMessage] = useState(
     'Well done! to double your points, click on the sparkle button.'
   );
-  const [isNewSession, setIsNewSession] = useState(false); // + Track new session
+  const [isNewSession, setIsNewSession] = useState(initSession().isNewSession);
+  const [showBonus, setShowBonus] = useState(false);
 
   useEffect(() => {
-    const session = initSession(); // + Check session
-    setIsNewSession(session.isNewSession); // + Set new session flag
+    const session = initSession();
+    setIsNewSession(session.isNewSession);
     setTotalCoinsState(getCoins());
+    if (session.isNewSession) {
+      setShowBonus(true);
+      const timer = setTimeout(() => setShowBonus(false), 10000); // Show for 10 seconds
+      return () => clearTimeout(timer);
+    }
+    console.log('RewardsPage Session:', { isNewSession: session.isNewSession, session }); // Debug
   }, []);
 
   const handleUnscrambleResult = (isCorrect, tries, sentence) => {
@@ -130,7 +137,7 @@ function RewardsPage() {
                   <img src={`${import.meta.env.BASE_URL}new-next.png`} alt="skip" className="skip-image"/>
                 </button>
               </div>
-              {isNewSession && ( // + Show bonus-img and bonus-text only for new session
+              {showBonus && (
                 <>
                   <img src={`${import.meta.env.BASE_URL}bonus-bubble.png`} alt="bonus-text-bubble" className="bonus-img"/>
                   <p className="bonus-text">bonus</p>

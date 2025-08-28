@@ -1,28 +1,25 @@
 import { v4 as uuidv4 } from 'uuid';
 
-// Session token management utilities
 export const SESSION_KEY = 'game_session';
-export const SESSION_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
+export const SESSION_DURATION = 2 * 60 * 1000; // 10 minutes in milliseconds
 
-// Initialize or retrieve session token
 export function initSession() {
   let session = JSON.parse(sessionStorage.getItem(SESSION_KEY));
   const now = Date.now();
-  const isNewSession = !session || !session.token || !session.timestamp || now - session.timestamp > SESSION_DURATION; // + Track new session
+  const isNewSession = !session || !session.token || !session.timestamp || now - session.timestamp > SESSION_DURATION;
 
   if (isNewSession) {
     session = {
-      token: uuidv4(),
+      token: session?.token || uuidv4(), // Preserve token if session exists
       timestamp: now,
-      coins: 0,
+      coins: session?.coins || 0, // Preserve coins for new session
     };
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
   }
 
-  return { ...session, isNewSession }; // + Return isNewSession flag
+  return { ...session, isNewSession };
 }
 
-// Update coin count in session
 export function updateCoins(coinsEarned) {
   const session = JSON.parse(sessionStorage.getItem(SESSION_KEY));
   if (session && Date.now() - session.timestamp <= SESSION_DURATION) {
@@ -33,7 +30,6 @@ export function updateCoins(coinsEarned) {
   return 0; // Session expired or invalid
 }
 
-// Get current coin count
 export function getCoins() {
   const session = JSON.parse(sessionStorage.getItem(SESSION_KEY));
   if (session && Date.now() - session.timestamp <= SESSION_DURATION) {
@@ -42,7 +38,6 @@ export function getCoins() {
   return 0; // Session expired or invalid
 }
 
-// Check if session is valid
 export function isSessionValid() {
   const session = JSON.parse(sessionStorage.getItem(SESSION_KEY));
   return session && Date.now() - session.timestamp <= SESSION_DURATION;
