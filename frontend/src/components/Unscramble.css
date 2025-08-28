@@ -22,7 +22,7 @@
 }
 
 .word-bank-img {
-  width: 100%; /* Adjust based on your PNG size */
+  width: 100%;
   height: auto;
 }
 
@@ -58,7 +58,6 @@
   position: absolute;
 }
 
-/* Line-specific placements with dynamic spacing */
 .line-1 .placed {
   top: 35px;
   left: calc(15px + var(--cumulative-width, 0px));
@@ -73,7 +72,7 @@
   top: 140px;
   left: calc(15px + var(--cumulative-width, 0px));
 }
-/* Limit to 3 words per line, adjust left to end at 280px */
+
 .lines-container {
   position: absolute;
   left: 30px;
@@ -82,7 +81,7 @@
   width: 330px;
   display: flex;
   flex-direction: column;
-  gap: 40px; /* Space between lines */
+  gap: 40px;
 }
 
 .line {
@@ -91,14 +90,13 @@
 }
 
 .line .placed {
-  --cumulative-width: 0px; /* Reset for each line */
+  --cumulative-width: 0px;
 }
 
-/* Calculate cumulative width for each position */
 .line-1 .placed:nth-child(1),
 .line-2 .placed:nth-child(1),
 .line-3 .placed:nth-child(1) {
-  --cumulative-width: 40px; /* Starting left */
+  --cumulative-width: 40px;
 }
 
 .line-1 .placed:nth-child(2),
@@ -138,4 +136,160 @@
 .check-button img:hover {
   transform: scale(1.05);
   cursor: pointer;
+}
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .unscramble-comp {
+    width: 360px; /* Compressed */
+    margin-bottom: 150px;
+  }
+
+  .word-bank {
+    top: 80px;
+    right: 280px;
+    width: 340px; /* Compressed */
+    height: 220px;
+  }
+
+  .word-bank-words {
+    top: 55px;
+    left: 20px;
+    width: 240px; /* Compressed */
+    gap: 4px;
+  }
+
+  .word, .placed {
+    font-size: 14px; /* Smaller */
+    line-height: 32px;
+    padding: 0px 12px;
+    border-radius: 6px;
+    border: 1px solid #FFA800;
+  }
+
+  .lines-container {
+    left: 25px;
+    top: 80px;
+    height: 110px;
+    width: 260px;
+    gap: 32px;
+  }
+
+  .line-1 .placed {
+    top: 28px;
+    left: calc(12px + var(--cumulative-width, 0px));
+  }
+
+  .line-2 .placed {
+    top: 68px;
+    left: calc(12px + var(--cumulative-width, 0px));
+  }
+
+  .line-3 .placed {
+    top: 108px;
+    left: calc(12px + var(--cumulative-width, 0px));
+  }
+
+  .line-1 .placed:nth-child(1),
+  .line-2 .placed:nth-child(1),
+  .line-3 .placed:nth-child(1) {
+    --cumulative-width: 32px;
+  }
+
+  .line-1 .placed:nth-child(2),
+  .line-2 .placed:nth-child(2),
+  .line-3 .placed:nth-child(2) {
+    --cumulative-width: calc(32px + var(--prev-width-1, 0px));
+  }
+
+  .line-1 .placed:nth-child(3),
+  .line-2 .placed:nth-child(3),
+  .line-3 .placed:nth-child(3) {
+    --cumulative-width: calc(32px + var(--prev-width-1, 0px) + var(--prev-width-2, 0px));
+  }
+
+  .check-button {
+    width: 150px;
+    height: 28px;
+    left: 120px;
+    bottom: 110px;
+  }
+}
+
+/* Mobile (<768px) */
+@media (max-width: 767px) {
+  .unscramble-comp {
+    width: 280px; /* Highly compressed */
+    margin-bottom: 100px;
+  }
+
+  .word-bank {
+    top: 60px;
+    right: 210px;
+    width: 260px; /* Highly compressed */
+    height: 170px;
+  }
+
+  .word-bank-words {
+    top: 40px;
+    left: 15px;
+    width: 180px; /* Highly compressed */
+    gap: 3px;
+  }
+
+  .word, .placed {
+    font-size: 12px; /* Smaller */
+    line-height: 28px;
+    padding: 0px 10px;
+    border-radius: 5px;
+    border: 1px solid #FFA800;
+  }
+
+  .lines-container {
+    left: 20px;
+    top: 60px;
+    height: 85px;
+    width: 200px;
+    gap: 24px;
+  }
+
+  .line-1 .placed {
+    top: 20px;
+    left: calc(10px + var(--cumulative-width, 0px));
+  }
+
+  .line-2 .placed {
+    top: 50px;
+    left: calc(10px + var(--cumulative-width, 0px));
+  }
+
+  .line-3 .placed {
+    top: 80px;
+    left: calc(10px + var(--cumulative-width, 0px));
+  }
+
+  .line-1 .placed:nth-child(1),
+  .line-2 .placed:nth-child(1),
+  .line-3 .placed:nth-child(1) {
+    --cumulative-width: 24px;
+  }
+
+  .line-1 .placed:nth-child(2),
+  .line-2 .placed:nth-child(2),
+  .line-3 .placed:nth-child(2) {
+    --cumulative-width: calc(24px + var(--prev-width-1, 0px));
+  }
+
+  .line-1 .placed:nth-child(3),
+  .line-2 .placed:nth-child(3),
+  .line-3 .placed:nth-child(3) {
+    --cumulative-width: calc(24px + var(--prev-width-1, 0px) + var(--prev-width-2, 0px));
+  }
+
+  .check-button {
+    width: 120px;
+    height: 22px;
+    left: 90px;
+    bottom: 85px;
+  }
 }

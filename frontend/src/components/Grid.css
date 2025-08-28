@@ -1,49 +1,43 @@
 .grid {
-    display: grid;
-    grid-template-columns: repeat(var(--grid-cols, 5), 56px);
-    gap: 6px;
-    max-width: calc((var(--grid-cols, 5) * 56px) + ((var(--grid-cols, 5) - 1) * 6px));
-    margin: 0 auto;
-    position: relative; /* For modal layering */
-  }
-
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols, 5), 56px);
+  gap: 6px;
+  max-width: calc((var(--grid-cols, 5) * 56px) + ((var(--grid-cols, 5) - 1) * 6px));
+  margin: 0 auto;
+  position: relative;
+}
 
 .grid-cols-4 {
-    --grid-cols: 4;
+  --grid-cols: 4;
 }
-
 
 .grid-cols-5 {
-    --grid-cols: 5;
+  --grid-cols: 5;
 }
- 
-
 
 .modal-overlay {
-   position: fixed;
-   top: 0;
-   left: 0;
-   right: 0;
-   bottom: 0;
-   background-color: rgba(0, 0, 0, 0.5);
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   z-index: 1000;
- }
-
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
 
 .modal-content {
-   background-color: #fff;
-   padding: 20px;
-   border-radius: 8px;
-   text-align: center;
-   max-width: 400px;
-   width: 90%;
-   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* + Added for subtle 3D effect */
-   font-family: 'Comic Sans MS', 'Arial', sans-serif;
- }
-
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  font-family: 'Comic Sans MS', 'Arial', sans-serif;
+}
 
 .modal-title {
   font-size: 24px;
@@ -52,63 +46,124 @@
   line-height: 1.3;
 }
 
-
-
 .modal-explanation p {
-    margin: 10px 0; /* + Spacing between definition and example */
+  margin: 10px 0;
 }
 
 .modal-explanation strong {
-    color: #007bff; /* + Bright blue for emphasis */
+  color: #007bff;
 }
 
-/* + New style for error message when explanation fails */
 .modal-error {
-    color: #ff4444; /* + Red for error visibility */
-    font-size: 16px; /* + Slightly smaller but readable */
-    margin: 15px 0; /* + Spacing for error message */
+  color: #ff4444;
+  font-size: 16px;
+  margin: 15px 0;
 }
 
 .modal-explanation {
   font-size: 18px;
   margin-top: 16px;
   line-height: 1.5;
-  text-align: left; /* + Changed to left-align for readability */
-  color: #444; /* + Changed to darker color for contrast on white background */
-  line-height: 1.5;
+  text-align: left;
+  color: #444;
   margin-bottom: 20px;
 }
 
-
 .modal-buttons {
-   display: flex;
-   justify-content: center;
-   gap: 20px;
- }
-
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
 
 .modal-buttons .play-button {
-   padding: 10px 20px;
-   font-size: 16px;
-   background-color: orange;
-   cursor: pointer;
-   color: white; /* + Ensure text is white for contrast */
-   border: none; /* + Remove default border for cleaner look */
-   border-radius: 8px; /* + Rounded corners for friendliness */
-   transition: background-color 0.3s; /* + Smooth hover effect */
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: orange;
+  cursor: pointer;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.3s;
 }
 
-/* + New hover effect for play button */
 .modal-buttons .play-button:hover {
-    background-color: orangered; /* + Darker shade of #01B4BC for hover */
+  background-color: orangered;
 }
 
-/* + New style for Home button to differentiate it */
 .modal-buttons .play-button:nth-child(2) {
-    background-color: #007bff; /* + Blue for Home button */
+  background-color: #007bff;
 }
 
-/* + New hover effect for Home button */
 .modal-buttons .play-button:nth-child(2):hover {
-    background-color: #0056b3; /* + Darker blue for Home button hover */
+  background-color: #0056b3;
+}
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(var(--grid-cols, 5), 48px); /* Smaller cells */
+    gap: 4px;
+    max-width: calc((var(--grid-cols, 5) * 48px) + ((var(--grid-cols, 5) - 1) * 4px));
+  }
+
+  .modal-content {
+    max-width: 320px; /* Compressed */
+    padding: 12px;
+  }
+
+  .modal-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .modal-explanation {
+    font-size: 15px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+  }
+
+  .modal-error {
+    font-size: 13px;
+    margin: 10px 0;
+  }
+
+  .modal-buttons .play-button {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+}
+
+/* Mobile (<768px) */
+@media (max-width: 767px) {
+  .grid {
+    grid-template-columns: repeat(var(--grid-cols, 5), 36px); /* Smaller cells */
+    gap: 3px;
+    max-width: calc((var(--grid-cols, 5) * 36px) + ((var(--grid-cols, 5) - 1) * 3px));
+  }
+
+  .modal-content {
+    max-width: 260px; /* Highly compressed */
+    padding: 8px;
+  }
+
+  .modal-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .modal-explanation {
+    font-size: 13px;
+    margin-top: 8px;
+    margin-bottom: 10px;
+  }
+
+  .modal-error {
+    font-size: 12px;
+    margin: 8px 0;
+  }
+
+  .modal-buttons .play-button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
 }

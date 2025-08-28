@@ -9,7 +9,6 @@
   text-align: center;
   box-sizing: border-box;
   z-index: 0;
-  
 }
 
 .loading-container {
@@ -33,12 +32,23 @@
 
 .game-page-header {
   margin-bottom: 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0 16px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 10px; /* Space between question and settings buttons */
+  align-items: center;
 }
 
 .question-button {
   position: relative;
-  top: 25px;
-  left: 500px;
+  top: 17px;
+  left: 1120px;
   width: 60px;
   height: 60px;
   cursor: pointer;
@@ -48,7 +58,7 @@
 }
 
 .question-image {
-  width: 100%;
+  width: 85%;
   height: auto;
   transition: transform 0.2s ease-in-out;
 }
@@ -66,7 +76,6 @@
   flex: 1;
   margin-top: -50px;
   position: relative;
-  
 }
 
 .genie-container {
@@ -76,7 +85,6 @@
   width: 400px;
   max-width: 100%;
   transition: opacity 0.3s ease;
-  
 }
 
 .genie-image {
@@ -95,8 +103,6 @@
   top: 130px;
   left: 10px;
 }
-
-
 
 .text-box {
   position: relative;
@@ -157,19 +163,23 @@
 
 .welcome-modal {
   position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
   z-index: 1001;
-  transition: opacity 0.3s ease;
 }
 
 .welcome-modal-content {
   position: relative;
+  background: transparent;
   display: inline-block;
-  top: 20px; 
+  top: 20px;
 }
 
 .welcome-guide-img {
@@ -220,11 +230,15 @@
 
 .game-over-modal {
   position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  height: 100vh;
   z-index: 1001;
   transition: opacity 0.3s ease, background-color 0.3s ease;
 }
@@ -235,12 +249,9 @@
   width: 600px;
   max-width: 90%;
   padding: 20px;
-/*  right: 170px;
-  top: 20px; */
   border: 2px solid #01B4BC;
   border-radius: 25px;
   text-align: center;
-  
 }
 
 .game-message {
@@ -311,4 +322,264 @@
 
 .next-button:hover img {
   transform: scale(1.05);
+}
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .game-page {
+    padding-bottom: 70px; /* Compressed */
+  }
+
+  .game-page-header {
+    margin-bottom: 20px;
+    padding: 0 10px;
+  }
+
+  .header-buttons {
+    gap: 8px; /* Smaller gap */
+  }
+
+  .question-button {
+    position: static;
+    width: 40px; /* Smaller */
+    height: 40px;
+  }
+
+  .game-container {
+    margin-left: 0;
+    margin-top: 0;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .genie-container {
+    width: 60%; /* Highly compressed */
+    max-width: 260px;
+    top: 0;
+    left: 0;
+  }
+
+  .genie-image {
+    bottom: 0;
+    left: 0;
+    max-width: 160px; /* Smaller genie */
+  }
+
+  .point-image {
+    width: 32px; /* Smaller */
+    height: 22px;
+    top: 5px;
+    left: 2px;
+  }
+
+  .text-box {
+    width: 100%;
+    max-width: 220px; /* Highly compressed */
+    height: 140px; /* Smaller */
+    left: 0;
+    bottom: 0;
+    padding: 4px;
+    border-radius: 10px;
+  }
+
+  .genie-text {
+    width: 90%;
+    height: 120px;
+    font-size: 14px; /* Smaller text */
+    line-height: 18px;
+  }
+
+  .hint-prefix {
+    font-size: 24px; /* Smaller */
+    line-height: 24px;
+  }
+
+  .keyboard-container {
+    bottom: 0;
+    margin-right: 0;
+    margin-top: 10px;
+    transform: scale(0.8); /* Smaller keyboard */
+  }
+
+  .welcome-modal-content {
+    top: 5px;
+  }
+
+  .welcome-guide-img {
+    width: 220px; /* Smaller */
+    height: 220px;
+  }
+
+  .welcome-close-button {
+    left: auto;
+    right: 5px;
+    top: 2px;
+  }
+
+  .welcome-close-btn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .welcome-start-btn {
+    width: 80px;
+  }
+
+  .game-over-modal-content {
+    width: 65%; /* Highly compressed */
+    max-width: 320px;
+    padding: 8px;
+  }
+
+  .game-message {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .genie-definition, .genie-example {
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .genie-definition strong, .genie-example strong {
+    font-size: 14px;
+  }
+
+  .next-button {
+    width: 100px;
+    height: 24px;
+  }
+
+  .loading-text {
+    font-size: 20px;
+  }
+}
+
+/* Mobile (<768px) */
+@media (max-width: 767px) {
+  .game-page {
+    padding-bottom: 40px; /* Highly compressed */
+  }
+
+  .game-page-header {
+    margin-bottom: 10px;
+    padding: 0 6px;
+  }
+
+  .header-buttons {
+    gap: 6px; /* Smaller gap */
+  }
+
+  .question-button {
+    position: static;
+    width: 30px; /* Smaller */
+    height: 30px;
+  }
+
+  .game-container {
+    flex-direction: column;
+    gap: 3px;
+    margin-top: 0;
+  }
+
+  .genie-container {
+    width: 75%; /* Highly compressed */
+    max-width: 200px;
+    top: 0;
+    left: 0;
+  }
+
+  .genie-image {
+    bottom: 0;
+    left: 0;
+    max-width: 120px; /* Smaller genie */
+  }
+
+  .point-image {
+    width: 24px; /* Smaller */
+    height: 16px;
+    top: 3px;
+    left: 2px;
+  }
+
+  .text-box {
+    width: 100%;
+    max-width: 180px; /* Highly compressed */
+    height: 120px; /* Smaller */
+    padding: 3px;
+    border-radius: 8px;
+  }
+
+  .genie-text {
+    width: 95%;
+    height: 100px;
+    font-size: 13px; /* Smaller text */
+    line-height: 16px;
+  }
+
+  .hint-prefix {
+    font-size: 20px;
+    line-height: 20px;
+  }
+
+  .keyboard-container {
+    bottom: 0;
+    margin-right: 0;
+    margin-top: 6px;
+    transform: scale(0.7); /* Smaller keyboard */
+  }
+
+  .welcome-modal-content {
+    top: 3px;
+  }
+
+  .welcome-guide-img {
+    width: 160px; /* Smaller */
+    height: 160px;
+  }
+
+  .welcome-close-button {
+    left: auto;
+    right: 3px;
+    top: 2px;
+  }
+
+  .welcome-close-btn {
+    width: 20px;
+    height: 20px;
+  }
+
+  .welcome-start-btn {
+    width: 60px;
+  }
+
+  .game-over-modal-content {
+    width: 75%;
+    max-width: 260px; /* Highly compressed */
+    padding: 6px;
+  }
+
+  .game-message {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  .genie-definition, .genie-example {
+    font-size: 11px;
+    line-height: 18px;
+  }
+
+  .genie-definition strong, .genie-example strong {
+    font-size: 12px;
+  }
+
+  .next-button {
+    width: 80px;
+    height: 20px;
+  }
+
+  .loading-text {
+    font-size: 16px;
+  }
 }

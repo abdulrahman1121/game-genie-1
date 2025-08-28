@@ -1,7 +1,7 @@
 .select-level-page {
   position: relative;
   width: 100vw;
-  min-height: 100vh; 
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -11,31 +11,29 @@
   padding-bottom: 200px;
 }
 
-
 .select-level-header {
   margin-bottom: 200px;
 }
 
-
 .go-back-button {
   position: absolute;
-  top: 16px; /* Top of the page */
-  left: 16px; /* Left edge with padding */
+  top: 16px;
+  left: 16px;
   background-color: transparent;
   border: none;
   cursor: pointer;
 }
 
 .go-back-button img {
-  width: 100%; /* Adjust size as needed */
+  width: 100%;
   height: auto;
+  max-width: 58px; /* Explicit max-width for consistency */
 }
-
 
 .settings-button {
   position: absolute;
-  top: 16px; /* Top of the page */
-  right: 25px; /* Right edge with padding */
+  top: 16px;
+  right: 25px;
   background-color: transparent;
   border: none;
   padding: 0;
@@ -43,11 +41,10 @@
 }
 
 .settings-button img {
-  width: 100%; /* Adjust size as needed */
+  width: 100%;
   height: auto;
+  max-width: 58px; /* Explicit max-width for consistency */
 }
- 
-
 
 .text-and-buttons {
   display: flex;
@@ -57,7 +54,6 @@
   width: 100%;
   flex: 1;
 }
-
 
 .select-text {
   align-self: stretch;
@@ -73,7 +69,6 @@
   text-transform: uppercase;
 }
 
-
 .grade-text {
   align-self: stretch;
   color: #FFF;
@@ -87,7 +82,6 @@
   text-transform: uppercase;
   margin-bottom: 40px;
 }
-
 
 .beginner, .intermediate, .advanced {
   width: 350px;
@@ -105,9 +99,106 @@
   background-color: #f28c38;
 }
 
-
 .beginner:hover img, .intermediate:hover img, .advanced:hover img,
 .go-back-button:hover img, .settings-button:hover img {
-  transform: scale(1.05); /* Slight scale-up on hover */
-  transition: transform 0.2s ease-in-out; /* Smooth transition */
+  transform: scale(1.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .select-level-page {
+    padding-bottom: 120px; /* Reduced padding */
+  }
+
+  .select-level-header {
+    margin-bottom: 100px; /* Reduced margin */
+  }
+
+  .go-back-button {
+    left: 12px;
+    top: 12px;
+  }
+
+  .go-back-button img {
+    max-width: 40px; /* Slightly smaller */
+  }
+
+  .settings-button {
+    right: 12px;
+    top: 12px;
+  }
+
+  .settings-button img {
+    max-width: 40px; /* Slightly smaller */
+  }
+
+  .select-text {
+    font-size: 36px; /* Smaller font */
+  }
+
+  .grade-text {
+    font-size: 48px; /* Smaller font */
+    margin-bottom: 30px; /* Adjusted */
+  }
+
+  .beginner, .intermediate, .advanced {
+    width: 80%; /* Responsive width */
+    max-width: 300px; /* Limit max size */
+    height: 45px; /* Slightly smaller */
+    font-size: 18px; /* Smaller font */
+    margin: 8px;
+    margin-bottom: 20px;
+  }
+}
+
+/* Mobile (<768px) */
+@media (max-width: 767px) {
+  .select-level-page {
+    padding-bottom: 80px; /* Further reduced */
+  }
+
+  .select-level-header {
+    margin-bottom: 60px; /* Further reduced */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .go-back-button {
+    position: static; /* Remove absolute positioning */
+  }
+
+  .go-back-button img {
+    max-width: 32px; /* Smaller for mobile */
+  }
+
+  .settings-button {
+    position: static; /* Remove absolute positioning */
+  }
+
+  .settings-button img {
+    max-width: 32px; /* Smaller for mobile */
+  }
+
+  .select-text {
+    font-size: 28px; /* Smaller font */
+    margin-bottom: 10px;
+  }
+
+  .grade-text {
+    font-size: 32px; /* Smaller font */
+    margin-bottom: 20px;
+  }
+
+  .beginner, .intermediate, .advanced {
+    width: 85%; /* More responsive */
+    max-width: 250px; /* Smaller max size */
+    height: 40px; /* Smaller height */
+    font-size: 16px; /* Smaller font */
+    margin: 6px;
+    margin-bottom: 15px;
+  }
 }

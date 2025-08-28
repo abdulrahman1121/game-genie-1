@@ -1,7 +1,7 @@
 .landing-page {
   position: relative;
   width: 100vw;
-  min-height: 100vh; 
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -18,8 +18,8 @@
 
 .game-genie-text {
   position: absolute;
-  top: 16px; /* Top of the page */
-  left: 16px; /* Left edge with padding */
+  top: 16px;
+  left: 16px;
   font-size: 20px;
   color: #fff;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
@@ -32,10 +32,9 @@
 
 .signup-button {
   position: absolute;
-  top: 0%; /* Top of the page */
+  top: 0;
   right: 10px;
-  padding-top: 10px; /* top, right, bottom, left */
-  /* left: 1110px; */
+  padding-top: 10px;
   cursor: pointer;
   background-color: transparent;
   color: #fff;
@@ -49,7 +48,6 @@
   padding: 2px;
   transition: transform 0.3s ease;
 }
-
 
 .boxes-container {
   display: flex;
@@ -98,7 +96,6 @@
   font-weight: 600;
 }
 
-
 .quickplay-button {
   background-color: transparent;
   cursor: pointer;
@@ -111,7 +108,114 @@
 }
 
 .quickplay-button:hover img, .signup-button:hover img {
-  transform: scale(1.05); /* Slight scale-up on hover */
-} 
+  transform: scale(1.05);
+}
 
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .landing-page {
+    padding-bottom: 120px; /* Reduced padding */
+  }
 
+  .landing-header {
+    margin-bottom: 100px; /* Reduced margin */
+  }
+
+  .game-genie-text {
+    font-size: 18px; /* Slightly smaller */
+    left: 12px;
+    top: 12px;
+  }
+
+  .signup-button {
+    right: 8px;
+    padding-top: 8px;
+  }
+
+  .signup-button img {
+    width: 120px; /* Scale down */
+    height: 26px;
+  }
+
+  .top-box {
+    max-width: 90%; /* Responsive width */
+    width: auto;
+    font-size: 36px; /* Smaller font */
+  }
+
+  .middle-box {
+    font-size: 48px; /* Smaller font */
+    min-height: 96px; /* Adjusted for font size */
+  }
+
+  .bottom-box {
+    font-size: 18px; /* Slightly smaller */
+    min-height: 30px;
+  }
+
+  .boxes-container {
+    gap: 12px; /* Slightly smaller gap */
+    margin-bottom: 24px;
+  }
+
+  .quickplay-button img {
+    width: 80%; /* Scale proportionally */
+    max-width: 300px; /* Limit max size */
+  }
+}
+
+/* Mobile (<768px) */
+@media (max-width: 767px) {
+  .landing-page {
+    padding-bottom: 80px; /* Further reduced */
+  }
+
+  .landing-header {
+    margin-bottom: 60px; /* Further reduced */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .game-genie-text {
+    position: static; /* Remove absolute positioning */
+    font-size: 16px; /* Smaller font */
+  }
+
+  .signup-button {
+    position: static; /* Remove absolute positioning */
+    padding-top: 0;
+  }
+
+  .signup-button img {
+    width: 100px; /* Further scale down */
+    height: 22px;
+  }
+
+  .top-box {
+    max-width: 85%; /* More responsive */
+    font-size: 28px; /* Smaller font */
+  }
+
+  .middle-box {
+    font-size: 32px; /* Smaller font */
+    min-height: 64px; /* Adjusted */
+  }
+
+  .bottom-box {
+    font-size: 16px; /* Smaller font */
+    min-height: 24px;
+  }
+
+  .boxes-container {
+    gap: 8px; /* Smaller gap */
+    margin-bottom: 16px;
+  }
+
+  .quickplay-button img {
+    width: 70%; /* Further scale down */
+    max-width: 200px; /* Limit max size */
+  }
+}
