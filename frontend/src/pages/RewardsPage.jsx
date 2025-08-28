@@ -19,40 +19,41 @@ function RewardsPage() {
   );
   const [showBonus, setShowBonus] = useState(false);
   const [correctSentence, setCorrectSentence] = useState('');
+  const [showGenieContent, setShowGenieContent] = useState(false);
 
   useEffect(() => {
-    const bonusSession = initSession(BONUS_SESSION_KEY); // Use bonus session key
+    const bonusSession = initSession(BONUS_SESSION_KEY);
     setTotalCoinsState(getCoins());
     if (bonusSession.isNewSession) {
       setShowBonus(true);
     }
-    console.log('RewardsPage Bonus Session:', { isNewSession: bonusSession.isNewSession, bonusSession }); // Debug
+    console.log('RewardsPage Bonus Session:', { isNewSession: bonusSession.isNewSession, bonusSession });
   }, []);
 
-  // Check bonus session every 2 minutes
   useEffect(() => {
     const interval = setInterval(() => {
       const bonusSession = initSession(BONUS_SESSION_KEY);
       if (bonusSession.isNewSession) {
         setShowBonus(true);
       }
-    }, 2 * 60 * 1000); // 2 minutes
+    }, 2 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
 
   const handleUnscrambleResult = (isCorrect, tries, sentence) => {
     if (isCorrect) {
-      const bonusPoints = updatedPoints;
+      const bonusPoints = updatedPoints === 0 ? 10 : updatedPoints;
       const newTotalCoins = updateCoins(bonusPoints);
-      setUpdatedPoints(bonusPoints * 2);
+      setUpdatedPoints(updatedPoints === 0 ? 10 : bonusPoints * 2);
       setTotalCoinsState(newTotalCoins);
-      setGenieMessage('Awesome! You got it right and doubled your points! what next!');
+      setGenieMessage('Awesome! You got it right and earned bonus points! what next!');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
           setShowUnscramble(false);
+          setShowGenieContent(true);
           setIsFlipped(false);
-        }, 800);
+        }, 400);
       }, 50);
     } else if (tries >= 3) {
       setCorrectSentence(sentence);
@@ -61,8 +62,9 @@ function RewardsPage() {
         setIsFlipped(true);
         setTimeout(() => {
           setShowUnscramble(false);
+          setShowGenieContent(true);
           setIsFlipped(false);
-        }, 500);
+        }, 400);
       }, 50);
     } else if ((3 - tries) === 1) {
       setGenieMessage('Incorrect! You have 1 try left.');
@@ -98,23 +100,27 @@ function RewardsPage() {
         </div>
         <div className="genie-container2">
           <img src={`${import.meta.env.BASE_URL}newgenie.png`} alt="genie-image" className='genie-image2'/>
-          {(genieMessage.startsWith('Awesome') || genieMessage.startsWith('You')) && (
-            <>
-              <img src={`${import.meta.env.BASE_URL}point.png`} alt="" className='point-image2'/>
-              <div className="text-box2">
-                <div className="genie-text3">
-                  {getGeniePrefix()}
-                  <span>{genieMessage}</span>
-                  {genieMessage.startsWith('You') && (
-                    <div className="correct">
-                      <strong>Correct: </strong>
-                      <p className="correct-sentence">{correctSentence}</p>
-                    </div>
-                  )}
+          <img
+            src={`${import.meta.env.BASE_URL}point.png`}
+            alt=""
+            className="point-image2"
+            style={{ opacity: (genieMessage.startsWith('Awesome') || genieMessage.startsWith('You')) && showGenieContent ? 1 : 0 }}
+          />
+          <div
+            className="text-box2"
+            style={{ opacity: (genieMessage.startsWith('Awesome') || genieMessage.startsWith('You')) && showGenieContent ? 1 : 0 }}
+          >
+            <div className="genie-text3">
+              {getGeniePrefix()}
+              <span>{genieMessage}</span>
+              {genieMessage.startsWith('You') && (
+                <div className="correct2">
+                  <strong>Correct: </strong>
+                  <p className="correct-sentence">{correctSentence}</p>
                 </div>
-              </div>
-            </>
-          )}
+              )}
+            </div>
+          </div>
         </div>
         <div className='rewards-component'>
           {showUnscramble ? (
@@ -125,23 +131,25 @@ function RewardsPage() {
             />
           ) : (
             <>
-              <img src={`${import.meta.env.BASE_URL}rewards.png`} alt="rewards" className={`rewards-image ${isFlipped ? 'flip' : ''}`}/>
-              <p className={`rewards-tries ${isFlipped ? 'flip' : ''}`}>{guessCount}</p>
+              <img src={`${import.meta.env.BASE_URL}new-rewards.png`} alt="rewards" className={`rewards-image ${isFlipped ? 'flip' : ''}`}/>
+              <div className={`lamp-container ${isFlipped ? 'flip' : ''}`}>
+                <img src={`${import.meta.env.BASE_URL}lamp.png`} alt="lamp image" className="lamp-img"/>
+              </div>
               <p className={`rewards-points ${isFlipped ? 'flip' : ''}`}>+ {updatedPoints}</p>
               <div className="reward-buttons">
                 <button className={`sparkle-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
-                  setShowBonus(false); // Hide bonus on click
+                  setShowBonus(false);
                   setGenieMessage('Welcome to the Bonus Challenge, click on the word tiles to place it and click again to remove it!');
                   setIsFlipped(true);
                   setTimeout(() => {
                     setShowUnscramble(true);
                     setIsFlipped(false);
-                  }, 500);
+                  }, 400);
                 }}>
                   <img src={`${import.meta.env.BASE_URL}bonus.png`} alt="sparkle" className="sparkle-image"/>
                 </button>
                 <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
-                  setShowBonus(false); // Hide bonus on click
+                  setShowBonus(false);
                   navigate('/game', { state: { level } });
                 }}>
                   <img src={`${import.meta.env.BASE_URL}new-next.png`} alt="skip" className="skip-image"/>

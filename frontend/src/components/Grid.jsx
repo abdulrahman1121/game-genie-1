@@ -53,7 +53,6 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   }, [gridKeyPressRef, handleKeyPress]);
 
   const handleGuess = async () => {
-    setGuessCount(currentRow + 1);
     if (currentGuess.length !== wordLength || localGameStatus !== 'active') return;
 
     try {
@@ -64,6 +63,8 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
+
+      setGuessCount(currentRow + 1); // Moved here to increment only for valid guesses
 
       const newGrid = [...grid];
       newGrid[currentRow] = currentGuess.split('').map((letter, i) => ({
