@@ -10,6 +10,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   const [currentRow, setCurrentRow] = useState(0);
   const [currentGuess, setCurrentGuess] = useState('');
   const [localGameStatus, setLocalGameStatus] = useState('active');
+  const [shakeRow, setShakeRow] = useState(false); // Add shakeRow state
 
   useEffect(() => {
     if (wordLength) {
@@ -52,8 +53,53 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
     return () => { gridKeyPressRef.current = null; };
   }, [gridKeyPressRef, handleKeyPress]);
 
+  // Validate guess against WordsAPI with caching
+  const isValidWord = async (word) => {
+    const cache = JSON.parse(sessionStorage.getItem('wordCache') || '{}');
+    const lowerWord = word.toLowerCase();
+    if (cache[lowerWord] !== undefined) {
+      return cache[lowerWord];
+    }
+
+    try {
+      const res = await fetch(`https://wordsapiv1.p.rapidapi.com/words/${lowerWord}`, {
+        method: 'GET',
+        headers: {
+          'X-RapidAPI-Key': import.meta.env.VITE_WORDS_API_KEY,
+          'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+        }
+      });
+      const isValid = res.status === 200;
+      cache[lowerWord] = isValid;
+      sessionStorage.setItem('wordCache', JSON.stringify(cache));
+      return isValid;
+    } catch (err) {
+      console.error('WordsAPI validation error:', err);
+      setGameMessage('Error validating word. Please try again.');
+      return false; // Fallback to invalid on error
+    }
+  };
+
   const handleGuess = async () => {
     if (currentGuess.length !== wordLength || localGameStatus !== 'active') return;
+
+    // Check if guess is a valid dictionary word
+    const isValid = await isValidWord(currentGuess);
+    if (!isValid) {
+      setGameMessage('Invalid word! Please enter a valid English word.');
+      setShakeRow(true); // Trigger shake animation
+      setTimeout(() => {
+        setShakeRow(false);
+        // Clear the current row's tiles after shake
+        setGrid(prev => {
+          const newGrid = [...prev];
+          newGrid[currentRow] = Array(wordLength).fill({ letter: '', status: 'empty' });
+          return newGrid;
+        });
+        setCurrentGuess('');
+      }, 400); // Match animation duration
+      return;
+    }
 
     try {
       const res = await fetch(`${API_BASE}/openai/guess`, {
@@ -64,7 +110,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
       const data = await res.json();
       if (data.error) throw new Error(data.error);
 
-      setGuessCount(currentRow + 1); // Moved here to increment only for valid guesses
+      setGuessCount(currentRow + 1);
 
       const newGrid = [...grid];
       newGrid[currentRow] = currentGuess.split('').map((letter, i) => ({
@@ -100,6 +146,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
       }
     } catch (err) {
       console.error('Error submitting guess:', err);
+      setGameMessage('Error submitting guess. Please try again.');
     }
   };
 

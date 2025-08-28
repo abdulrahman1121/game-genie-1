@@ -15,6 +15,19 @@
   --grid-cols: 5;
 }
 
+/* Shake animation for invalid guess */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
+.grid-row-shake {
+  animation: shake 0.4s ease;
+}
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -101,13 +114,13 @@
 /* Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
   .grid {
-    grid-template-columns: repeat(var(--grid-cols, 5), 48px); /* Smaller cells */
+    grid-template-columns: repeat(var(--grid-cols, 5), 48px);
     gap: 4px;
     max-width: calc((var(--grid-cols, 5) * 48px) + ((var(--grid-cols, 5) - 1) * 4px));
   }
 
   .modal-content {
-    max-width: 320px; /* Compressed */
+    max-width: 320px;
     padding: 12px;
   }
 
@@ -136,13 +149,13 @@
 /* Mobile (<768px) */
 @media (max-width: 767px) {
   .grid {
-    grid-template-columns: repeat(var(--grid-cols, 5), 36px); /* Smaller cells */
+    grid-template-columns: repeat(var(--grid-cols, 5), 36px);
     gap: 3px;
     max-width: calc((var(--grid-cols, 5) * 36px) + ((var(--grid-cols, 5) - 1) * 3px));
   }
 
   .modal-content {
-    max-width: 260px; /* Highly compressed */
+    max-width: 260px;
     padding: 8px;
   }
 
