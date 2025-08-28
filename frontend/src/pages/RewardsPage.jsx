@@ -2,14 +2,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
 import Unscramble from "../components/Unscramble.jsx";
-import { updateCoins, getCoins, initSession } from '../utils/sessionUtils.js';
+import { updateCoins, getCoins, initSession, SESSION_KEY, BONUS_SESSION_KEY } from '../utils/sessionUtils.js';
 import './RewardsPage.css';
 import { useState, useEffect } from "react";
 
 function RewardsPage() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const { guessCount = 0, points = 0, gameId = '', targetWord = '', totalCoins = 0 } = state || {};
+  const { guessCount = 0, points = 0, gameId = '', targetWord = '', totalCoins = 0, level = 'intermediate' } = state || {};
   const [isFlipped, setIsFlipped] = useState(false);
   const [showUnscramble, setShowUnscramble] = useState(false);
   const [updatedPoints, setUpdatedPoints] = useState(points);
@@ -17,19 +17,27 @@ function RewardsPage() {
   const [genieMessage, setGenieMessage] = useState(
     'Well done! to double your points, click on the sparkle button.'
   );
-  const [isNewSession, setIsNewSession] = useState(initSession().isNewSession);
   const [showBonus, setShowBonus] = useState(false);
+  const [correctSentence, setCorrectSentence] = useState('');
 
   useEffect(() => {
-    const session = initSession();
-    setIsNewSession(session.isNewSession);
+    const bonusSession = initSession(BONUS_SESSION_KEY); // Use bonus session key
     setTotalCoinsState(getCoins());
-    if (session.isNewSession) {
+    if (bonusSession.isNewSession) {
       setShowBonus(true);
-      const timer = setTimeout(() => setShowBonus(false), 10000); // Show for 10 seconds
-      return () => clearTimeout(timer);
     }
-    console.log('RewardsPage Session:', { isNewSession: session.isNewSession, session }); // Debug
+    console.log('RewardsPage Bonus Session:', { isNewSession: bonusSession.isNewSession, bonusSession }); // Debug
+  }, []);
+
+  // Check bonus session every 2 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const bonusSession = initSession(BONUS_SESSION_KEY);
+      if (bonusSession.isNewSession) {
+        setShowBonus(true);
+      }
+    }, 2 * 60 * 1000); // 2 minutes
+    return () => clearInterval(interval);
   }, []);
 
   const handleUnscrambleResult = (isCorrect, tries, sentence) => {
@@ -77,8 +85,6 @@ function RewardsPage() {
     }
   };
 
-  const [correctSentence, setCorrectSentence] = useState('');
-
   return (
     <div className="rewards-page">
       <header className='rewards-page-header'>
@@ -124,6 +130,7 @@ function RewardsPage() {
               <p className={`rewards-points ${isFlipped ? 'flip' : ''}`}>+ {updatedPoints}</p>
               <div className="reward-buttons">
                 <button className={`sparkle-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
+                  setShowBonus(false); // Hide bonus on click
                   setGenieMessage('Welcome to the Bonus Challenge, click on the word tiles to place it and click again to remove it!');
                   setIsFlipped(true);
                   setTimeout(() => {
@@ -133,7 +140,10 @@ function RewardsPage() {
                 }}>
                   <img src={`${import.meta.env.BASE_URL}bonus.png`} alt="sparkle" className="sparkle-image"/>
                 </button>
-                <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => navigate('/select-level')}>
+                <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
+                  setShowBonus(false); // Hide bonus on click
+                  navigate('/game', { state: { level } });
+                }}>
                   <img src={`${import.meta.env.BASE_URL}new-next.png`} alt="skip" className="skip-image"/>
                 </button>
               </div>

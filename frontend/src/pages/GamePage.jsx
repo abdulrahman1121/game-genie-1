@@ -166,24 +166,25 @@ return (
           <p className="genie-definition"><strong>Definition:</strong> {definition || 'No definition available'}</p>
           <p className="genie-example"><strong>Example:</strong> {example || 'No example available'}</p>
           <button
-            className="next-button"
-            onClick={() => {
-              const points = gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10;
-              const newTotalCoins = updateCoins(points);
-              setCoins(newTotalCoins);
-              navigate('/rewards', {
-                state: {
-                  guessCount,
-                  points,
-                  totalCoins: newTotalCoins,
-                  gameId,
-                  targetWord,
-                },
-              });
-            }}
-          >
-            <img src={`${import.meta.env.BASE_URL}next-button.png`} alt="next" className="next-image" />
-          </button>
+  className="next-button"
+  onClick={() => {
+    const points = gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10;
+    const newTotalCoins = updateCoins(points);
+    setCoins(newTotalCoins);
+    navigate('/rewards', {
+      state: {
+        guessCount,
+        points,
+        totalCoins: newTotalCoins,
+        gameId,
+        targetWord,
+        level, // Pass level to RewardsPage
+      },
+    });
+  }}
+>
+  <img src={`${import.meta.env.BASE_URL}next-button.png`} alt="next" className="next-image" />
+</button>
         </div>
       </div>
     </div>
