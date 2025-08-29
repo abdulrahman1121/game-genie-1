@@ -15,17 +15,41 @@
   --grid-cols: 5;
 }
 
-/* Shake animation for invalid guess */
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  50% { transform: translateX(4px); }
-  75% { transform: translateX(-4px); }
-  100% { transform: translateX(0); }
+/* Add to Grid.css */
+.grid-wrapper {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
 }
 
-.grid-row-shake {
-  animation: shake 0.4s ease;
+.invalid-word-message {
+  position: absolute;
+  width: 436px;
+  height: 25px;
+  flex-shrink: 0;
+  top: -55px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  padding: 8px 20px;
+  border: 2px solid #01B4BC;
+  background: #FFF;
+  color: #01B4BC;
+  text-align: center;
+  font-family: Monda;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: 2;
+}
+
+.invalid-word-message.show {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .modal-overlay {

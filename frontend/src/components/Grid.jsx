@@ -10,8 +10,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   const [currentRow, setCurrentRow] = useState(0);
   const [currentGuess, setCurrentGuess] = useState('');
   const [localGameStatus, setLocalGameStatus] = useState('active');
-  const [shakeRow, setShakeRow] = useState(false); // Add shakeRow state
-
+  const [showInvalidWord, setShowInvalidWord] = useState(false);
   useEffect(() => {
     if (wordLength) {
       setGrid(Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' })));
@@ -86,20 +85,19 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
     // Check if guess is a valid dictionary word
     const isValid = await isValidWord(currentGuess);
     if (!isValid) {
-      setGameMessage('Invalid word! Please enter a valid English word.');
-      setShakeRow(true); // Trigger shake animation
-      setTimeout(() => {
-        setShakeRow(false);
-        // Clear the current row's tiles after shake
-        setGrid(prev => {
-          const newGrid = [...prev];
-          newGrid[currentRow] = Array(wordLength).fill({ letter: '', status: 'empty' });
-          return newGrid;
-        });
-        setCurrentGuess('');
-      }, 400); // Match animation duration
-      return;
-    }
+  setGameMessage('Invalid word! Please enter a valid English word.');
+  setShowInvalidWord(true); // Show the message
+  setTimeout(() => {
+    setShowInvalidWord(false); // Hide after 1.5s (or keep until next guess)
+    setGrid(prev => {
+      const newGrid = [...prev];
+      newGrid[currentRow] = Array(wordLength).fill({ letter: '', status: 'empty' });
+      return newGrid;
+    });
+    setCurrentGuess('');
+  }, 1500);
+  return;
+}
 
     try {
       const res = await fetch(`${API_BASE}/openai/guess`, {
@@ -186,6 +184,10 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   }, [handleKeyPress]);
 
   return (
+  <div className="grid-wrapper">
+    <div className={`invalid-word-message${showInvalidWord ? ' show' : ''}`}>
+      Invalid word, please try again...
+    </div>
     <div className={`grid grid-cols-${wordLength}`}>
       {grid.map((row, rowIndex) =>
         row.map((tile, colIndex) => (
@@ -193,7 +195,8 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
         ))
       )}
     </div>
-  );
+  </div>
+);
 }
 
 export default Grid;
