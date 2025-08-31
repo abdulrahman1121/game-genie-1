@@ -111,6 +111,36 @@
   transform: scale(1.05);
 }
 
+.error-display {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* Center the image in its parent */
+body, html, #root {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* For mobile devices */
+@media (max-width: 600px) {
+  .error-display {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    max-height: 100vh;
+    object-fit: contain;
+  }
+}
+
+
 /* Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
   .landing-page {

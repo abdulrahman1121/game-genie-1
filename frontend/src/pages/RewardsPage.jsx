@@ -20,6 +20,13 @@ function RewardsPage() {
   const [showBonus, setShowBonus] = useState(false);
   const [correctSentence, setCorrectSentence] = useState('');
   const [showGenieContent, setShowGenieContent] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsSmallScreen(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const bonusSession = initSession(BONUS_SESSION_KEY);
@@ -39,6 +46,11 @@ function RewardsPage() {
     }, 2 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);
+
+  if (isSmallScreen) {
+    return <img src={`${import.meta.env.BASE_URL}error.png`} alt="error for small screens" className='error-display'/>;
+  }
+  
 
   const handleUnscrambleResult = (isCorrect, tries, sentence) => {
     if (isCorrect) {
@@ -72,6 +84,8 @@ function RewardsPage() {
       setGenieMessage(`Incorrect! You have ${3 - tries} tries left.`);
     }
   };
+
+
 
   const getGeniePrefix = () => {
     if (genieMessage.startsWith('Welcome')) {

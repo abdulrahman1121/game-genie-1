@@ -23,6 +23,14 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [coins, setCoins] = useState(getCoins());
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [modalButtonType, setModalButtonType] = useState('start');
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1024);
+
+  useEffect(() => {
+    const handleResize = () => setIsSmallScreen(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
 
   useEffect(() => {
     console.log('GamePage level:', level);
@@ -85,6 +93,10 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
     setModalButtonType('close');
   };
 
+  if (isSmallScreen) {
+    return <img src={`${import.meta.env.BASE_URL}error.png`} alt="error for small screens" className='error-display'/>;
+  }
+  
   if (!isGameReady) {
     return (
       <div className="loading-container">
