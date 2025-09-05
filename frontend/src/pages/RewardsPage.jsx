@@ -58,7 +58,7 @@ function RewardsPage() {
       const newTotalCoins = updateCoins(bonusPoints);
       setUpdatedPoints(updatedPoints === 0 ? 10 : bonusPoints * 2);
       setTotalCoinsState(newTotalCoins);
-      setGenieMessage('Awesome! You got it right and earned bonus points! what next!');
+      setGenieMessage('Awesome! Click on next game to play again!');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
