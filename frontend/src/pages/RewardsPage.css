@@ -283,7 +283,7 @@
 /* Tablet (768px - 1024px): 75% scaling */
 @media (max-width: 1024px) {
   .rewards-page {
-    padding-bottom: 30px; /* 40 × 0.75 */
+    padding-bottom: 70px; /* Match GamePage tablet padding */
   }
 
   .rewards-page-header {
@@ -428,7 +428,7 @@
 /* Mobile (<768px): 50% scaling */
 @media (max-width: 767px) {
   .rewards-page {
-    padding-bottom: 20px; /* 40 × 0.5 */
+    padding-bottom: 40px; /* Match GamePage mobile padding */
   }
 
   .rewards-page-header {

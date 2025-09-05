@@ -58,6 +58,7 @@
   flex: 1;
 }
 
+
 .top-box, .middle-box, .bottom-box {
   width: 100%;
   max-width: 775px;
@@ -101,6 +102,7 @@
   cursor: pointer;
   text-decoration: none;
   border: none;
+  margin-top: 46px;
 }
 
 .quickplay-button img {

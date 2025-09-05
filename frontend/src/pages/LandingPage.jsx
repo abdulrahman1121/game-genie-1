@@ -20,7 +20,7 @@ function LandingPage() {
     <div className="landing-page">
       <header className="landing-header">
         <span className="game-genie-text">Game Genie</span>
-        <button className='signup-button' onClick={() => navigate('/signup')}>
+        <button className='signup-button' onClick={() => navigate('/signup')} disabled>
           <img src={`${import.meta.env.BASE_URL}signup2.png`} alt="signup" />
         </button>
       </header>
@@ -32,10 +32,10 @@ function LandingPage() {
         <div className="box bottom-box">
           Where learning math, reading and coding feels like play.✧˖°.
         </div>
+        <button className="quickplay-button" onClick={() => navigate('/select-level')}>
+          <img src={`${import.meta.env.BASE_URL}quickplay.png`} alt="quickplay" />
+        </button>
       </div>
-      <button className="quickplay-button" onClick={() => navigate('/select-level')}>
-        <img src={`${import.meta.env.BASE_URL}quickplay.png`} alt="quickplay" />
-      </button>
     </div>
   );
 }

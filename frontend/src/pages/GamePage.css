@@ -37,6 +37,7 @@
   align-items: center;
   width: 100%;
   padding: 0 16px;
+  position: relative;
 }
 
 .header-buttons {
@@ -46,9 +47,9 @@
 }
 
 .question-button {
-  position: relative;
-  top: 17px;
-  left: 1120px;
+  position: absolute;
+  top: 20px;
+  right: 130px;
   width: 60px;
   height: 60px;
   cursor: pointer;

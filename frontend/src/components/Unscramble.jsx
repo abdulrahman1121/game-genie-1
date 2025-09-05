@@ -99,7 +99,12 @@ function Unscramble({ gameId, targetWord, onResult }) {
 
   return (
     <div className="unscramble-comp">
-      <img src={`${import.meta.env.BASE_URL}unscramble2.png`} alt="unscramble" className="unscramble-img" />
+      <div className="unscramble-image-container">
+        <img src={`${import.meta.env.BASE_URL}unscramble2.png`} alt="unscramble" className="unscramble-img" />
+        <button className="check-button" onClick={handleCheck}>
+          <img src={`${import.meta.env.BASE_URL}check.png`} alt="" />
+        </button>
+      </div>
       <div className="word-bank">
         <img src={`${import.meta.env.BASE_URL}word-bank.png`} alt="word-bank" className="word-bank-img" />
         <div className="word-bank-words">
@@ -136,9 +141,6 @@ function Unscramble({ gameId, targetWord, onResult }) {
           </div>
         ))}
       </div>
-      <button className="check-button" onClick={handleCheck}>
-        <img src={`${import.meta.env.BASE_URL}check.png`} alt="" />
-      </button>
     </div>
   );
 }
