@@ -2,7 +2,7 @@
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://abdulrahman1121.github.io/game-genie-1",
+  "homepage": "https://gogamegenie.com",
   "type": "module",
   "scripts": {
     "dev": "vite",
