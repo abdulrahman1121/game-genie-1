@@ -8,7 +8,12 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://abdulrahman1121.github.io'],
+  origin: [
+    "http://localhost:5173", 
+    "https://abdulrahman1121.github.io", 
+    "https://gogamegenie.com",
+    "https://www.gogamegenie.com"
+  ],
 }));
 
 console.log('Loading openaiRoutes:', openaiRoutes); // Debug import
