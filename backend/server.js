@@ -9,10 +9,10 @@ app.use(express.json());
 
 app.use(cors({
   origin: [
-    "http://localhost:5173", 
-    "https://abdulrahman1121.github.io", 
+    "http://localhost:5173",
+    "https://abdulrahman1121.github.io",
     "https://gogamegenie.com",
-    "https://www.gogamegenie.com"
+    "https://www.gogamegenie.com",
   ],
 }));
 
