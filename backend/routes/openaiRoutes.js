@@ -212,6 +212,47 @@ router.post('/unscramble', async (req, res) => {
   }
 });
 
+router.post('/validate-word', async (req, res) => {
+  const { word } = req.body;
+  if (!word || typeof word !== 'string') {
+    return res.status(400).json({ error: 'Word required' });
+  }
+
+  const lowerWord = word.toLowerCase().trim();
+  if (!/^[a-z]+$/.test(lowerWord)) {
+    return res.json({ valid: false });
+  }
+
+  const apiKey = process.env.RAPIDAPI_KEY || process.env.WORDS_API_KEY;
+  if (!apiKey) {
+    console.warn('No RAPIDAPI_KEY configured — skipping dictionary check');
+    return res.json({ valid: true });
+  }
+
+  try {
+    const response = await fetch(`https://wordsapiv1.p.rapidapi.com/words/${encodeURIComponent(lowerWord)}`, {
+      method: 'GET',
+      headers: {
+        'X-RapidAPI-Key': apiKey,
+        'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com',
+      },
+    });
+
+    if (response.status === 404) {
+      return res.json({ valid: false });
+    }
+    if (!response.ok) {
+      console.error('WordsAPI unexpected status:', response.status);
+      return res.json({ valid: true });
+    }
+
+    return res.json({ valid: true });
+  } catch (err) {
+    console.error('WordsAPI validation error:', err.message);
+    return res.json({ valid: true });
+  }
+});
+
 const evaluateGuess = (guess, target) => {
   const feedback = Array(target.length).fill('incorrect');
   const targetLetters = target.split('');

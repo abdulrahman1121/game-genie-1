@@ -52,7 +52,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
     return () => { gridKeyPressRef.current = null; };
   }, [gridKeyPressRef, handleKeyPress]);
 
-  // Validate guess against WordsAPI with caching
+  // Validate guess via backend (WordsAPI key stays server-side)
   const isValidWord = async (word) => {
     const cache = JSON.parse(sessionStorage.getItem('wordCache') || '{}');
     const lowerWord = word.toLowerCase();
@@ -61,21 +61,20 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
     }
 
     try {
-      const res = await fetch(`https://wordsapiv1.p.rapidapi.com/words/${lowerWord}`, {
-        method: 'GET',
-        headers: {
-          'X-RapidAPI-Key': import.meta.env.VITE_WORDS_API_KEY,
-          'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
-        }
+      const res = await fetch(`${API_BASE}/openai/validate-word`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ word: lowerWord }),
       });
-      const isValid = res.status === 200;
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      const isValid = data.valid === true;
       cache[lowerWord] = isValid;
       sessionStorage.setItem('wordCache', JSON.stringify(cache));
       return isValid;
     } catch (err) {
-      console.error('WordsAPI validation error:', err);
-      setGameMessage('Error validating word. Please try again.');
-      return false; // Fallback to invalid on error
+      console.error('Word validation error:', err);
+      return true;
     }
   };
 
