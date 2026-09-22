@@ -44,21 +44,6 @@ Game Genie evolves with the player's skills and interests, offering both an ente
 | Dictionary | WordsAPI (guess validation)                  |
 | Deployment | Render (backend/API), custom domain via gogamegenie.com (frontend) |
 
-## Project Structure
-
-```
-game-genie-1/
-├── backend/
-│   ├── routes/openaiRoutes.js   # /start, /guess, /hint, /unscramble, /reset
-│   ├── firebase.js              # Firebase Admin / Firestore setup
-│   └── server.js                # Express app entry point
-└── frontend/
-    └── src/
-        ├── pages/                # LandingPage, SelectLevelPage, GamePage, RewardsPage, Signup
-        ├── components/           # Grid, Tile, Keyboard, Unscramble, Level, WelcomeModal
-        └── lib/                  # apiBase.js — environment-aware API URL resolution
-```
-
 ## Getting Started
 
 ### Prerequisites
@@ -76,25 +61,6 @@ cd game-genie-1
 cd backend && npm install
 cd ../frontend && npm install
 ```
-
-### Environment Variables
-
-**`backend/.env`**
-
-| Variable | Description |
-|---|---|
-| `OPENAI_API_KEY` | OpenAI API key |
-| `FIREBASE_TYPE`, `FIREBASE_PROJECT_ID`, `FIREBASE_PRIVATE_KEY_ID`, `FIREBASE_PRIVATE_KEY`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_CLIENT_ID`, `FIREBASE_AUTH_URI`, `FIREBASE_TOKEN_URI`, `FIREBASE_UNIVERSE_DOMAIN` | Firebase Admin service account fields |
-| `RENDER_URL` | Deployed backend URL, exposed via `/api/config` |
-
-**`frontend/.env.local`**
-
-| Variable | Description |
-|---|---|
-| `VITE_API_BASE` | Backend API base URL for local dev (e.g. `http://localhost:3000/api`) |
-| `VITE_WORDS_API_KEY` | WordsAPI (RapidAPI) key for dictionary validation |
-
-> Note: `frontend/index.html` enforces a Content-Security-Policy. If you change the API origin, add it to the `connect-src` directive or requests will be blocked by the browser.
 
 ### Running Locally
 
