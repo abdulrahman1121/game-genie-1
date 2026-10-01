@@ -57,13 +57,13 @@ function RewardsPage() {
       const bonusPoints = updatedPoints === 0 ? 10 : updatedPoints;
       const newTotalCoins = updateCoins(bonusPoints);
       setUpdatedPoints(updatedPoints === 0 ? 10 : bonusPoints * 2);
-      setTotalCoinsState(newTotalCoins);
       setGenieMessage('Awesome! Click on next game to play again!');
       setTimeout(() => {
         setIsFlipped(true);
         setTimeout(() => {
           setShowUnscramble(false);
           setShowGenieContent(true);
+          setTotalCoinsState(newTotalCoins);
           setIsFlipped(false);
         }, 400);
       }, 50);
