@@ -29,9 +29,8 @@ function App() {
       setKeyStatuses(prev => {
         const newStatuses = { ...prev };
         const currentStatus = newStatuses[key] || 'empty';
-        const priority = { correct: 3, present: 2, absent: 1, empty: 0 };
-        // Update if current is empty, or status is absent and current is not correct/present, or new status has higher priority
-        if (currentStatus === 'empty' || (status === 'absent' && !['correct', 'present'].includes(currentStatus)) || priority[status] > priority[currentStatus]) {
+        const priority = { correct: 3, present: 2, incorrect: 1, empty: 0 };
+        if (currentStatus === 'empty' || priority[status] > priority[currentStatus]) {
           newStatuses[key] = status;
         }
         return newStatuses;
