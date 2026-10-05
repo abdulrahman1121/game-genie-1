@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { OpenAI } = require('openai');
 const { db, admin } = require('../firebase');
+const FALLBACK_WORDS = require('../data/fallbackWords');
+const { pickFallbackEntry } = require('../lib/fallbackSelector');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -32,38 +34,55 @@ router.post('/start', async (req, res) => {
     console.log('Fetched recent words snapshot');
     const recentWords = recentWordsSnapshot.docs.map(doc => doc.data().word.toUpperCase());
 
-    const wordPrompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Ensure the word is different from these recently used words: ${recentWords.join(', ') || 'none'}. The word must be a valid English word found in a standard dictionary (e.g., Merriam-Webster). Exclude non-words, proper nouns, or obscure terms like "Hopp". Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
-    const wordResponse = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: wordPrompt }],
-      max_tokens: 100
-    });
-    console.log('OpenAI word response:', wordResponse.choices[0].message.content);
+    let word, explanation, source = 'openai', fallbackHints, fallbackSentence;
 
-    const wordText = wordResponse.choices[0].message.content;
-    const wordMatch = wordText.match(/Word: ["']?([A-Za-z]{4,5})["']?/i);
-    if (!wordMatch) throw new Error('Failed to parse word from OpenAI');
-    const word = wordMatch[1].toUpperCase();
+    try {
+      if (process.env.FORCE_OPENAI_FALLBACK === 'true') {
+        throw new Error('Forced fallback (test mode)');
+      }
 
-    // + Validate word length matches level requirement
-    if ((level === 'beginner' && word.length !== 4) || (level === 'advanced' && word.length !== 5)) {
-      console.error(`Invalid word length for ${level}: ${word} (${word.length})`);
-      throw new Error(`Generated word "${word}" does not match required length for ${level}`);
+      const wordPrompt = `Generate a ${wordLength}-letter English word suitable for kids aged 8-13, avoiding words in this blocklist: ${blocklist.join(', ')}. Ensure the word is different from these recently used words: ${recentWords.join(', ') || 'none'}. The word must be a valid English word found in a standard dictionary (e.g., Merriam-Webster). Exclude non-words, proper nouns, or obscure terms like "Hopp". Return exactly in this format:\nWord: [WORD]\nDo not include extra text.`;
+      const wordResponse = await openai.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: wordPrompt }],
+        max_tokens: 100
+      });
+      console.log('OpenAI word response:', wordResponse.choices[0].message.content);
+
+      const wordText = wordResponse.choices[0].message.content;
+      const wordMatch = wordText.match(/Word: ["']?([A-Za-z]{4,5})["']?/i);
+      if (!wordMatch) throw new Error('Failed to parse word from OpenAI');
+      word = wordMatch[1].toUpperCase();
+
+      // + Validate word length matches level requirement
+      if ((level === 'beginner' && word.length !== 4) || (level === 'advanced' && word.length !== 5)) {
+        console.error(`Invalid word length for ${level}: ${word} (${word.length})`);
+        throw new Error(`Generated word "${word}" does not match required length for ${level}`);
+      }
+
+      const explainPrompt = `Provide a kid-friendly definition and example sentence for the word "${word}". Return exactly in this format:\nDefinition: [DEFINITION]\nExample: [SENTENCE]\nDo not include extra text.`;
+      const explainResponse = await openai.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: explainPrompt }],
+        max_tokens: 100
+      });
+      console.log('OpenAI explain response:', explainResponse.choices[0].message.content);
+
+      const explanationText = explainResponse.choices[0].message.content;
+      const definitionMatch = explanationText.match(/Definition: (.+)/);
+      const exampleMatch = explanationText.match(/Example: (.+)/);
+      if (!definitionMatch || !exampleMatch) throw new Error('Failed to parse explanation from OpenAI');
+      explanation = `${definitionMatch[1].trim()}\n${exampleMatch[1].trim()}`;
+    } catch (openaiErr) {
+      console.error('⚠️ /start OpenAI generation failed, using fallback:', openaiErr.message);
+      const fallback = pickFallbackEntry(FALLBACK_WORDS, { wordLength, recentWords });
+      word = fallback.word;
+      wordLength = fallback.wordLength;
+      explanation = `${fallback.definition}\n${fallback.example}`;
+      source = 'fallback';
+      fallbackHints = fallback.hints;
+      fallbackSentence = fallback.bonusSentence;
     }
-
-    const explainPrompt = `Provide a kid-friendly definition and example sentence for the word "${word}". Return exactly in this format:\nDefinition: [DEFINITION]\nExample: [SENTENCE]\nDo not include extra text.`;
-    const explainResponse = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: explainPrompt }],
-      max_tokens: 100
-    });
-    console.log('OpenAI explain response:', explainResponse.choices[0].message.content);
-
-    const explanationText = explainResponse.choices[0].message.content;
-    const definitionMatch = explanationText.match(/Definition: (.+)/);
-    const exampleMatch = explanationText.match(/Example: (.+)/);
-    if (!definitionMatch || !exampleMatch) throw new Error('Failed to parse explanation from OpenAI');
-    const explanation = `${definitionMatch[1].trim()}\n${exampleMatch[1].trim()}`;
 
     const gameId = db.collection('games').doc().id;
     await db.collection('games').doc(gameId).set({
@@ -73,9 +92,11 @@ router.post('/start', async (req, res) => {
       hints: [],
       status: 'active',
       explanation,
-      createdAt: admin.firestore.FieldValue.serverTimestamp()
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      source,
+      ...(source === 'fallback' ? { fallbackHints, fallbackSentence } : {})
     });
-    console.log('Game document created:', gameId);
+    console.log('Game document created:', gameId, 'source:', source);
 
     await db.collection('recentWords').add({
       word,
@@ -147,24 +168,43 @@ router.post('/hint', async (req, res) => {
     const gameDoc = await db.collection('games').doc(gameId).get();
     if (!gameDoc.exists) return res.status(404).json({ error: 'Game not found' });
 
-    const { word, hints } = gameDoc.data();
-    const prompt = `Provide a level-${hintLevel} hint for the ${word.length}-letter word "${word}" without revealing it. Level 1: broad context (e.g., "This word is a type of animal"). Level 2: more specific (e.g., "This word is an animal that lives in water"). Ensure hints are kid-friendly, random, and avoid repeating previous hints: ${hints.map(h => h.hint).join(', ')}. Return exactly in this format:\nHint: [HINT]`;
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: prompt }
-      ],
-      max_tokens: 50
-    });
+    const data = gameDoc.data();
+    const { word, hints } = data;
+    let hint;
 
-    const responseText = response.choices[0].message.content;
-    const hintMatch = responseText.match(/Hint: (.+)/);
-    if (!hintMatch) {
-      console.error('Invalid OpenAI hint response:', responseText);
-      throw new Error('Failed to parse hint from OpenAI');
+    if (data.source === 'fallback') {
+      const entry = (data.fallbackHints || []).find(h => h.level === hintLevel);
+      hint = entry ? entry.hint : 'Keep trying — look closely at the letters you already know!';
+    } else {
+      try {
+        if (process.env.FORCE_OPENAI_FALLBACK === 'true') {
+          throw new Error('Forced fallback (test mode)');
+        }
+        const prompt = `Provide a level-${hintLevel} hint for the ${word.length}-letter word "${word}" without revealing it. Level 1: broad context (e.g., "This word is a type of animal"). Level 2: more specific (e.g., "This word is an animal that lives in water"). Ensure hints are kid-friendly, random, and avoid repeating previous hints: ${hints.map(h => h.hint).join(', ')}. Return exactly in this format:\nHint: [HINT]`;
+        const response = await openai.chat.completions.create({
+          model: 'gpt-4o',
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            { role: 'user', content: prompt }
+          ],
+          max_tokens: 50
+        });
+
+        const responseText = response.choices[0].message.content;
+        const hintMatch = responseText.match(/Hint: (.+)/);
+        if (!hintMatch) {
+          console.error('Invalid OpenAI hint response:', responseText);
+          throw new Error('Failed to parse hint from OpenAI');
+        }
+        hint = hintMatch[1].trim();
+      } catch (openaiErr) {
+        console.error('⚠️ /hint OpenAI generation failed, using generic fallback:', openaiErr.message);
+        hint = hintLevel === 2
+          ? "Try sounding the word out letter by letter — focus on the vowels you haven't used yet."
+          : "Think about the word's length and look back at any letters you've already placed correctly.";
+      }
     }
-    const hint = hintMatch[1].trim();
+
     hints.push({ level: hintLevel, hint });
 
     await db.collection('games').doc(gameId).update({
@@ -185,24 +225,41 @@ router.post('/unscramble', async (req, res) => {
     const gameDoc = await db.collection('games').doc(gameId).get();
     if (!gameDoc.exists) return res.status(404).json({ error: 'Game not found' });
 
-    const { word, explanation } = gameDoc.data();
+    const data = gameDoc.data();
+    const { word, explanation } = data;
     const [, example] = explanation.split('\n');
-    const sentencePrompt = `Generate a kid-friendly sentence (different from "${example}") using the word "${word}" for kids aged 8-13, with exactly 5 to 7 words. Return exactly in this format:\nSentence: [SENTENCE]\nDo not include extra text.`;
-    const sentenceResponse = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: sentencePrompt }
-      ],
-      max_tokens: 100
-    });
+    let sentence;
 
-    const sentenceText = sentenceResponse.choices[0].message.content;
-    const sentenceMatch = sentenceText.match(/Sentence: (.+)/);
-    if (!sentenceMatch) throw new Error('Failed to parse sentence from OpenAI');
-    const sentence = sentenceMatch[1].trim();
+    if (data.source === 'fallback') {
+      sentence = data.fallbackSentence;
+    } else {
+      try {
+        if (process.env.FORCE_OPENAI_FALLBACK === 'true') {
+          throw new Error('Forced fallback (test mode)');
+        }
+        const sentencePrompt = `Generate a kid-friendly sentence (different from "${example}") using the word "${word}" for kids aged 8-13, with exactly 5 to 7 words. Return exactly in this format:\nSentence: [SENTENCE]\nDo not include extra text.`;
+        const sentenceResponse = await openai.chat.completions.create({
+          model: 'gpt-4o',
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            { role: 'user', content: sentencePrompt }
+          ],
+          max_tokens: 100
+        });
+
+        const sentenceText = sentenceResponse.choices[0].message.content;
+        const sentenceMatch = sentenceText.match(/Sentence: (.+)/);
+        if (!sentenceMatch) throw new Error('Failed to parse sentence from OpenAI');
+        sentence = sentenceMatch[1].trim();
+        const wordCount = sentence.split(' ').length;
+        if (wordCount < 5 || wordCount > 7) throw new Error('Sentence must be 5-7 words');
+      } catch (openaiErr) {
+        console.error('⚠️ /unscramble OpenAI generation failed, reusing stored example:', openaiErr.message);
+        sentence = example; // word-agnostic fallback; length isn't guaranteed here, so skip the 5-7 check
+      }
+    }
+
     const words = sentence.split(' ');
-    if (words.length < 5 || words.length > 7) throw new Error('Sentence must be 5-7 words');
     const scrambled = words.sort(() => Math.random() - 0.5).join(' ');
 
     res.json({ sentence, scrambled });
