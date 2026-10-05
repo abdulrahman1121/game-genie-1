@@ -335,4 +335,4 @@ const evaluateGuess = (guess, target) => {
   return feedback;
 };
 
-module.exports = router;
+module.exports = { router, evaluateGuess };

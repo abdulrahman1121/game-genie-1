@@ -25,7 +25,7 @@ app.get('/api/config', (req, res) => {
   res.json({ renderUrl: process.env.RENDER_URL });
 });
 
-app.use('/api/openai', openaiRoutes);
+app.use('/api/openai', openaiRoutes.router);
 
 // Start server
 const PORT = process.env.PORT || 3000;
