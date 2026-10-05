@@ -1,6 +1,9 @@
 backend/.env
 backend/firebase-service-account.json
 backend/node_modules/
+backend/test
+backend/routes/openaiRoutes.integration.test.js
+backend/vitest.config.mjs
 
 notes.md
 node_modules
