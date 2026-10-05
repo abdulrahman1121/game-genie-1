@@ -31,6 +31,13 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    ['start-button.png', 'close-all.png'].forEach(name => {
+      const img = new Image();
+      img.src = `${import.meta.env.BASE_URL}${name}`;
+    });
+  }, []);
+
 
   useEffect(() => {
     console.log('GamePage level:', level);
@@ -156,14 +163,14 @@ return (
   <div className="welcome-modal-content">
     <img src={`${import.meta.env.BASE_URL}guide.png`} alt="guide" className="welcome-guide-img" draggable={false} />
     {modalButtonType === 'start' ? (
-      <button className="welcome-start-button" onClick={() => {
+      <button key="start" className="welcome-start-button" onClick={() => {
         setShowWelcomeModal(false);
         setModalButtonType('start');
       }}>
         <img src={`${import.meta.env.BASE_URL}start-button.png`} alt="start" className="welcome-start-btn" />
       </button>
     ) : (
-      <button className="welcome-close-button" onClick={() => {
+      <button key="close" className="welcome-close-button" onClick={() => {
         setShowWelcomeModal(false);
         setTimeout(() => setModalButtonType('start'), 300); // Delay matches CSS transition
       }} aria-label="Close">

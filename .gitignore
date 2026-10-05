@@ -2,6 +2,7 @@ backend/.env
 backend/firebase-service-account.json
 backend/node_modules/
 
+notes.md
 node_modules
 dist
 dist-ssr
