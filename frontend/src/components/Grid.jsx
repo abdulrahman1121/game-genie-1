@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Tile from './Tile.jsx';
-import { API_BASE } from '../lib/apiBase.js';
+import { apiFetch } from '../lib/apiAuth.js';
 import './Grid.css';
 
 function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage, setGuessCount, targetWord, setIsActualHint, hints }) {
@@ -61,7 +61,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
     }
 
     try {
-      const res = await fetch(`${API_BASE}/openai/validate-word`, {
+      const res = await apiFetch('/openai/validate-word', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ word: lowerWord }),
@@ -99,7 +99,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
 }
 
     try {
-      const res = await fetch(`${API_BASE}/openai/guess`, {
+      const res = await apiFetch('/openai/guess', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gameId, guess: currentGuess })
@@ -148,7 +148,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   };
 
   const resetGame = () => {
-    fetch(`${API_BASE}/openai/start`, { method: 'POST' })
+    apiFetch('/openai/start', { method: 'POST' })
       .then(res => res.json())
       .then(data => {
         setGrid(Array(6).fill().map(() => Array(data.wordLength).fill({ letter: '', status: 'empty' })));

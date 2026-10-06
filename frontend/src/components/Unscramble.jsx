@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { API_BASE } from '../lib/apiBase.js';
+import { apiFetch } from '../lib/apiAuth.js';
 import './Unscramble.css';
 
 function Unscramble({ gameId, targetWord, onResult }) {
@@ -14,7 +15,7 @@ function Unscramble({ gameId, targetWord, onResult }) {
 
   useEffect(() => {
     if (!API_BASE || !gameId) return; // need both
-    fetch(`${API_BASE}/openai/unscramble`, {
+    apiFetch('/openai/unscramble', {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ gameId })

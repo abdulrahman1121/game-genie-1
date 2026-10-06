@@ -5,6 +5,7 @@ import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { API_BASE } from '../lib/apiBase.js';
+import { apiFetch } from '../lib/apiAuth.js';
 import { initSession, updateCoins, getCoins } from '../utils/sessionUtils.js';
 import './GamePage.css';
 
@@ -44,7 +45,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
     const session = initSession();
     setCoins(getCoins());
     if (!API_BASE) return;
-    fetch(`${API_BASE}/openai/start`, {
+    apiFetch('/openai/start', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ level })
@@ -65,13 +66,13 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         setGuessCount(0);
         setTargetWord(data.word);
         setIsActualHint(false);
-        const hint1Res = await fetch(`${API_BASE}/openai/hint`, {
+        const hint1Res = await apiFetch('/openai/hint', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ gameId: data.gameId, hintLevel: 1 })
         });
         const hint1Data = await hint1Res.json();
-        const hint2Res = await fetch(`${API_BASE}/openai/hint`, {
+        const hint2Res = await apiFetch('/openai/hint', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ gameId: data.gameId, hintLevel: 2 })
