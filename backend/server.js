@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const openaiRoutes = require('./routes/openaiRoutes');
+const sessionRoutes = require('./routes/sessionRoutes');
+const requireSession = require('./middleware/requireSession');
 const RENDER_URL = process.env.RENDER_URL;
 const { db } = require('./firebase');
 
@@ -25,7 +27,8 @@ app.get('/api/config', (req, res) => {
   res.json({ renderUrl: process.env.RENDER_URL });
 });
 
-app.use('/api/openai', openaiRoutes.router);
+app.use('/api/session', sessionRoutes);
+app.use('/api/openai', requireSession, openaiRoutes.router);
 
 // Start server
 const PORT = process.env.PORT || 3000;
