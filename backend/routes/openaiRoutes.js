@@ -4,6 +4,7 @@ const { OpenAI } = require('openai');
 const { db, admin } = require('../firebase');
 const FALLBACK_WORDS = require('../data/fallbackWords');
 const { pickFallbackEntry } = require('../lib/fallbackSelector');
+const createUsageLimiter = require('../middleware/sessionUsageLimiter');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -11,7 +12,11 @@ const SYSTEM_PROMPT = `You are an educational assistant for a Wordle game design
 
 const RECENT_WORDS_LIMIT = 50;
 
-router.post('/start', async (req, res) => {
+// Per-session caps on routes that cost real OpenAI/WordsAPI credits. A 20-minute session
+// realistically plays ~30 games; 50 leaves headroom without being an effectively unlimited cap.
+const SESSION_LIMITS = { start: 50, hint: 150, unscramble: 150, validateWord: 300 };
+
+router.post('/start', createUsageLimiter('start', SESSION_LIMITS.start), async (req, res) => {
   console.log('Received /start request:', req.body); // + Log request body
   try {
     const { level } = req.body;
@@ -162,7 +167,7 @@ router.post('/guess', async (req, res) => {
   }
 });
 
-router.post('/hint', async (req, res) => {
+router.post('/hint', createUsageLimiter('hint', SESSION_LIMITS.hint), async (req, res) => {
   const { gameId, hintLevel } = req.body;
   try {
     const gameDoc = await db.collection('games').doc(gameId).get();
@@ -219,7 +224,7 @@ router.post('/hint', async (req, res) => {
   }
 });
 
-router.post('/unscramble', async (req, res) => {
+router.post('/unscramble', createUsageLimiter('unscramble', SESSION_LIMITS.unscramble), async (req, res) => {
   const { gameId } = req.body;
   try {
     const gameDoc = await db.collection('games').doc(gameId).get();
@@ -269,7 +274,7 @@ router.post('/unscramble', async (req, res) => {
   }
 });
 
-router.post('/validate-word', async (req, res) => {
+router.post('/validate-word', createUsageLimiter('validateWord', SESSION_LIMITS.validateWord), async (req, res) => {
   const { word } = req.body;
   if (!word || typeof word !== 'string') {
     return res.status(400).json({ error: 'Word required' });

@@ -7,6 +7,7 @@ const RENDER_URL = process.env.RENDER_URL;
 const { db } = require('./firebase');
 
 const app = express();
+app.set('trust proxy', 1); // Render sits behind a proxy; needed for accurate per-IP rate limiting
 app.use(express.json());
 
 app.use(cors({
