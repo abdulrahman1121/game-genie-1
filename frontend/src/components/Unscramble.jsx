@@ -79,6 +79,7 @@ function Unscramble({ gameId, targetWord, onResult }) {
   };
 
   const handleCheck = () => {
+    if (!correctSentence) return; // sentence not loaded yet
     const userSentence = userWords.flat().join(' ');
     const isCorrect = userSentence === correctSentence;
     setTries(tries + 1);
@@ -102,7 +103,7 @@ function Unscramble({ gameId, targetWord, onResult }) {
     <div className="unscramble-comp">
       <div className="unscramble-image-container">
         <img src={`${import.meta.env.BASE_URL}unscramble2.png`} alt="unscramble" className="unscramble-img" />
-        <button className="check-button" onClick={handleCheck}>
+        <button className="check-button" onClick={handleCheck} disabled={!correctSentence}>
           <img src={`${import.meta.env.BASE_URL}check.png`} alt="" />
         </button>
       </div>

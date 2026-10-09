@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Tile from './Tile.jsx';
 import { apiFetch } from '../lib/apiAuth.js';
 import './Grid.css';
@@ -11,6 +11,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   const [currentGuess, setCurrentGuess] = useState('');
   const [localGameStatus, setLocalGameStatus] = useState('active');
   const [showInvalidWord, setShowInvalidWord] = useState(false);
+  const isSubmittingRef = useRef(false);
   useEffect(() => {
     if (wordLength) {
       setGrid(Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' })));
@@ -18,7 +19,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   }, [wordLength]);
 
   const handleKeyPress = (key, status) => {
-    if (localGameStatus !== 'active') return;
+    if (localGameStatus !== 'active' || showInvalidWord) return;
     if (key === 'BACKSPACE') {
       setCurrentGuess(prev => prev.slice(0, -1));
       setGrid(prev => {
@@ -79,6 +80,16 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   };
 
   const handleGuess = async () => {
+    if (isSubmittingRef.current) return;
+    isSubmittingRef.current = true;
+    try {
+      await submitGuess();
+    } finally {
+      isSubmittingRef.current = false;
+    }
+  };
+
+  const submitGuess = async () => {
     if (currentGuess.length !== wordLength || localGameStatus !== 'active') return;
 
     // Check if guess is a valid dictionary word
