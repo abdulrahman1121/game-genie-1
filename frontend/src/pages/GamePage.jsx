@@ -7,6 +7,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { API_BASE } from '../lib/apiBase.js';
 import { apiFetch } from '../lib/apiAuth.js';
 import { initSession, updateCoins, getCoins } from '../utils/sessionUtils.js';
+import { useIsSmallScreen } from '../hooks/useIsSmallScreen.js';
 import './GamePage.css';
 
 function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, setWordLength, gameStatus, setKeyStatuses, gridKeyPressRef }) {
@@ -24,13 +25,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [coins, setCoins] = useState(getCoins());
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [modalButtonType, setModalButtonType] = useState('start');
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1024);
-
-  useEffect(() => {
-    const handleResize = () => setIsSmallScreen(window.innerWidth < 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const isSmallScreen = useIsSmallScreen();
 
   useEffect(() => {
     ['start-button.png', 'close-all.png'].forEach(name => {

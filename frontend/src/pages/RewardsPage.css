@@ -205,6 +205,19 @@
   backface-visibility: hidden;
 }
 
+/* second half of the turn: new view arrives from the back */
+.rewards-image.flip-in, .rewards-tries.flip-in, .rewards-points.flip-in,
+.home-button.flip-in, .new-game-button.flip-in, .sparkle-button.flip-in,
+.lamp-container.flip-in {
+  animation: rewards-flip-in 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backface-visibility: hidden;
+}
+
+@keyframes rewards-flip-in {
+  0% { transform: perspective(1000px) rotateY(180deg); }
+  100% { transform: perspective(1000px) rotateY(360deg); }
+}
+
 @keyframes rewards-flip {
   0% { transform: perspective(1000px) rotateY(0deg); }
   50% { transform: perspective(1000px) rotateY(180deg); }

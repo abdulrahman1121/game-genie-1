@@ -1,18 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import GoBackImage from "../components/GoBackImage";
 import SettingsImage from "../components/SettingsImage";
+import { useIsSmallScreen } from '../hooks/useIsSmallScreen.js';
 import './SelectLevelPage.css';
 
 function SelectLevelPage() {
   const navigate = useNavigate();
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1024);
-
-  useEffect(() => {
-    const handleResize = () => setIsSmallScreen(window.innerWidth < 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const isSmallScreen = useIsSmallScreen();
   
   if (isSmallScreen) {
     return <img src={`${import.meta.env.BASE_URL}error.png`} alt="error for small screens" className='error-display'/>;

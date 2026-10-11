@@ -10,6 +10,7 @@ function Unscramble({ gameId, targetWord, onResult }) {
   const [tries, setTries] = useState(0);
   const [selectedWordIndex, setSelectedWordIndex] = useState(null);
   const [originalIndices, setOriginalIndices] = useState([]); // Track original positions
+  const [loadFailed, setLoadFailed] = useState(false);
 
   
 
@@ -31,7 +32,10 @@ function Unscramble({ gameId, targetWord, onResult }) {
         setCorrectSentence(data.sentence);
         setOriginalIndices(words.map((_, i) => i)); // Store original indices
       })
-      .catch(err => console.error('Error fetching sentence:', err));
+      .catch(err => {
+        console.error('Error fetching sentence:', err);
+        setLoadFailed(true);
+      });
   }, [gameId]);
 
   const handleWordClick = (index) => {
@@ -109,6 +113,9 @@ function Unscramble({ gameId, targetWord, onResult }) {
       </div>
       <div className="word-bank">
         <img src={`${import.meta.env.BASE_URL}word-bank.png`} alt="word-bank" className="word-bank-img" />
+        {!correctSentence && (
+          <p className="word-bank-loading">{loadFailed ? 'Could not load, go back and try again' : 'Loading...'}</p>
+        )}
         <div className="word-bank-words">
           {scrambledWords.map((word, index) => (
             <span

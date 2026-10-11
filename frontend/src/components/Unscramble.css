@@ -43,6 +43,19 @@
   z-index: 2;
 }
 
+.word-bank-loading {
+  position: absolute;
+  top: 40%;
+  right: 10%;
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  color: #FF7201; /* matches the "Word Bank" title in word-bank.png */
+  font-family: 'Lilita One';
+  font-size: 20px;
+  z-index: 2;
+}
+
 .word, .placed {
   color: #FF7201;
   text-align: center;

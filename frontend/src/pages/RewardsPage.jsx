@@ -3,14 +3,18 @@ import GoBackImage from '../components/GoBackImage.jsx';
 import SettingsImage from '../components/SettingsImage.jsx';
 import Unscramble from "../components/Unscramble.jsx";
 import { updateCoins, getCoins, initSession, SESSION_KEY, BONUS_SESSION_KEY } from '../utils/sessionUtils.js';
+import { useIsSmallScreen } from '../hooks/useIsSmallScreen.js';
 import './RewardsPage.css';
 import { useState, useEffect } from "react";
+
+const FLIP_HALF_MS = 300; // each half of the turn; keep in sync with rewards-flip / rewards-flip-in in RewardsPage.css
 
 function RewardsPage() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const { guessCount = 0, points = 0, gameId = '', targetWord = '', totalCoins = 0, level = 'intermediate' } = state || {};
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false); // current view flipping out
+  const [isFlippingIn, setIsFlippingIn] = useState(false); // new view flipping in
   const [showUnscramble, setShowUnscramble] = useState(false);
   const [updatedPoints, setUpdatedPoints] = useState(points);
   const [totalCoinsState, setTotalCoinsState] = useState(totalCoins);
@@ -18,15 +22,10 @@ function RewardsPage() {
     'Well done! to double your points, click on the sparkle button.'
   );
   const [showBonus, setShowBonus] = useState(false);
+  const [bonusAwarded, setBonusAwarded] = useState(false);
   const [correctSentence, setCorrectSentence] = useState('');
   const [showGenieContent, setShowGenieContent] = useState(false);
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1024);
-
-  useEffect(() => {
-    const handleResize = () => setIsSmallScreen(window.innerWidth < 1024);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const isSmallScreen = useIsSmallScreen();
 
   useEffect(() => {
     const bonusSession = initSession(BONUS_SESSION_KEY);
@@ -52,32 +51,45 @@ function RewardsPage() {
   }
   
 
+  // Two-half turn: the old view flips out and is removed while it is edge-on / facing away,
+  // then the new view flips in from the back, so the old face never reappears.
+  const swapView = (toUnscramble, onDone) => {
+    setIsFlipped(true);
+    setTimeout(() => {
+      setShowUnscramble(toUnscramble);
+      setIsFlipped(false);
+      setIsFlippingIn(true);
+      setTimeout(() => {
+        setIsFlippingIn(false);
+        onDone?.();
+      }, FLIP_HALF_MS);
+    }, FLIP_HALF_MS);
+  };
+
+  // Back to the rewards view; the genie message (and anything passed in) appears once the turn is complete.
+  const revealRewards = (onFlipDone) => {
+    swapView(false, () => {
+      setShowGenieContent(true);
+      onFlipDone?.();
+    });
+  };
+
   const handleUnscrambleResult = (isCorrect, tries, sentence) => {
     if (isCorrect) {
-      const bonusPoints = updatedPoints === 0 ? 10 : updatedPoints;
-      const newTotalCoins = updateCoins(bonusPoints);
-      setUpdatedPoints(updatedPoints === 0 ? 10 : bonusPoints * 2);
       setGenieMessage('Awesome! Click on next game to play again!');
-      setTimeout(() => {
-        setIsFlipped(true);
-        setTimeout(() => {
-          setShowUnscramble(false);
-          setShowGenieContent(true);
-          setTotalCoinsState(newTotalCoins);
-          setIsFlipped(false);
-        }, 400);
-      }, 50);
+      if (bonusAwarded) {
+        revealRewards(); // replaying the same word never pays out again
+      } else {
+        const bonusPoints = updatedPoints === 0 ? 10 : updatedPoints;
+        const newTotalCoins = updateCoins(bonusPoints);
+        setUpdatedPoints(updatedPoints === 0 ? 10 : bonusPoints * 2);
+        setBonusAwarded(true);
+        revealRewards(() => setTotalCoinsState(newTotalCoins));
+      }
     } else if (tries >= 3) {
       setCorrectSentence(sentence);
       setGenieMessage('You used all 3 attempts.');
-      setTimeout(() => {
-        setIsFlipped(true);
-        setTimeout(() => {
-          setShowUnscramble(false);
-          setShowGenieContent(true);
-          setIsFlipped(false);
-        }, 400);
-      }, 50);
+      revealRewards();
     } else if ((3 - tries) === 1) {
       setGenieMessage('Incorrect! You have 1 try left.');
     } else {
@@ -86,6 +98,8 @@ function RewardsPage() {
   };
 
 
+
+  const flipClass = isFlipped ? 'flip' : isFlippingIn ? 'flip-in' : '';
 
   const getGeniePrefix = () => {
     if (genieMessage.startsWith('Welcome')) {
@@ -145,24 +159,21 @@ function RewardsPage() {
             />
           ) : (
             <>
-              <img src={`${import.meta.env.BASE_URL}new-rewards.png`} alt="rewards" className={`rewards-image ${isFlipped ? 'flip' : ''}`}/>
-              <div className={`lamp-container ${isFlipped ? 'flip' : ''}`}>
+              <img src={`${import.meta.env.BASE_URL}new-rewards.png`} alt="rewards" className={`rewards-image ${flipClass}`}/>
+              <div className={`lamp-container ${flipClass}`}>
                 <img src={`${import.meta.env.BASE_URL}lamp.png`} alt="lamp image" className="lamp-img"/>
               </div>
-              <p className={`rewards-points ${isFlipped ? 'flip' : ''}`}>+ {updatedPoints}</p>
+              <p className={`rewards-points ${flipClass}`}>+ {updatedPoints}</p>
               <div className="reward-buttons">
-                <button className={`sparkle-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
+                <button className={`sparkle-button ${flipClass}`} onClick={() => {
                   setShowBonus(false);
+                  setShowGenieContent(false); // hide the previous round's message until this round's flip ends
                   setGenieMessage('Welcome to the Bonus Challenge, click on the word tiles to place it and click again to remove it!');
-                  setIsFlipped(true);
-                  setTimeout(() => {
-                    setShowUnscramble(true);
-                    setIsFlipped(false);
-                  }, 400);
+                  swapView(true);
                 }}>
                   <img src={`${import.meta.env.BASE_URL}new-bonus.png`} alt="sparkle" className="sparkle-image"/>
                 </button>
-                <button className={`new-game-button ${isFlipped ? 'flip' : ''}`} onClick={() => {
+                <button className={`new-game-button ${flipClass}`} onClick={() => {
                   setShowBonus(false);
                   navigate('/game', { state: { level } });
                 }}>
