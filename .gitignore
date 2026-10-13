@@ -5,7 +5,8 @@ backend/test
 backend/routes/openaiRoutes.integration.test.js
 backend/vitest.config.mjs
 
-notes.md
+.claude
+CLAUDE.md
 node_modules
 dist
 dist-ssr
