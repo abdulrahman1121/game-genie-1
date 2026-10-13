@@ -152,9 +152,13 @@
   transition: transform 0.2s ease-in-out;
 }
 
-.check-button img:hover {
+.check-button:not(:disabled) img:hover {
   transform: scale(1.05);
   cursor: pointer;
+}
+
+.check-button:disabled img {
+  opacity: 0.5;
 }
 
 /* Tablet (768px - 1024px) */
