@@ -5,6 +5,7 @@ const { db, admin } = require('../firebase');
 const FALLBACK_WORDS = require('../data/fallbackWords');
 const { pickFallbackEntry } = require('../lib/fallbackSelector');
 const createUsageLimiter = require('../middleware/sessionUsageLimiter');
+const { notifyIfQuotaExhausted } = require('../lib/quotaAlert');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -79,6 +80,7 @@ router.post('/start', createUsageLimiter('start', SESSION_LIMITS.start), async (
       if (!definitionMatch || !exampleMatch) throw new Error('Failed to parse explanation from OpenAI');
       explanation = `${definitionMatch[1].trim()}\n${exampleMatch[1].trim()}`;
     } catch (openaiErr) {
+      notifyIfQuotaExhausted(openaiErr);
       console.error('⚠️ /start OpenAI generation failed, using fallback:', openaiErr.message);
       const fallback = pickFallbackEntry(FALLBACK_WORDS, { wordLength, recentWords });
       word = fallback.word;
@@ -203,6 +205,7 @@ router.post('/hint', createUsageLimiter('hint', SESSION_LIMITS.hint), async (req
         }
         hint = hintMatch[1].trim();
       } catch (openaiErr) {
+        notifyIfQuotaExhausted(openaiErr);
         console.error('⚠️ /hint OpenAI generation failed, using generic fallback:', openaiErr.message);
         hint = hintLevel === 2
           ? "Try sounding the word out letter by letter — focus on the vowels you haven't used yet."
@@ -259,6 +262,7 @@ router.post('/unscramble', createUsageLimiter('unscramble', SESSION_LIMITS.unscr
         const wordCount = sentence.split(' ').length;
         if (wordCount < 5 || wordCount > 7) throw new Error('Sentence must be 5-7 words');
       } catch (openaiErr) {
+        notifyIfQuotaExhausted(openaiErr);
         console.error('⚠️ /unscramble OpenAI generation failed, reusing stored example:', openaiErr.message);
         sentence = example; // word-agnostic fallback; length isn't guaranteed here, so skip the 5-7 check
       }
