@@ -27,9 +27,6 @@ Game Genie evolves with the player's skills and interests, offering both an ente
 - Rewards page with coin/point tracking per session
 
 **Planned (In Development)**
-- XP & leveling, streaks, and daily/weekly themed challenges
-- Badges & achievements
-- Avatar and theme customization
 - "Remix Mode" — AI turns a learned word into a story, riddle, or drawing prompt
 - Mini-game unlocks (spelling bee battles, AI word duels)
 
