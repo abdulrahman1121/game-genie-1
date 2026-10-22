@@ -1,7 +1,7 @@
 const { checkAndIncrement } = require('../lib/sessionUsage');
 
 // Per-session (per token nonce) caps on routes that cost real external API credits
-// (OpenAI or WordsAPI), so a single 20-minute session can't be replayed to mint unlimited
+// (OpenAI or WordsAPI), so a single 45-minute session can't be replayed to mint unlimited
 // requests even with a valid token.
 //
 // If req.session is missing, this just calls next() rather than erroring -- that only

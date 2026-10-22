@@ -13,7 +13,7 @@ const SYSTEM_PROMPT = `You are an educational assistant for a Wordle game design
 
 const RECENT_WORDS_LIMIT = 50;
 
-// Per-session caps on routes that cost real OpenAI/WordsAPI credits. A 20-minute session
+// Per-session caps on routes that cost real OpenAI/WordsAPI credits. A 45-minute session
 // realistically plays ~30 games; 50 leaves headroom without being an effectively unlimited cap.
 const SESSION_LIMITS = { start: 50, hint: 150, unscramble: 150, validateWord: 300 };
 
