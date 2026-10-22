@@ -3,7 +3,7 @@
 // from being hit directly by scripts that never went through a real game session.
 const crypto = require('crypto');
 
-const SESSION_DURATION_MS = 20 * 60 * 1000; // 20 minutes, matches the frontend's session duration
+const SESSION_DURATION_MS = 45 * 60 * 1000; // 45 minutes, matches the frontend's session duration
 
 function sign(encodedPayload) {
   const secret = process.env.SESSION_SECRET;

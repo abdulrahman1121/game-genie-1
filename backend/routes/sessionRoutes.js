@@ -7,7 +7,7 @@ const { createSessionToken, SESSION_DURATION_MS } = require('../lib/sessionToken
 // by minting a fresh token whenever the old one's limits were reached. Window matches the
 // token's own lifetime so this reads as "N tokens per session-length window, per IP."
 const sessionStartLimiter = rateLimit({
-  windowMs: SESSION_DURATION_MS, // 20 minutes
+  windowMs: SESSION_DURATION_MS, // 45 minutes
   limit: 30, // 30 new session tokens per IP per window
   standardHeaders: true,
   legacyHeaders: false,
