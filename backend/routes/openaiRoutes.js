@@ -6,6 +6,7 @@ const FALLBACK_WORDS = require('../data/fallbackWords');
 const { pickFallbackEntry } = require('../lib/fallbackSelector');
 const createUsageLimiter = require('../middleware/sessionUsageLimiter');
 const { notifyIfQuotaExhausted } = require('../lib/quotaAlert');
+const { recordFinishedGame } = require('../lib/sessionStore');
 require('dotenv').config();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -142,7 +143,7 @@ router.post('/guess', async (req, res) => {
     const gameDoc = await db.collection('games').doc(gameId).get();
     if (!gameDoc.exists) return res.status(404).json({ error: 'Game not found' });
 
-    const { word, guesses } = gameDoc.data();
+    const { word, guesses, status: previousStatus } = gameDoc.data();
     if (guess.length !== word.length) return res.status(400).json({ error: 'Invalid guess length' });
 
     const feedback = evaluateGuess(guess, word);
@@ -157,6 +158,17 @@ router.post('/guess', async (req, res) => {
       guessCount,
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
+
+    // Only the guess that flips the game out of 'active' counts, so extra guesses posted after
+    // game over can't add the same game twice. Best effort: a failed history write must not
+    // fail the guess itself.
+    if (previousStatus === 'active' && status !== 'active' && req.session) {
+      try {
+        await recordFinishedGame(db, req.session, { word, status, guesses: guessCount });
+      } catch (err) {
+        console.error('❌ session history error:', err.message);
+      }
+    }
 
     res.json({ feedback, status, guessCount });
   } catch (err) {
