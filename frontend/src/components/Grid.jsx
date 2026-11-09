@@ -3,7 +3,10 @@ import Tile from './Tile.jsx';
 import { apiFetch } from '../lib/apiAuth.js';
 import './Grid.css';
 
-function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGameMessage, setGuessCount, targetWord, setIsActualHint, hints }) {
+// Tile flip is 0.3s and keyboard colors are instant; the extra time lets the player see the final colors.
+const GAME_OVER_DELAY_MS = 700;
+
+function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordLength, onKeyPress, onGoHome, resetKeyBoard, setKeyStatuses, explanation, gridKeyPressRef, setGuessCount, setShowGameOver, setIsActualHint, hints }) {
   const [grid, setGrid] = useState(() => {
     return wordLength ? Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' })) : [];
   });
@@ -12,6 +15,8 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
   const [localGameStatus, setLocalGameStatus] = useState('active');
   const [showInvalidWord, setShowInvalidWord] = useState(false);
   const isSubmittingRef = useRef(false);
+  const gameOverTimerRef = useRef(null);
+  useEffect(() => () => clearTimeout(gameOverTimerRef.current), []);
   useEffect(() => {
     if (wordLength) {
       setGrid(Array(6).fill().map(() => Array(wordLength).fill({ letter: '', status: 'empty' })));
@@ -95,7 +100,6 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
     // Check if guess is a valid dictionary word
     const isValid = await isValidWord(currentGuess);
     if (!isValid) {
-  setGameMessage('Invalid word! Please enter a valid English word.');
   setShowInvalidWord(true); // Show the message
   setTimeout(() => {
     setShowInvalidWord(false); // Hide after 1.5s (or keep until next guess)
@@ -136,11 +140,7 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
       });
 
       if (data.status !== 'active') {
-        setGameMessage(
-          data.status === 'won'
-            ? `🎉 Congratulations! You guessed "${targetWord}"!`
-            : `Nice try! The word was "${targetWord}".`
-        );
+        gameOverTimerRef.current = setTimeout(() => setShowGameOver(true), GAME_OVER_DELAY_MS);
         setIsActualHint(false);
       } else if (currentRow === 2 && hints[1]) {
         setHint(hints[1]);
@@ -154,7 +154,6 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
       }
     } catch (err) {
       console.error('Error submitting guess:', err);
-      setGameMessage('Error submitting guess. Please try again.');
     }
   };
 
@@ -169,7 +168,6 @@ function Grid({ gameId, setGameId, setGameStatus, setHint, setExplanation, wordL
         setHint('');
         setGameStatus('active');
         setExplanation('');
-        setGameMessage('');
         setGameId(data.gameId);
         setKeyStatuses({});
         resetKeyBoard();
