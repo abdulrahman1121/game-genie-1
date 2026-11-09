@@ -17,7 +17,6 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [hint, setLocalHint] = useState('');
   const [hints, setHints] = useState({ 1: '', 2: '' });
   const [explanation, setLocalExplanation] = useState('');
-  const [gameMessage, setGameMessage] = useState('');
   const [isGameReady, setIsGameReady] = useState(false);
   const [guessCount, setGuessCount] = useState(0);
   const [targetWord, setTargetWord] = useState('');
@@ -56,7 +55,6 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         resetKeyStatuses();
         setLocalExplanation(data.explanation);
         setExplanation(data.explanation);
-        setGameMessage('');
         setLocalHint('');
         setGuessCount(0);
         setTargetWord(data.word);
@@ -110,6 +108,12 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
 
   const [definition, example] = explanation ? explanation.split('\n') : ['', ''];
 
+  // Derived from state instead of stored, so it can never disagree with gameStatus.
+  const gameMessage =
+    gameStatus === 'won' ? `🎉 Congratulations! You guessed "${targetWord}"!`
+    : gameStatus === 'lost' ? `Nice try! The word was "${targetWord}".`
+    : '';
+
   // Replace the return statement
 return (
   <div className="game-page">
@@ -134,9 +138,7 @@ return (
         setKeyStatuses={setKeyStatuses}
         explanation={explanation}
         gridKeyPressRef={gridKeyPressRef}
-        setGameMessage={setGameMessage}
         setGuessCount={setGuessCount}
-        targetWord={targetWord}
         setIsActualHint={setIsActualHint}
         hints={hints}
       />
@@ -183,7 +185,7 @@ return (
           <button
   className="next-button"
   onClick={() => {
-    const points = gameMessage.startsWith('Nice') ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10;
+    const points = gameStatus === 'lost' ? 0 : guessCount <= 3 ? 30 : guessCount <= 5 ? 20 : 10;
     const newTotalCoins = updateCoins(points);
     setCoins(newTotalCoins);
     navigate('/rewards', {
