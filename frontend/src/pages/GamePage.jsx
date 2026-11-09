@@ -18,6 +18,8 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
   const [hints, setHints] = useState({ 1: '', 2: '' });
   const [explanation, setLocalExplanation] = useState('');
   const [isGameReady, setIsGameReady] = useState(false);
+  // Separate from gameStatus on purpose: App's Firestore listener can set gameStatus before the tiles finish flipping.
+  const [showGameOver, setShowGameOver] = useState(false);
   const [guessCount, setGuessCount] = useState(0);
   const [targetWord, setTargetWord] = useState('');
   const [isActualHint, setIsActualHint] = useState(false);
@@ -56,6 +58,7 @@ function GamePage({ onKeyPress, keyStatuses, resetKeyStatuses, gameId, setGameId
         setLocalExplanation(data.explanation);
         setExplanation(data.explanation);
         setLocalHint('');
+        setShowGameOver(false);
         setGuessCount(0);
         setTargetWord(data.word);
         setIsActualHint(false);
@@ -139,6 +142,7 @@ return (
         explanation={explanation}
         gridKeyPressRef={gridKeyPressRef}
         setGuessCount={setGuessCount}
+        setShowGameOver={setShowGameOver}
         setIsActualHint={setIsActualHint}
         hints={hints}
       />
@@ -177,7 +181,7 @@ return (
     )}
   </div>
 </div>
-      <div className="game-over-modal" style={{ opacity: gameStatus !== 'active' ? 1 : 0, pointerEvents: gameStatus !== 'active' ? 'auto' : 'none' }}>
+      <div className="game-over-modal" style={{ opacity: showGameOver ? 1 : 0, pointerEvents: showGameOver ? 'auto' : 'none' }}>
         <div className="game-over-modal-content">
           <p className="game-message">{gameMessage || 'Game over!'}</p>
           <p className="genie-definition"><strong>Definition:</strong> {definition || 'No definition available'}</p>
